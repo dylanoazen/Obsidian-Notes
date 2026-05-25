@@ -8,13 +8,31 @@
         "type": "tabs",
         "children": [
           {
-            "id": "030059cbb0c6128e",
+            "id": "731609aa74ea171a",
             "type": "leaf",
             "state": {
-              "type": "graph",
-              "state": {},
-              "icon": "lucide-git-fork",
-              "title": "Visualização em gráfico"
+              "type": "markdown",
+              "state": {
+                "file": "GO/ExpirationTTL.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "ExpirationTTL"
+            }
+          },
+          {
+            "id": "628655f4a0d39ad6",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Sem título.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Sem título"
             }
           }
         ]
@@ -182,7 +200,7 @@
             }
           }
         ],
-        "currentTab": 6
+        "currentTab": 5
       }
     ],
     "direction": "horizontal",
@@ -201,10 +219,19 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "030059cbb0c6128e",
+  "active": "731609aa74ea171a",
   "lastOpenFiles": [
-    "Network/UDP.md",
+    "GO/Replication.md",
+    "Sem título.md",
+    "GO/ExpirationTTL.md",
+    "GO/Persistence.md",
+    "GO/Keywords.md",
+    "GO/Persistence.md.tmp.169.8b06156c3c66",
+    "GO/Concurrency.md",
+    "GO/Keywords.md.tmp.169.cb1201f28cc4",
     "GO/DataStructures.md",
+    "GO/Concurrency.md.tmp.169.36ba96a2650c",
+    "Network/UDP.md",
     "Network/Protocols.md.tmp.169.877274264260",
     "Network/TCP.md.tmp.169.46ae4fcf925e",
     "Network/Framing.md",
@@ -219,10 +246,7 @@
     "GO/Packages/Bufio.md",
     "GO/Semantics.md",
     "Network/Protocols.md",
-    "Network/Protocols.md.tmp.155.0204d3849c7a",
-    "Network/Protocols.md.tmp.155.649fedc59d1e",
     "GO/Functions.md",
-    "GO/Packages/Net.md.tmp.155.c718eb47aa7a",
     "GO/Structs.md",
     "Heroku/Heroku.md",
     "Network/TCP.md",

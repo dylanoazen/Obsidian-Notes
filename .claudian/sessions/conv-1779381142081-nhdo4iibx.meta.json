@@ -4,8 +4,8 @@
   "title": "Adjust resume",
   "titleGenerationStatus": "success",
   "createdAt": 1779381142082,
-  "updatedAt": 1779669040811,
-  "lastResponseAt": 1779669040811,
+  "updatedAt": 1779670301110,
+  "lastResponseAt": 1779670301110,
   "sessionId": "8730b336-e010-4e11-aebb-3f191f740290",
   "providerState": {
     "providerSessionId": "8730b336-e010-4e11-aebb-3f191f740290"
@@ -13,11 +13,11 @@
   "usage": {
     "model": "sonnet",
     "inputTokens": 1,
-    "cacheCreationInputTokens": 1983,
-    "cacheReadInputTokens": 88343,
+    "cacheCreationInputTokens": 1505,
+    "cacheReadInputTokens": 102495,
     "contextWindow": 200000,
-    "contextTokens": 90327,
-    "percentage": 45,
+    "contextTokens": 104001,
+    "percentage": 52,
     "contextWindowIsAuthoritative": true
   }
 }
