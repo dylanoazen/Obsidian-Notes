@@ -1,0 +1,24 @@
+{
+  "id": "conv-1779381106935-z58j6uyrq",
+  "providerId": "claude",
+  "title": "Review submission",
+  "titleGenerationStatus": "success",
+  "createdAt": 1779381106938,
+  "updatedAt": 1779381127397,
+  "lastResponseAt": 1779381114821,
+  "sessionId": "37027972-3312-4e11-ad72-e23bded638ea",
+  "providerState": {
+    "providerSessionId": "37027972-3312-4e11-ad72-e23bded638ea"
+  },
+  "currentNote": "Heroku/Heroku.md",
+  "usage": {
+    "model": "haiku",
+    "inputTokens": 10,
+    "cacheCreationInputTokens": 25879,
+    "cacheReadInputTokens": 0,
+    "contextWindow": 200000,
+    "contextTokens": 25889,
+    "percentage": 13,
+    "contextWindowIsAuthoritative": true
+  }
+}

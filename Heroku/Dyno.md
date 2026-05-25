@@ -1,0 +1,1 @@
+A dyno is a like a small virtualized Unix container that contains your build artifact in its file system.
