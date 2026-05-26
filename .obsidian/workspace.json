@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "GO/ExpirationTTL.md",
+                "file": "DistributedSystems/Replication.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "ExpirationTTL"
+              "title": "Replication"
             }
           },
           {
@@ -198,9 +198,21 @@
               "icon": "git-pull-request",
               "title": "Source Control"
             }
+          },
+          {
+            "id": "e7a2a0952893afed",
+            "type": "leaf",
+            "state": {
+              "type": "file-properties",
+              "state": {
+                "file": "DistributedSystems/Replication.md"
+              },
+              "icon": "lucide-info",
+              "title": "Propriedades do arquivo Replication"
+            }
           }
         ],
-        "currentTab": 5
+        "currentTab": 6
       }
     ],
     "direction": "horizontal",
@@ -219,45 +231,45 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "731609aa74ea171a",
+  "active": "d0572d1eb43b32fb",
   "lastOpenFiles": [
-    "GO/Replication.md",
-    "Sem título.md",
-    "GO/ExpirationTTL.md",
-    "GO/Persistence.md",
+    "DistributedSystems/DistributedSystems.md",
+    "DistributedSystems/DataStructures.md",
     "GO/Keywords.md",
+    "DistributedSystems/Persistence.md",
+    "DistributedSystems/Persistence.md",
+    "GO/Semantics.md",
+    "GO/Methods.md",
+    "GO/GO.md",
+    "DistributedSystems/ExpirationTTL.md",
+    "DistributedSystems/Replication.md",
+    "Sem título.md",
+    "DistributedSystems",
+    "DistributedSystems/Concurrency.md",
+    "GO/Replication.md",
     "GO/Persistence.md.tmp.169.8b06156c3c66",
-    "GO/Concurrency.md",
     "GO/Keywords.md.tmp.169.cb1201f28cc4",
-    "GO/DataStructures.md",
     "GO/Concurrency.md.tmp.169.36ba96a2650c",
     "Network/UDP.md",
     "Network/Protocols.md.tmp.169.877274264260",
     "Network/TCP.md.tmp.169.46ae4fcf925e",
     "Network/Framing.md",
     "Network/Framing.md.tmp.169.c9d20e27de0f",
-    "GO/Docker/Docker.md",
+    "Docker/Docker.md",
     "GO/Docker/Docker.md.tmp.169.dcdc47bcf604",
     "Network/Protocols.md.tmp.169.0360a198297b",
     "Network/Protocols.md.tmp.169.733df86a469f",
-    "GO/Docker",
-    "GO/Methods.md",
     "GO/Packages/Net.md",
     "GO/Packages/Bufio.md",
-    "GO/Semantics.md",
     "Network/Protocols.md",
     "GO/Functions.md",
     "GO/Structs.md",
     "Heroku/Heroku.md",
     "Network/TCP.md",
     "().md",
-    "GO/GO.md",
     "GO/libraries/TCP.md",
     "Heroku/Dyno.md",
     "Sem título.canvas",
-    "Pasted image 20260520113020.png",
-    "TCP.md",
-    "TCP-in-GOLANG.md",
-    "Carta Helena.md"
+    "Pasted image 20260520113020.png"
   ]
 }

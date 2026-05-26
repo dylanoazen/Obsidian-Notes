@@ -26,6 +26,10 @@ Inside a module, the code is organized into packages.
 [Net](Net.md)
 [Bufio](Bufio.md)
 
+### Exported Identifiers
+
+- Functions with uppercase names are exported (public) and can be imported from other packages.
+
 ##About GO
 [Semantics](GO/Semantics)
 [Structs](GO/Structs)
