@@ -25,14 +25,10 @@
             "id": "b42ddd8181bf8fdf",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "DistributedSystems/Performance.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "Performance"
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Visualização em gráfico"
             }
           }
         ],
@@ -69,7 +65,7 @@
               "type": "search",
               "state": {
                 "query": "",
-                "matchingCase": false,
+                "matchingCase": true,
                 "explainSearch": false,
                 "collapseAll": false,
                 "extraContext": false,
@@ -89,7 +85,8 @@
               "title": "Marcadores"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "horizontal",
@@ -186,8 +183,8 @@
             "state": {
               "type": "claudian-view",
               "state": {},
-              "icon": "bot",
-              "title": "Claudian"
+              "icon": "lucide-ghost",
+              "title": "claudian-view"
             }
           },
           {
@@ -234,8 +231,11 @@
   },
   "active": "b42ddd8181bf8fdf",
   "lastOpenFiles": [
-    "DistributedSystems/SecurityAuth.md",
+    "Docker/Docker.md",
+    "Network/Nginx.md",
+    "Network/Nginx.md.tmp.377.6f562c1f44d5",
     "DistributedSystems/Performance.md",
+    "DistributedSystems/SecurityAuth.md",
     "Sem título.md",
     "DistributedSystems/DataStructures.md",
     "DistributedSystems/Kubernetes.md",
@@ -262,14 +262,11 @@
     "Network/Protocols.md.tmp.169.877274264260",
     "Network/TCP.md.tmp.169.46ae4fcf925e",
     "Network/Framing.md.tmp.169.c9d20e27de0f",
-    "Docker/Docker.md",
     "GO/Docker/Docker.md.tmp.169.dcdc47bcf604",
     "Network/Protocols.md.tmp.169.0360a198297b",
-    "Network/Protocols.md.tmp.169.733df86a469f",
     "GO/Packages/Net.md",
     "GO/Packages/Bufio.md",
     "Network/Protocols.md",
-    "GO/Functions.md",
     "Sem título.canvas",
     "Pasted image 20260520113020.png"
   ]
