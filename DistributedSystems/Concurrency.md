@@ -4,6 +4,76 @@ Concurrency is the ability to handle multiple tasks at the same time — or at l
 
 ---
 
+## Hardware Threads vs Software Threads
+
+These are two completely different things that share the same name — a common source of confusion.
+
+### Hardware Threads — Fixed
+
+Hardware threads are physical — determined by your CPU. This is the true limit of what runs truly simultaneously.
+
+```
+4 cores × 2 threads per core (hyper-threading) = 8 hardware threads
+```
+
+At any given moment, only 8 things can truly run at the same time on this machine. This never changes — it is physical.
+
+### Software Threads — Unlimited
+
+Software threads are created by your program. You can create as many as you want:
+
+```go
+for i := 0; i < 10000; i++ {
+    go handleRequest()  // created 10,000 goroutines
+}
+```
+
+A web server can have thousands of software threads "running at the same time" on a machine with only 8 hardware threads.
+
+### The OS Scheduler — The Juggler
+
+The OS constantly switches which software thread runs on which hardware thread:
+
+```
+You have 8 "rails"
+You have 10,000 "trains"
+
+The OS keeps switching which train runs on which rail —
+so fast it looks like all trains are moving at once
+```
+
+```
+Moment 1:  [req1][req2][req3][req4][req5][req6][req7][req8]   ← 8 running
+req3 goes to fetch from DB → sleeps, frees the rail
+Moment 2:  [req1][req2][req9][req4][req5][req6][req7][req8]   ← req9 slotted in
+req1 finishes → frees the rail
+Moment 3:  [req10][req2][req9][req4][req5][req6][req7][req8]  ← req10 slotted in
+```
+
+### Why 8 Cores Can Handle 10,000 Connections
+
+Most software threads spend **more time sleeping than running**:
+
+```
+req1: received → fetched from DB (slept 10ms) → responded
+      |← CPU 0.1ms →|←——— sleeping 10ms ———→|← CPU 0.1ms →|
+```
+
+When a thread waits for the database, network, or disk — it is not using CPU. The OS puts another thread on that hardware thread while it waits. This is the key insight behind high-concurrency servers.
+
+### Parallelism vs Concurrency
+
+| | **Concurrency** | **Parallelism** |
+|---|---|---|
+| Definition | Dealing with many things at once | Doing many things at once |
+| Requires | Just a scheduler | Multiple hardware threads |
+| Example | 1 chef juggling 10 orders | 10 chefs each cooking 1 order |
+| Limited by | Design / scheduler | Hardware |
+
+> Concurrency is about structure. Parallelism is about execution.
+
+---
+
 ## Single-thread vs Multi-thread
 
 ### Single-thread
