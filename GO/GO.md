@@ -23,16 +23,20 @@ Inside a module, the code is organized into packages.
 
 
 ### Packages
-[Net](Net.md)
-[Bufio](Bufio.md)
+- [[GO/Packages/Net]]
+- [[GO/Packages/Bufio]]
 
 ### Exported Identifiers
 
 - Functions with uppercase names are exported (public) and can be imported from other packages.
 
-##About GO
-[Semantics](GO/Semantics)
-[Structs](GO/Structs)
+## Topics
+
+- [[GO/Semantics]]
+- [[GO/Structs]]
+- [[GO/Methods]]
+- [[GO/Keywords]]
+- [[GO/MemoryManagement]]
 
 #### My commentaries
 - The main reason for doing this is, for example, to avoid breaking an older version of a project using the Go project due to incompatibility of the new version

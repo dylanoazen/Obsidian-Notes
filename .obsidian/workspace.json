@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "DistributedSystems/Performance.md",
+                "file": "DistributedSystems/MemoryManagement.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Performance"
+              "title": "MemoryManagement"
             }
           }
         ]
@@ -219,11 +219,15 @@
   },
   "active": "284009537db8911d",
   "lastOpenFiles": [
+    "DistributedSystems/DistributedSystems.md",
+    "DistributedSystems/DataStructures.md",
+    "DistributedSystems/ExpirationTTL.md",
+    "DistributedSystems/Concurrency.md",
+    "DistributedSystems/Performance.md",
     "conflict-files-obsidian-git.md",
     "DistributedSystems/MemoryManagement.md",
     "Network/Nginx.md",
     "GO/MemoryManagement.md",
-    "DistributedSystems/Performance.md",
     "DistributedSystems/Persistence.md",
     "DistributedSystems/PubSub.md",
     "DistributedSystems/Kubernetes.md",
@@ -234,10 +238,6 @@
     "DistributedSystems/TransactionsPipeline.md",
     "DistributedSystems/SecurityAuth.md",
     "DistributedSystems/TLS.md",
-    "DistributedSystems/Concurrency.md",
-    "DistributedSystems/DataStructures.md",
-    "DistributedSystems/DistributedSystems.md",
-    "DistributedSystems/ExpirationTTL.md",
     "DistributedSystems/Replication.md",
     "Network/UDP.md",
     "Sem título.md",
