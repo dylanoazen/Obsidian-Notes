@@ -13,6 +13,7 @@
 - [ ] 🔵 [[GO/GO|Go (Golang)]]
 - [ ] 🟥 [[DistributedSystems/Redis|Redis]]
 - [ ] ⚡ [[DistributedSystems/DistributedSystems|Distributed Systems]]
+- [ ] ♻️ [[GO/GarbageCollector|Garbage Collector]]
 
 ## Infraestrutura
 
