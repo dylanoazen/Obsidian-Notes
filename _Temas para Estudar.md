@@ -1,7 +1,18 @@
 # 📚 Temas para Estudar
 
-> Índice gerado pelo Study Inbox
+> Índice do vault — atualizado pelo Study Inbox
 
 ## DevOps
 
-- [ ] 🔄 [[CICD/CICD|CI/CD - Continuous Integration / Continuous Delivery]]
+- [ ] 🔄 [[DevOps/CICD/CICD|CI/CD - Continuous Integration / Continuous Delivery]]
+- [ ] 🐳 [[DevOps/Docker/Docker|Docker]]
+- [ ] ☁️ [[DevOps/Heroku/Heroku|Heroku]]
+
+## Backend
+
+- [ ] 🔵 [[GO/GO|Go (Golang)]]
+- [ ] ⚡ [[DistributedSystems/DistributedSystems|Distributed Systems]]
+
+## Infraestrutura
+
+- [ ] 🌐 [[Network/Protocols|Network & Protocols]]
