@@ -11,9 +11,19 @@
 ## Backend
 
 - [ ] 🔵 [[GO/GO|Go (Golang)]]
+- [ ] ♻️ [[GO/GarbageCollector|Garbage Collector]]
 - [ ] 🟥 [[DistributedSystems/Redis|Redis]]
 - [ ] ⚡ [[DistributedSystems/DistributedSystems|Distributed Systems]]
-- [ ] ♻️ [[GO/GarbageCollector|Garbage Collector]]
+
+## Sistemas Operacionais
+
+- [ ] 🐧 [[Linux/Linux|Linux Internals]]
+- [ ] ⚙️ [[Linux/Kernel|Kernel]]
+- [ ] 🔀 [[Linux/ProcessManagement|Process Management]]
+- [ ] 🧠 [[Linux/MemoryManagement|Memory Management]]
+- [ ] 📂 [[Linux/FileSystem|File System]]
+- [ ] 🔌 [[Linux/SystemCalls|System Calls]]
+- [ ] 🌐 [[Linux/Networking|Linux Networking]]
 
 ## Infraestrutura
 
