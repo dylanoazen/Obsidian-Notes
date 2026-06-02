@@ -4,13 +4,14 @@
 
 ## DevOps
 
-- [ ] 🔄 [[DevOps/CICD/CICD|CI/CD - Continuous Integration / Continuous Delivery]]
+- [ ] 🔄 [[DevOps/CICD/CICD|CI/CD]]
 - [ ] 🐳 [[DevOps/Docker/Docker|Docker]]
 - [ ] ☁️ [[DevOps/Heroku/Heroku|Heroku]]
 
 ## Backend
 
 - [ ] 🔵 [[GO/GO|Go (Golang)]]
+- [ ] 🟥 [[DistributedSystems/Redis|Redis]]
 - [ ] ⚡ [[DistributedSystems/DistributedSystems|Distributed Systems]]
 
 ## Infraestrutura
