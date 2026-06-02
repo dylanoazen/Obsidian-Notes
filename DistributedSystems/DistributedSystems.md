@@ -4,15 +4,19 @@ Entry point for distributed systems topics.
 
 ---
 
+## Redis
+
+- [[DistributedSystems/Redis]]
+
 ## Topics
 
-- [[Replication]]
-- [[Persistence]]
-- [[PubSub]]
-- [[TransactionsPipeline]]
-- [[SecurityAuth]]
-- [[TLS]]
-- [[Performance]]
-- [[MemoryManagement]]
-- [[Concurrency]]
-- [[Kubernetes]]
+- [[DistributedSystems/Replication]]
+- [[DistributedSystems/Persistence]]
+- [[DistributedSystems/PubSub]]
+- [[DistributedSystems/TransactionsPipeline]]
+- [[DistributedSystems/SecurityAuth]]
+- [[DistributedSystems/TLS]]
+- [[DistributedSystems/Performance]]
+- [[DistributedSystems/MemoryManagement]]
+- [[DistributedSystems/Concurrency]]
+- [[DistributedSystems/Kubernetes]]
