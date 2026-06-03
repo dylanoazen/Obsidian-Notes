@@ -4,6 +4,170 @@ A data structure is a way of organizing and storing data so it can be accessed a
 
 ---
 
+## Redis Data Structures — When and Why
+
+Each structure exists to solve a specific problem. Choosing the wrong one means more código, mais lentidão, e soluções gambiarra.
+
+### String
+
+A estrutura mais simples — uma chave aponta pra um valor.
+
+Serve pra qualquer coisa que caiba num único valor: texto, número, JSON serializado, binário.
+
+```
+SET user:123:name "Dylan"
+SET user:123:age  "25"
+SET config:feature_flag "true"
+```
+
+**Casos de uso:**
+- Sessões de usuário
+- Contadores (`INCR visits:page:home`)
+- Feature flags
+- Cache de qualquer coisa
+
+**Analogia:** uma gaveta com etiqueta. Você abre pelo nome e tem uma coisa dentro.
+
+---
+
+### List
+
+Uma coleção **ordenada** onde a ordem de inserção importa. Suporta inserção e remoção eficiente nas duas pontas.
+
+```
+LPUSH fila:emails "email1"   ← insere no início
+RPUSH fila:emails "email2"   ← insere no final
+RPOP  fila:emails            ← remove do final (consome a fila)
+```
+
+**Casos de uso:**
+- Filas de jobs (LPUSH pra inserir, BRPOP pra consumir)
+- Histórico de atividade (últimas 10 ações do usuário)
+- Feed de notificações
+
+**Analogia:** uma fila de banco — quem chegou primeiro sai primeiro. Ou uma pilha de pratos — você empilha e desempilha pelo topo.
+
+---
+
+### Set
+
+Uma coleção de elementos **únicos sem ordem**. Duplicatas são ignoradas automaticamente.
+
+```
+SADD tags:post:1 "redis" "backend" "cache"
+SADD tags:post:1 "redis"   ← ignorado, já existe
+
+SMEMBERS tags:post:1       ← retorna todos
+SISMEMBER tags:post:1 "redis"  ← verifica se existe
+```
+
+Operações poderosas entre sets:
+```
+SUNION  set1 set2   ← união (tudo de ambos)
+SINTER  set1 set2   ← interseção (só o que está nos dois)
+SDIFF   set1 set2   ← diferença (o que está no set1 mas não no set2)
+```
+
+**Casos de uso:**
+- Tags de um post
+- Usuários online
+- Permissões de um usuário
+- Amigos em comum (SINTER entre dois sets de amigos)
+
+**Analogia:** uma sacola onde você joga itens — mas se jogar o mesmo item duas vezes, só fica um.
+
+---
+
+### Sorted Set (ZSet)
+
+Como o Set, mas cada membro tem uma **pontuação (score)**. Os membros ficam sempre ordenados pela pontuação automaticamente.
+
+```
+ZADD ranking:vendedores 1500 "Dylan"
+ZADD ranking:vendedores 3200 "Alice"
+ZADD ranking:vendedores 800  "Bob"
+
+ZRANGE ranking:vendedores 0 -1 WITHSCORES
+→ Bob: 800
+→ Dylan: 1500
+→ Alice: 3200
+```
+
+**Casos de uso:**
+- Placar de jogos (leaderboard)
+- Ranking de vendedores
+- Fila de prioridade (score = prioridade)
+- Rate limiting por tempo (score = timestamp)
+
+**Analogia:** uma competição com placar — você adiciona participantes com suas pontuações e o Redis mantém o ranking atualizado automaticamente.
+
+---
+
+### Hash
+
+Um mapa dentro de uma chave — em vez de um valor único, a chave guarda **múltiplos campos**.
+
+```
+HSET user:123 name "Dylan" age "25" city "São Paulo"
+
+HGET    user:123 name       ← "Dylan"
+HGETALL user:123            ← todos os campos
+HDEL    user:123 city       ← remove um campo
+```
+
+**Casos de uso:**
+- Perfil de usuário (vários campos numa chave só)
+- Dados de produto
+- Configurações de sessão
+
+**Sem Hash** você precisaria de uma chave pra cada campo:
+```
+user:123:name  "Dylan"
+user:123:age   "25"
+user:123:city  "São Paulo"
+```
+
+Com Hash, tudo numa chave só. Mais organizado e menos memória.
+
+**Analogia:** uma ficha de cadastro — tem campos diferentes (nome, idade, cidade) todos agrupados num único formulário.
+
+---
+
+### Stream
+
+Um log **append-only** — você só adiciona entradas, nunca edita ou remove. Cada entrada tem um ID com timestamp automático.
+
+```
+XADD eventos:pagamentos * user_id 123 valor 150.00 status "aprovado"
+XADD eventos:pagamentos * user_id 456 valor 89.90  status "recusado"
+
+XREAD COUNT 10 STREAMS eventos:pagamentos 0
+→ retorna as últimas 10 entradas
+```
+
+**Casos de uso:**
+- Event sourcing (log de tudo que aconteceu)
+- Fila de mensagens com múltiplos consumidores
+- Auditoria de ações
+- Integração entre serviços (parecido com Kafka, mas simples)
+
+**Analogia:** um livro de registro de portaria — você só escreve novas entradas, nunca apaga as antigas. Qualquer um pode ler o histórico completo.
+
+---
+
+### Resumo — Qual usar quando
+
+| Estrutura | Use quando |
+|---|---|
+| **String** | Um valor simples por chave — contador, sessão, flag |
+| **List** | Ordem importa — fila, histórico, feed |
+| **Set** | Unicidade importa — tags, permissões, amigos |
+| **Sorted Set** | Unicidade + ordem por pontuação — ranking, placar |
+| **Hash** | Múltiplos campos por chave — objeto, perfil |
+| **Stream** | Log imutável — eventos, auditoria, mensageria |
+
+---
+
 ## Study Order
 
 1. **String** — simple key/value

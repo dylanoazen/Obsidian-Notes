@@ -88,6 +88,85 @@ Client ──► Redis Server (single-threaded event loop)
 - **Job Queues**: lists with LPUSH/BRPOP pattern
 - **Session Store**: fast read/write for user sessions
 
+---
+
+## Session Management — How It Works in Practice
+
+Redis does not have tables or SQL. The "link" to the user is built into the key name itself:
+
+```
+key:   "session:token:abc32323"   ← identifies whose session it is
+value: "123"                       ← the user ID
+TTL:   3600 seconds                ← expires automatically
+```
+
+### Full Flow
+
+**Login:**
+```
+User logs in with correct password
+→ server generates a random token: "abc32323"
+→ SET session:token:abc32323 "123" EX 3600
+→ returns token to the browser (cookie/header)
+```
+
+**Every request:**
+```
+Browser sends token "abc32323"
+→ server asks Redis: GET session:token:abc32323
+→ Redis returns: "123" (the user ID)
+→ authenticated ✓
+
+If Redis returns nil → session expired or never existed → 401
+```
+
+**Logout:**
+```
+DEL session:token:abc32323
+→ next request: GET session:token:abc32323 → nil → not authenticated
+```
+
+### Middleware Pattern (PHP)
+
+The session check does not live inside each action — it lives in a single file included everywhere. One check runs before anything else on every protected page.
+
+```php
+// config.php — included in every protected page
+
+$redis = new Redis();
+$redis->connect('127.0.0.1', 6379);
+
+$token = $_COOKIE['token'] ?? null;
+
+if (!$token) {
+    header('Location: /login.php');
+    exit;
+}
+
+$user_id = $redis->get("session:token:$token");
+
+if (!$user_id) {
+    header('Location: /login.php');
+    exit;
+}
+
+// if we got here, $user_id is available for the entire page
+```
+
+Every protected page:
+```php
+<?php
+require_once 'config.php';  // ← check done, $user_id available
+
+// rest of the page normally
+echo "Welcome, user $user_id";
+?>
+```
+
+The login page is the only one that does **not** include this file — or includes it without the redirect, since the user does not have a session yet.
+
+> Redis does not notify you when a session expires — it just returns nil. Your application decides what to do: redirect to login, return 401, etc.
+
 ## Resources
 
 - https://redis.io/docs
