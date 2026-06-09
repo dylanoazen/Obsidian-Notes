@@ -14,6 +14,7 @@
 
 - [ ] 🔵 [[GO/GO|Go (Golang)]]
 - [ ] ♻️ [[GO/GarbageCollector|Garbage Collector]]
+- [ ] 🐘 [[PHP/PHP|PHP 8.1+ Libs Essenciais]]
 - [ ] 🟥 [[DistributedSystems/Redis|Redis]]
 - [ ] ⚡ [[DistributedSystems/DistributedSystems|Distributed Systems]]
 - [ ] 📦 [[Git/Git|Git Avançado]]
