@@ -368,6 +368,9 @@ php artisan octane:start --server=frankenphp
 
 ## Related
 
+- [[PHP/EventLoop]]
+- [[PHP/ReactPHP]]
+- [[PHP/Concurrency]]
 - [[DevOps/Docker/Docker]]
 - [[DevOps/CICD/CICD]]
 - [[Security/IAM]]

@@ -37,6 +37,7 @@ Inside a module, the code is organized into packages.
 - [[GO/Methods]]
 - [[GO/Keywords]]
 - [[GO/MemoryManagement]]
+- [[GO/Mutex]]
 - [[GO/GarbageCollector]]
 
 #### My commentaries
