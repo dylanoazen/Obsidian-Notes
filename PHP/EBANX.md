@@ -4,7 +4,7 @@ API bancária in-memory em PHP 8.1 + ReactPHP. Processo de longa duração, sem 
 
 Projeto: `~/Projects/testeEbanx`
 
-Related: [[PHP/ReactPHP]], [[PHP/EventLoop]], [[PHP/Testing]]
+Related: [[PHP/ReactPHP]], [[PHP/EventLoop]], [[PHP/Testing]], [[PHP/EBANX-Entrevista]]
 
 ---
 
