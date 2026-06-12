@@ -82,7 +82,7 @@ $server = new HttpServer(function (Psr\Http\Message\ServerRequestInterface $requ
     // Estado em memória é acessível aqui
     return new Response(200, ['Content-Type' => 'application/json'],
         json_encode(['status' => 'ok'])
-    );p
+    );
 });
 
 $socket = new SocketServer('0.0.0.0:8080');
