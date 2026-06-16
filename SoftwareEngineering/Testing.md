@@ -2,7 +2,7 @@
 
 PHPUnit, PEST, test doubles e como testar código de verdade — não testar mocks.
 
-Related: [[PHP/PHP]], [[PHP/SOLID]]
+Related: [[PHP/PHP]], [[SoftwareEngineering/SOLID]]
 
 ---
 
@@ -62,9 +62,9 @@ $service->transfer('A', 'B', 300);
 | Tipo | O que faz | Quando usar |
 |------|----------|-------------|
 | **Fake** | Implementação simplificada funcional | InMemoryRepo, SQLite in-memory |
-| **Stub** | Retorna valores pré-definidos | External API responses |
+| **Stub** | Retorna valores pré-definidos | Respostas de API externa |
 | **Mock** | Verifica se métodos foram chamados | Testar interações (email enviado?) |
-| **Spy** | Grava chamadas pra verificar depois | Logging, event dispatch |
+| **Spy** | Grava chamadas pra verificar depois | Logging, disparo de eventos |
 | **Dummy** | Preenche parâmetros, não é usado | Satisfazer type hints |
 
 ```php
@@ -137,7 +137,7 @@ it('rejects transfer with insufficient funds')
 
 ## Related
 
-- [[PHP/SOLID]]
+- [[SoftwareEngineering/SOLID]]
 - [[PHP/PHP]]
 - [[PHP/Concurrency]]
 

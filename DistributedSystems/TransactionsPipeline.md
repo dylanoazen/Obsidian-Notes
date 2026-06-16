@@ -1,37 +1,37 @@
 # Transactions & Pipeline
 
-Two mechanisms that control how multiple commands are sent and executed — but they solve different problems.
+Dois mecanismos que controlam como múltiplos comandos são enviados e executados — mas resolvem problemas diferentes.
 
 ---
 
-## The Problem They Solve
+## O Problema que Resolvem
 
-By default, every Redis command is independent:
+Por padrão, todo comando Redis é independente:
 
 ```
 SET balance 100   ← executes now
 SET balance 90    ← executes now, separately
 ```
 
-What if you need multiple commands to:
-- Execute together as a single unit? → **Transaction**
-- Be sent all at once without waiting? → **Pipeline**
+E se você precisar que múltiplos comandos:
+- Executem juntos como uma única unidade? → **Transaction**
+- Sejam enviados de uma vez sem esperar? → **Pipeline**
 
-### The Restaurant Analogy
+### A Analogia do Restaurante
 
-**Pipeline** — you write down 10 orders on a piece of paper and hand it all at once to the waiter, instead of calling him 10 separate times. You saved 9 trips.
+**Pipeline** — você anota 10 pedidos em um papel e entrega tudo de uma vez ao garçom, em vez de chamá-lo 10 vezes separadas. Você economizou 9 idas e vindas.
 
-**Transaction** — the waiter only brings the food when the drink is also ready. No drink, no food. Either everything arrives together or nothing arrives.
+**Transaction** — o garçom só traz a comida quando a bebida também estiver pronta. Sem bebida, sem comida. Ou tudo chega junto ou nada chega.
 
-**Both together** — you hand the waiter a list of orders *(pipeline)* and tell him "only bring it all when everything is ready" *(transaction)*.
+**Ambos juntos** — você entrega ao garçom uma lista de pedidos *(pipeline)* e diz "só traga quando tudo estiver pronto" *(transaction)*.
 
-> Pipeline solves the **delivery**. Transaction solves the **rule of execution**.
+> Pipeline resolve a **entrega**. Transaction resolve a **regra de execução**.
 
 ---
 
 ## Transactions
 
-A transaction groups multiple commands so they execute **atomically** — all or nothing, with no other client interrupting in between.
+Uma transaction agrupa múltiplos comandos para que executem **atomicamente** — tudo ou nada, sem que nenhum outro cliente interrompa no meio.
 
 ```
 MULTI         ← start transaction
@@ -40,78 +40,78 @@ SET log "deducted 10"
 EXEC          ← execute all at once
 ```
 
-### Atomicity
+### Atomicidade
 
-Atomicity means: **either all commands run, or none do.**
+Atomicidade significa: **ou todos os comandos rodam, ou nenhum roda.**
 
-If the server crashes mid-transaction, none of the commands take effect. No partial state.
+Se o servidor travar no meio de uma transaction, nenhum dos comandos tem efeito. Sem estado parcial.
 
-**Analogy:** a bank transfer — debit one account and credit another. If only the debit runs and the credit fails, the money disappears. Both must succeed or neither should happen.
+**Analogia:** uma transferência bancária — debitar uma conta e creditar outra. Se apenas o débito rodar e o crédito falhar, o dinheiro some. Ambos devem ter sucesso ou nenhum deve acontecer.
 
-### What Redis transactions guarantee
+### O que as transactions do Redis garantem
 
-- Commands between `MULTI` and `EXEC` are queued, not executed immediately
-- At `EXEC`, all queued commands run sequentially with no interruption from other clients
-- No other client can sneak a command between them
+- Comandos entre `MULTI` e `EXEC` são enfileirados, não executados imediatamente
+- No `EXEC`, todos os comandos enfileirados rodam sequencialmente sem interrupção de outros clientes
+- Nenhum outro cliente consegue inserir um comando entre eles
 
-### What Redis transactions do NOT guarantee
+### O que as transactions do Redis NÃO garantem
 
-- If one command inside the transaction fails (e.g. wrong type), the others still run — Redis does not roll back
-- This is different from SQL transactions which roll back everything on failure
+- Se um comando dentro da transaction falhar (ex.: tipo errado), os outros ainda rodam — Redis não faz rollback
+- Isso é diferente das transactions SQL que fazem rollback de tudo em caso de falha
 
 ---
 
 ## Pipeline
 
-A pipeline is about **network efficiency** — sending multiple commands to Redis in a single round trip instead of one by one.
+Um pipeline trata de **eficiência de rede** — enviar múltiplos comandos ao Redis em uma única ida e volta em vez de um por um.
 
 ```
-Without pipeline:
+Sem pipeline:
 [Client] → SET a 1 → [Redis] → OK → [Client] → SET b 2 → [Redis] → OK
 
-With pipeline:
+Com pipeline:
 [Client] → SET a 1 / SET b 2 / SET c 3 → [Redis] → OK / OK / OK
 ```
 
-### The round-trip problem
+### O problema da ida e volta
 
-Every command sent individually pays a round-trip cost:
-- Client sends command
-- Waits for Redis to respond
-- Then sends the next command
+Todo comando enviado individualmente paga um custo de ida e volta:
+- Cliente envia o comando
+- Espera o Redis responder
+- Então envia o próximo comando
 
-With 100 commands, you pay 100 round trips. With a pipeline, you pay 1.
+Com 100 comandos, você paga 100 idas e voltas. Com um pipeline, você paga 1.
 
 ```
-Without pipeline:
+Sem pipeline:
 GET user:1  → wait for response
 GET user:2  → wait for response
 GET user:3  → wait for response
-(3 round trips)
+(3 idas e voltas)
 
-With pipeline:
+Com pipeline:
 GET user:1
-GET user:2  → send all at once, receive all at once
+GET user:2  → envia tudo de uma vez, recebe tudo de uma vez
 GET user:3
-(1 round trip)
+(1 ida e volta)
 ```
 
-Redis is key-value — you already know exactly which key you want before asking. Pipeline just lets you ask for many keys at once without waiting between each one.
+Redis é key-value — você já sabe exatamente qual chave quer antes de perguntar. Pipeline apenas permite que você pergunte por muitas chaves de uma vez sem esperar entre cada uma.
 
 | | **SQL** | **Redis + Pipeline** |
 |---|---|---|
-| You say | "give me everyone with age > 18" | "give me keys user:1, user:2, user:3" |
-| You need to know | Just the condition | The exact keys upfront |
-| Pipeline helps | Does not apply | Send multiple fetches in one round trip |
+| Você diz | "me dê todo mundo com idade > 18" | "me dê as chaves user:1, user:2, user:3" |
+| Você precisa saber | Apenas a condição | As chaves exatas de antemão |
+| Pipeline ajuda | Não se aplica | Envia múltiplas buscas em uma ida e volta |
 
 ### Batching
 
-Batching is the act of grouping multiple commands to send together. Pipeline is how you implement batching in Redis.
+Batching é o ato de agrupar múltiplos comandos para enviar juntos. Pipeline é como você implementa batching no Redis.
 
-### What pipeline does NOT guarantee
+### O que pipeline NÃO garante
 
-- Commands in a pipeline are **not atomic** — other clients can execute commands between them
-- If the connection drops mid-pipeline, some commands may have run and others not
+- Comandos em um pipeline **não são atômicos** — outros clientes podem executar comandos entre eles
+- Se a conexão cair no meio do pipeline, alguns comandos podem ter rodado e outros não
 
 ---
 
@@ -119,17 +119,17 @@ Batching is the act of grouping multiple commands to send together. Pipeline is 
 
 | | **Transaction** | **Pipeline** |
 |---|---|---|
-| Purpose | Atomicity | Network efficiency |
-| Atomic? | Yes | No |
-| Reduces round trips? | No | Yes |
-| Commands queued? | On server | On client |
-| Other clients blocked? | Yes (during EXEC) | No |
+| Propósito | Atomicidade | Eficiência de rede |
+| Atômico? | Sim | Não |
+| Reduz idas e voltas? | Não | Sim |
+| Comandos enfileirados? | No servidor | No cliente |
+| Outros clientes bloqueados? | Sim (durante EXEC) | Não |
 
-They are complementary — you can use both at the same time: send a transaction through a pipeline.
+São complementares — você pode usar ambos ao mesmo tempo: enviar uma transaction por um pipeline.
 
 ---
 
-## Using Both Together
+## Usando Ambos Juntos
 
 ```
 [Client pipelines these commands in one round trip]
@@ -140,28 +140,28 @@ SET log "deducted 10"
 EXEC
 ```
 
-- Pipeline handles the **network** — one round trip
-- Transaction handles the **atomicity** — no interruptions
+- Pipeline cuida da **rede** — uma ida e volta
+- Transaction cuida da **atomicidade** — sem interrupções
 
 ---
 
-## Practical Examples
+## Exemplos Práticos
 
-**Transaction:** deducting balance and logging it — both must happen or neither should
-**Pipeline:** loading a user profile that requires 5 GET commands — send all 5 at once, receive all 5 responses at once
-
----
-
-## Design Notes
-
-- Redis is single-threaded for command execution — transactions work because nothing else runs between MULTI and EXEC
-- Pipeline is a client-side optimization — the client buffers commands and flushes them together
-- For true rollback behavior (like SQL), Redis is not the right tool
-- WATCH command can be used before MULTI to abort a transaction if a key was modified by another client (optimistic locking)
+**Transaction:** deduzir saldo e registrar o log — ambos devem acontecer ou nenhum
+**Pipeline:** carregar um perfil de usuário que requer 5 comandos GET — envia todos os 5 de uma vez, recebe todas as 5 respostas de uma vez
 
 ---
 
-## Related Notes
+## Notas de Design
+
+- Redis é single-threaded para execução de comandos — transactions funcionam porque nada mais roda entre MULTI e EXEC
+- Pipeline é uma otimização do lado do cliente — o cliente armazena os comandos em buffer e os envia juntos
+- Para comportamento de rollback verdadeiro (como SQL), Redis não é a ferramenta certa
+- O comando WATCH pode ser usado antes do MULTI para abortar uma transaction se uma chave foi modificada por outro cliente (locking otimista)
+
+---
+
+## Notas Relacionadas
 
 - [[Replication]]
 - [[PubSub]]

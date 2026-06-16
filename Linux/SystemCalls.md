@@ -1,12 +1,12 @@
 # System Calls
 
-System calls (syscalls) are the interface between user space and kernel space. Every time your program needs the kernel to do something — read a file, allocate memory, send a packet — it makes a syscall.
+System calls (syscalls) são a interface entre o user space e o kernel space. Toda vez que seu programa precisa que o kernel faça algo — ler um arquivo, alocar memória, enviar um pacote — ele faz uma syscall.
 
 Related: [[Linux/Kernel]]
 
 ---
 
-## How a Syscall Works
+## Como uma Syscall Funciona
 
 ```
 User space program
@@ -24,24 +24,24 @@ User space program
     └── CPU returns to Ring 3 → program continues
 ```
 
-The context switch (user → kernel → user) costs ~100-1000ns. That's why minimizing syscalls matters for performance.
+O context switch (user → kernel → user) custa ~100-1000ns. Por isso minimizar syscalls importa para a performance.
 
-## Common Syscalls
+## Syscalls Comuns
 
-| Syscall | Purpose |
-|---------|---------|
-| `read` / `write` | I/O on file descriptors |
-| `open` / `close` | Open / close files |
-| `fork` | Create child process |
-| `execve` | Execute a program |
-| `mmap` / `munmap` | Map memory |
-| `brk` | Expand heap |
-| `socket` / `bind` / `listen` / `accept` | Networking |
-| `clone` | Create thread or process (used by fork internally) |
-| `ioctl` | Device-specific operations |
+| Syscall | Propósito |
+|---------|-----------|
+| `read` / `write` | I/O em file descriptors |
+| `open` / `close` | Abrir / fechar arquivos |
+| `fork` | Criar processo filho |
+| `execve` | Executar um programa |
+| `mmap` / `munmap` | Mapear memória |
+| `brk` | Expandir o heap |
+| `socket` / `bind` / `listen` / `accept` | Redes |
+| `clone` | Criar thread ou processo (usado internamente pelo fork) |
+| `ioctl` | Operações específicas de dispositivo |
 | `epoll_create` / `epoll_wait` | I/O multiplexing (event loops) |
 
-## Tracing Syscalls
+## Rastreando Syscalls
 
 ```bash
 # Trace all syscalls of a command
@@ -62,7 +62,7 @@ strace -t -e trace=network curl example.com
 
 ## I/O Multiplexing
 
-How servers handle thousands of connections without thousands of threads:
+Como servidores lidam com milhares de conexões sem milhares de threads:
 
 ```
 select()     → oldest, limited to 1024 fds
@@ -84,5 +84,5 @@ epoll workflow:
 - [[Linux/ProcessManagement]]
 - [[Linux/Networking]]
 
-#### My commentaries
+#### Meus comentários
 - 

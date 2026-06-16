@@ -1,20 +1,20 @@
 # Process Management
 
-How Linux creates, schedules, and manages processes and threads.
+Como o Linux cria, escalonai e gerencia processos e threads.
 
 Related: [[Linux/Kernel]]
 
 ---
 
-## What is a Process?
+## O que é um Processo?
 
-A process is a running instance of a program. Each process has:
+Um processo é uma instância em execução de um programa. Cada processo possui:
 
-- **PID**: unique process ID
-- **Address space**: its own virtual memory (isolated from others)
-- **File descriptors**: open files, sockets, pipes
+- **PID**: identificador único do processo
+- **Address space**: sua própria memória virtual (isolada dos demais)
+- **File descriptors**: arquivos abertos, sockets, pipes
 - **Credentials**: UID, GID, capabilities
-- **State**: running, sleeping, stopped, zombie
+- **Estado**: running, sleeping, stopped, zombie
 
 ```bash
 # View processes
@@ -26,9 +26,9 @@ htop
 pstree -p
 ```
 
-## Process Creation — fork() and exec()
+## Criação de Processos — fork() e exec()
 
-Linux creates new processes in two steps:
+O Linux cria novos processos em duas etapas:
 
 ```
 Parent process
@@ -41,9 +41,9 @@ Parent process
          └── exec()  →  replaces the child's memory with a new program
 ```
 
-- `fork()` is cheap thanks to **copy-on-write** (COW): memory pages are shared until one process modifies them
-- `exec()` loads a new binary into the process address space
-- PID 1 (`init`/`systemd`) is the ancestor of all processes
+- `fork()` é barato graças ao **copy-on-write** (COW): as páginas de memória são compartilhadas até que um processo as modifique
+- `exec()` carrega um novo binário no address space do processo
+- O PID 1 (`init`/`systemd`) é o ancestral de todos os processos
 
 ```c
 pid_t pid = fork();
@@ -56,7 +56,7 @@ if (pid == 0) {
 }
 ```
 
-## Process States
+## Estados de Processo
 
 ```
          ┌──── Running (R) ◄───── Scheduled by CPU
@@ -71,14 +71,14 @@ New ────►├──── Sleeping (S) ◄──── Waiting for I/O 
          └──── Zombie (Z) ◄────── Finished but parent hasn't called wait()
 ```
 
-## The Scheduler — CFS
+## O Scheduler — CFS
 
-Linux uses the **Completely Fair Scheduler** (CFS):
+O Linux usa o **Completely Fair Scheduler** (CFS):
 
-- Goal: give every process a fair share of CPU time
-- Uses a **red-black tree** ordered by "virtual runtime" (vruntime)
-- Process with lowest vruntime runs next
-- Nice values (-20 to +19) adjust priority: lower = more CPU time
+- Objetivo: dar a cada processo uma fatia justa do tempo de CPU
+- Usa uma **red-black tree** ordenada por "virtual runtime" (vruntime)
+- O processo com o menor vruntime executa em seguida
+- Valores de nice (-20 a +19) ajustam a prioridade: menor = mais tempo de CPU
 
 ```bash
 # Run with modified priority
@@ -88,16 +88,16 @@ nice -n 10 ./my_script.sh
 renice -n 5 -p 1234
 ```
 
-## Threads vs Processes
+## Threads vs Processos
 
-- **Thread**: lightweight, shares memory with other threads in same process
-- **Process**: heavyweight, isolated memory via fork()
-- In Linux, threads are actually processes that share address space (created via `clone()`)
-- Each thread has its own stack but shares heap, file descriptors, etc.
+- **Thread**: leve, compartilha memória com outras threads do mesmo processo
+- **Processo**: pesado, memória isolada via fork()
+- No Linux, threads são na verdade processos que compartilham address space (criados via `clone()`)
+- Cada thread tem sua própria stack mas compartilha heap, file descriptors, etc.
 
 ## Signals
 
-Signals are software interrupts sent to processes:
+Signals são interrupções de software enviadas a processos:
 
 ```bash
 kill -SIGTERM 1234    # graceful shutdown request
@@ -107,20 +107,20 @@ kill -SIGSTOP 1234    # pause process
 kill -SIGCONT 1234    # resume process
 ```
 
-| Signal | Number | Default Action | Catchable? |
-|--------|--------|---------------|------------|
-| SIGTERM | 15 | Terminate | Yes |
-| SIGKILL | 9 | Kill | No |
-| SIGINT | 2 | Interrupt (Ctrl+C) | Yes |
-| SIGSEGV | 11 | Segfault | Yes |
-| SIGCHLD | 17 | Child stopped/exited | Yes |
+| Signal | Número | Ação Padrão | Interceptável? |
+|--------|--------|-------------|----------------|
+| SIGTERM | 15 | Encerrar | Sim |
+| SIGKILL | 9 | Matar | Não |
+| SIGINT | 2 | Interromper (Ctrl+C) | Sim |
+| SIGSEGV | 11 | Segfault | Sim |
+| SIGCHLD | 17 | Filho parou/encerrou | Sim |
 
-## Namespaces and cgroups
+## Namespaces e cgroups
 
-Foundation of containers ([[DevOps/Docker/Docker]]):
+Fundação de containers ([[DevOps/Docker/Docker]]):
 
-- **Namespaces**: isolate what a process can see (PID, network, mount, user, etc.)
-- **cgroups**: limit what a process can use (CPU, memory, I/O bandwidth)
+- **Namespaces**: isolam o que um processo pode ver (PID, rede, mount, usuário, etc.)
+- **cgroups**: limitam o que um processo pode usar (CPU, memória, largura de banda de I/O)
 
 ```bash
 # View namespaces of a process
@@ -136,5 +136,5 @@ cat /proc/1/cgroup
 - [[Linux/SystemCalls]]
 - [[Linux/Kernel]]
 
-#### My commentaries
+#### Meus comentários
 - 

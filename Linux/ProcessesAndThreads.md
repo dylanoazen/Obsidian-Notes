@@ -87,8 +87,8 @@ User Thread 3 ──► Kernel Thread 3 ──► CPU
 ```
 
 - Cada user thread = um kernel thread
-- Usado por: Linux pthreads, Java (modern), Rust
-- Pro: true parallelism, preemptive scheduling
+- Usado por: Linux pthreads, Java (moderno), Rust
+- Pro: paralelismo real, escalonamento preemptivo
 - Con: caro criar muitas (stack ~2-8MB cada), context switch via kernel
 
 ### N:1 (User-level threads / Green threads)
@@ -135,8 +135,8 @@ User Thread 4 ┘         └──► Kernel Thread 2 ──► CPU core 2
      CPU 1  CPU 2
 ```
 
-- **G** (Goroutine): lightweight task, ~2KB stack (grows dynamically)
-- **P** (Processor): logical processor, limited by GOMAXPROCS
+- **G** (Goroutine): tarefa leve, stack de ~2KB (cresce dinamicamente)
+- **P** (Processor): processador lógico, limitado por GOMAXPROCS
 - **M** (Machine): OS thread
 
 ```go
@@ -312,11 +312,11 @@ strace -f -p <pid>            # -f follows child threads
 - [[GO/GarbageCollector]]
 - [[DistributedSystems/Concurrency]]
 
-## Resources
+## Recursos
 
-- https://pages.cs.wisc.edu/~remzi/OSTEP/ (Operating Systems: Three Easy Pieces — free)
-- Linux Programming Interface — Michael Kerrisk (book)
-- https://go.dev/blog/waza-talk (Go concurrency patterns)
+- https://pages.cs.wisc.edu/~remzi/OSTEP/ (Operating Systems: Three Easy Pieces — gratuito)
+- Linux Programming Interface — Michael Kerrisk (livro)
+- https://go.dev/blog/waza-talk (padrões de concorrência em Go)
 
-#### My commentaries
+#### Meus comentários
 - 

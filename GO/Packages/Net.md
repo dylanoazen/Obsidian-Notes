@@ -1,6 +1,6 @@
 # Net
 
-The `net` package provides a portable interface for network I/O, including TCP/UDP, IP addresses, DNS lookups, and connection handling.
+O package `net` fornece uma interface portável para I/O de rede, incluindo TCP/UDP, endereços IP, lookups de DNS e gerenciamento de conexões.
 
 ## Importing
 
@@ -14,7 +14,7 @@ import "net"
 
 ### Conn
 
-Represents a network connection ([[TCP]]/[[UDP]]).
+Representa uma conexão de rede ([[TCP]]/[[UDP]]).
 
 Methods:
 - [[Methods#Read|Read]]
@@ -30,7 +30,7 @@ Methods:
 
 ### Listener
 
-Listens for incoming connections.
+Escuta conexões de entrada.
 
 Methods:
 - [[Methods#Accept|Accept]]
@@ -41,7 +41,7 @@ Methods:
 
 ### PacketConn
 
-Represents a packet-oriented network connection (used with UDP).
+Representa uma conexão de rede orientada a pacotes (usada com UDP).
 
 Methods:
 - [[Methods#ReadFrom|ReadFrom]]
@@ -52,26 +52,26 @@ Methods:
 
 ---
 
-## Functions
+## Funções
 
-This is a summary of the most important functions available in the Net package. For the full list, see the [official documentation](https://pkg.go.dev/net).
+Este é um resumo das funções mais importantes disponíveis no package Net. Para a lista completa, veja a [documentação oficial](https://pkg.go.dev/net).
 
 ---
 
 ### Dialing & Listening
 
 #### Listen
-Creates a listener for TCP or Unix sockets.
+Cria um listener para sockets TCP ou Unix.
 ```go
 ln, err := net.Listen("tcp", ":8080")
 ```
 
-> Every time you open a server, if you want to handle the `\n` character, you need to use the [[Bufio]] package.
+> Toda vez que você abrir um servidor, se quiser tratar o caractere `\n`, você precisa usar o package [[Bufio]].
 
 ---
 
 #### ListenPacket
-Creates a packet connection for UDP.
+Cria uma conexão de pacotes para UDP.
 ```go
 conn, err := net.ListenPacket("udp", ":9000")
 ```
@@ -79,7 +79,7 @@ conn, err := net.ListenPacket("udp", ":9000")
 ---
 
 #### Dial
-Connects to a remote address. If **Listen** is the "ears" waiting for connections, **Dial** is the "mouth" that initiates a connection.
+Conecta a um endereço remoto. Se **Listen** é os "ouvidos" esperando por conexões, **Dial** é a "boca" que inicia uma conexão.
 ```go
 conn, err := net.Dial("tcp", "localhost:8080")
 ```
@@ -87,7 +87,7 @@ conn, err := net.Dial("tcp", "localhost:8080")
 ---
 
 #### DialTimeout
-Like `Dial`, but cancels if the connection takes too long.
+Como `Dial`, mas cancela se a conexão demorar demais.
 ```go
 conn, err := net.DialTimeout("tcp", "localhost:8080", 3*time.Second)
 ```
@@ -97,7 +97,7 @@ conn, err := net.DialTimeout("tcp", "localhost:8080", 3*time.Second)
 ### DNS & Name Resolution
 
 #### LookupHost
-Returns the IP addresses for a given hostname.
+Retorna os endereços IP para um dado hostname.
 ```go
 addrs, err := net.LookupHost("google.com")
 // ["142.250.185.46", ...]
@@ -108,7 +108,7 @@ addrs, err := net.LookupHost("google.com")
 ### IP Utilities
 
 #### ParseIP
-Parses an IP address string into an `IP` type.
+Faz o parse de uma string de endereço IP para o tipo `IP`.
 ```go
 ip := net.ParseIP("192.168.0.1")
 ```
@@ -118,7 +118,7 @@ ip := net.ParseIP("192.168.0.1")
 ### Error Handling
 
 #### net.ErrClosed
-Returned when you try to use a connection or listener that has already been closed.
+Retornado quando você tenta usar uma conexão ou listener que já foi fechado.
 ```go
 if errors.Is(err, net.ErrClosed) {
     // connection was already closed

@@ -1,21 +1,21 @@
 # Pub/Sub
 
-Pub/Sub (Publish/Subscribe) is a messaging pattern where senders (**publishers**) do not send messages directly to receivers. Instead, they publish messages to a **channel**, and any interested party (**subscriber**) receives them.
+Pub/Sub (Publish/Subscribe) é um padrão de mensageria onde os remetentes (**publishers**) não enviam mensagens diretamente para os receptores. Em vez disso, publicam mensagens em um **channel**, e qualquer parte interessada (**subscriber**) as recebe.
 
 ---
 
-## Core Terms
+## Termos Principais
 
-- **Publisher:** the one who sends a message to a channel.
-- **Subscriber:** the one who listens to a channel and receives messages.
-- **Channel:** the named pipe through which messages flow.
-- **Message:** the data published to a channel.
-- **Fanout:** when one message is delivered to multiple subscribers at once.
-- **Broker:** the middleman that manages channels and routes messages (e.g. Redis, Kafka).
+- **Publisher:** quem envia uma mensagem para um channel.
+- **Subscriber:** quem escuta um channel e recebe mensagens.
+- **Channel:** o canal nomeado pelo qual as mensagens fluem.
+- **Message:** os dados publicados em um channel.
+- **Fanout:** quando uma mensagem é entregue a múltiplos subscribers de uma vez.
+- **Broker:** o intermediário que gerencia channels e roteia mensagens (ex.: Redis, Kafka).
 
 ---
 
-## How it Works
+## Como Funciona
 
 ```
 Publisher → [channel: "orders"] → Subscriber A
@@ -23,51 +23,51 @@ Publisher → [channel: "orders"] → Subscriber A
                                 → Subscriber C
 ```
 
-1. Subscriber A, B, and C subscribe to the channel `"orders"`
-2. Publisher sends a message to `"orders"`
-3. All three subscribers receive the message simultaneously
+1. Subscriber A, B e C se inscrevem no channel `"orders"`
+2. Publisher envia uma mensagem para `"orders"`
+3. Os três subscribers recebem a mensagem simultaneamente
 
-The publisher does not know who is listening — it just publishes.
-The subscribers do not know who is publishing — they just listen.
+O publisher não sabe quem está escutando — apenas publica.
+Os subscribers não sabem quem está publicando — apenas escutam.
 
 ---
 
 ## Fanout
 
-Fanout is when **one message reaches multiple subscribers** at the same time.
+Fanout é quando **uma mensagem chega a múltiplos subscribers** ao mesmo tempo.
 
-This is the default behavior in Pub/Sub — every subscriber on the channel gets a copy of the message.
+Esse é o comportamento padrão no Pub/Sub — todo subscriber do channel recebe uma cópia da mensagem.
 
 ```
-1 message published → N subscribers receive it
+1 mensagem publicada → N subscribers a recebem
 ```
 
-Fanout is useful when multiple parts of your system need to react to the same event independently.
+Fanout é útil quando múltiplas partes do seu sistema precisam reagir ao mesmo evento de forma independente.
 
 ---
 
-## Pub/Sub vs Direct Messaging
+## Pub/Sub vs Mensageria Direta
 
-| | **Direct (REST/queue)** | **Pub/Sub** |
+| | **Direta (REST/queue)** | **Pub/Sub** |
 |---|---|---|
-| Sender knows receiver? | Yes | No |
-| One message → many receivers? | No | Yes |
-| Coupling | Tight | Loose |
-| Example | HTTP request | Event notification |
+| Remetente conhece o receptor? | Sim | Não |
+| Uma mensagem → muitos receptores? | Não | Sim |
+| Acoplamento | Forte | Fraco |
+| Exemplo | Requisição HTTP | Notificação de evento |
 
 ---
 
-## Practical Examples
+## Exemplos Práticos
 
-- **Order placed** → notify inventory service, billing service, and email service at the same time
-- **User signed up** → trigger welcome email, analytics event, and onboarding flow independently
-- **Price updated** → all connected clients receive the new price in real time
+- **Pedido realizado** → notifica o serviço de estoque, serviço de cobrança e serviço de e-mail ao mesmo tempo
+- **Usuário cadastrado** → dispara e-mail de boas-vindas, evento de analytics e fluxo de onboarding de forma independente
+- **Preço atualizado** → todos os clientes conectados recebem o novo preço em tempo real
 
 ---
 
-## Pub/Sub in Redis
+## Pub/Sub no Redis
 
-Redis has native Pub/Sub support:
+Redis tem suporte nativo a Pub/Sub:
 
 ```
 # Subscriber listens to a channel
@@ -77,24 +77,24 @@ SUBSCRIBE orders
 PUBLISH orders "new order: #123"
 ```
 
-Redis delivers the message to all active subscribers instantly.
+Redis entrega a mensagem a todos os subscribers ativos instantaneamente.
 
-**Important:** Redis Pub/Sub is **fire and forget** — if a subscriber is offline when the message is published, it misses it. There is no persistence, no backlog.
+**Importante:** Pub/Sub no Redis é **fire and forget** — se um subscriber estiver offline quando a mensagem for publicada, ele a perde. Não há persistência, nem backlog.
 
-## How Applications Read from Redis
+## Como Aplicações Leem do Redis
 
-There are two different models — do not confuse them:
+Existem dois modelos diferentes — não confunda:
 
-**Normal read (cache/GET)** — the application actively queries Redis:
+**Leitura normal (cache/GET)** — a aplicação consulta o Redis ativamente:
 
 ```
 [Backend]  →  GET user:123
 [Redis]    →  returns the value
 ```
 
-The application asks, Redis answers. The application controls when to fetch.
+A aplicação pergunta, o Redis responde. A aplicação controla quando buscar.
 
-**Pub/Sub** — the application stays connected and Redis pushes messages to it:
+**Pub/Sub** — a aplicação permanece conectada e o Redis empurra mensagens para ela:
 
 ```
 [Backend]  →  SUBSCRIBE orders
@@ -103,29 +103,29 @@ The application asks, Redis answers. The application controls when to fetch.
 [Redis]    →  message arrives → pushes to backend
 ```
 
-The application does not ask repeatedly — it just listens and reacts when something arrives.
+A aplicação não pergunta repetidamente — apenas escuta e reage quando algo chega.
 
-| | **Normal read** | **Pub/Sub** |
+| | **Leitura normal** | **Pub/Sub** |
 |---|---|---|
-| Who initiates | Application | Redis |
-| Model | Pull | Push |
-| When to use | Fetch a specific value | React to events in real time |
+| Quem inicia | Aplicação | Redis |
+| Modelo | Pull | Push |
+| Quando usar | Buscar um valor específico | Reagir a eventos em tempo real |
 
-> In cache you go fetch the data. In Pub/Sub the data comes to you when it happens.
+> No cache você vai buscar os dados. No Pub/Sub os dados vêm até você quando acontecem.
 
 ## Pub/Sub vs Replication
 
-These are completely separate mechanisms in Redis — a common source of confusion:
+Esses são mecanismos completamente separados no Redis — uma fonte comum de confusão:
 
 | | **Replication** | **Pub/Sub** |
 |---|---|---|
-| Purpose | Sync data between Redis nodes | Dispatch messages between your services |
-| Who uses it | Redis internally | Your application |
-| What travels | Write commands | Custom messages |
-| Subscriber is | A Redis replica | Your backend/service |
+| Propósito | Sincronizar dados entre nós Redis | Despachar mensagens entre seus serviços |
+| Quem usa | Redis internamente | Sua aplicação |
+| O que trafega | Comandos de escrita | Mensagens customizadas |
+| O subscriber é | Uma réplica Redis | Seu backend/serviço |
 
-Replication is internal to Redis — the primary streams commands to replicas automatically.
-Pub/Sub is for your application — your services publish and subscribe to communicate with each other.
+Replication é interno ao Redis — o primary transmite comandos para as réplicas automaticamente.
+Pub/Sub é para sua aplicação — seus serviços publicam e se inscrevem para se comunicar entre si.
 
 ```
 [Order Service]  →  PUBLISH orders "new order #123"
@@ -136,31 +136,31 @@ Pub/Sub is for your application — your services publish and subscribe to commu
    [Inventory]         [Billing]          [Email]
 ```
 
-Redis acts as the **messenger** between your services — not between its own replicas.
+Redis age como o **mensageiro** entre seus serviços — não entre suas próprias réplicas.
 
 ---
 
-## Fire and Forget — The Main Limitation
+## Fire and Forget — A Limitação Principal
 
-Unlike replication (which has a backlog and can catch up), Pub/Sub in Redis does not store messages.
+Ao contrário da replication (que tem um backlog e consegue se recuperar), Pub/Sub no Redis não armazena mensagens.
 
-- Subscriber online → receives the message ✓
-- Subscriber offline → message is lost ✗
+- Subscriber online → recebe a mensagem ✓
+- Subscriber offline → mensagem é perdida ✗
 
-If you need guaranteed delivery, you need a different tool (e.g. Redis Streams, Kafka).
-
----
-
-## Design Notes
-
-- Pub/Sub decouples producers from consumers — they do not need to know about each other
-- Great for real-time notifications, live updates, and event broadcasting
-- Not suitable when message delivery must be guaranteed
-- Channel names are just strings — no schema, no enforced structure
+Se você precisa de entrega garantida, precisa de uma ferramenta diferente (ex.: Redis Streams, Kafka).
 
 ---
 
-## Related Notes
+## Notas de Design
+
+- Pub/Sub desacopla produtores de consumidores — eles não precisam se conhecer
+- Excelente para notificações em tempo real, atualizações ao vivo e broadcasting de eventos
+- Não é adequado quando a entrega da mensagem precisa ser garantida
+- Nomes de channels são apenas strings — sem schema, sem estrutura imposta
+
+---
+
+## Notas Relacionadas
 
 - [[Replication]]
 - [[Persistence]]

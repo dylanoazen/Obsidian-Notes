@@ -1,217 +1,217 @@
 # Performance
 
-Performance is about understanding **where time and memory go** — and reducing both.
+Performance é sobre entender **onde o tempo e a memória vão** — e reduzir ambos.
 
-Three pillars: **latency**, **memory allocation**, and **benchmarking**.
+Três pilares: **latência**, **alocação de memória** e **benchmarking**.
 
 ---
 
-## Latency
+## Latência
 
-Latency is the time between a request being sent and a response being received.
+Latência é o tempo entre uma requisição ser enviada e uma resposta ser recebida.
 
 ```
-Client sends request  →  [time passes]  →  Client receives response
+Client sends request  →  [tempo passa]  →  Client receives response
                               ↑
-                          latency
+                          latência
 ```
 
-**Analogy:** you order food at a restaurant. Latency is the time between ordering and the food arriving at your table.
+**Analogia:** você pede comida em um restaurante. Latência é o tempo entre o pedido e a comida chegar na sua mesa.
 
-### Latency vs Throughput
+### Latência vs Throughput
 
-These are related but different:
+Esses conceitos são relacionados mas diferentes:
 
-|          | **Latency**                       | **Throughput**                |
+|          | **Latência**                       | **Throughput**                |
 | -------- | --------------------------------- | ----------------------------- |
-| Question | How fast is one request?          | How many requests per second? |
-| Unit     | milliseconds (ms)                 | requests/sec (RPS)            |
-| Analogy  | How fast one car crosses a bridge | How many cars cross per hour  |
+| Pergunta | Quão rápida é uma requisição? | Quantas requisições por segundo? |
+| Unidade  | milissegundos (ms)                | requisições/seg (RPS)            |
+| Analogia | Quão rápido um carro atravessa a ponte | Quantos carros atravessam por hora |
 
-You can have high throughput with high latency — many requests processed, but each one slowly. The goal is usually both: fast and many.
+Você pode ter alto throughput com alta latência — muitas requisições processadas, mas cada uma lentamente. O objetivo geralmente é os dois: rápido e em grande quantidade.
 
-### Sources of Latency
+### Fontes de Latência
 
 ```
-Total latency = network + queue + processing + response
+Latência total = rede + fila + processamento + resposta
 
-Network      → physical distance, hops between servers
-Queue        → waiting behind other requests
-Processing   → actual computation time
-Response     → sending the result back
+Rede         → distância física, saltos entre servidores
+Fila         → esperar atrás de outras requisições
+Processamento → tempo de computação real
+Resposta     → enviar o resultado de volta
 ```
 
-### Latency Numbers Worth Knowing
+### Números de Latência que Vale Conhecer
 
-| Operation                 | Approximate Latency |
+| Operação                 | Latência Aproximada |
 | ------------------------- | ------------------- |
-| L1 cache access           | ~1 ns               |
-| RAM access                | ~100 ns             |
-| SSD read                  | ~100 µs             |
-| Network (same datacenter) | ~1 ms               |
-| Network (cross-continent) | ~100 ms             |
-| HDD read                  | ~10 ms              |
+| Acesso ao cache L1           | ~1 ns               |
+| Acesso à RAM                 | ~100 ns             |
+| Leitura de SSD               | ~100 µs             |
+| Rede (mesmo datacenter)      | ~1 ms               |
+| Rede (intercontinental)      | ~100 ms             |
+| Leitura de HDD               | ~10 ms              |
 
-This is why Redis is fast — it reads from RAM (~100 ns), not disk.
+É por isso que Redis é rápido — ele lê da RAM (~100 ns), não do disco.
 
-### P50, P95, P99 — Percentile Latency
+### P50, P95, P99 — Latência por Percentil
 
-Averages lie. A system with average 10ms latency might have 1% of requests taking 2 seconds.
+Médias mentem. Um sistema com média de 10ms de latência pode ter 1% das requisições levando 2 segundos.
 
-Percentiles tell the real story:
+Percentis contam a história real:
 
 ```
-P50  = 50% of requests finish in under X ms  (median)
-P95  = 95% of requests finish in under X ms
-P99  = 99% of requests finish in under X ms
-P999 = 99.9% of requests finish in under X ms
+P50  = 50% das requisições terminam em menos de X ms  (mediana)
+P95  = 95% das requisições terminam em menos de X ms
+P99  = 99% das requisições terminam em menos de X ms
+P999 = 99,9% das requisições terminam em menos de X ms
 ```
 
-**Analogy:** average salary in a company with one billionaire CEO looks high. The median (P50) tells you what most employees actually earn.
+**Analogia:** salário médio em uma empresa com um CEO bilionário parece alto. A mediana (P50) diz o que a maioria dos funcionários realmente ganha.
 
-In production, you optimize P99 — the worst 1% still affects real users.
+Em produção, você otimiza o P99 — o pior 1% ainda afeta usuários reais.
 
 ---
 
 ## Memory Allocator
 
-A memory allocator manages how your program requests and releases memory from the OS.
+Um memory allocator gerencia como seu programa requisita e libera memória do OS.
 
-Your program never talks directly to hardware. When you need memory, you talk to the allocator, and it talks to the OS:
+Seu programa nunca fala diretamente com o hardware. Quando você precisa de memória, fala com o allocator, e ele fala com o OS:
 
 ```
 Your code  →  malloc(64)  →  Allocator  →  OS (only when necessary)
 ```
 
-The OS works in pages (usually 4KB). Allocating 4KB every time you need 64 bytes would be wasteful. The allocator requests large pages from the OS and subdivides them internally.
+O OS trabalha em páginas (geralmente 4KB). Alocar 4KB toda vez que você precisar de 64 bytes seria desperdício. O allocator requisita páginas grandes do OS e as subdivide internamente.
 
-### How Memory Allocation Works
+### Como a Alocação de Memória Funciona
 
-When your program needs memory:
-
-```
-Program  →  "I need 64 bytes"  →  Allocator
-Allocator → finds free block → returns pointer
-Program uses memory
-Program  →  "I'm done with this"  →  Allocator
-Allocator → marks block as free → available for reuse
-```
-
-### The Problem: Fragmentation
-
-Over time, memory ends up looking like swiss cheese — lots of small free holes that are hard to reuse:
+Quando seu programa precisa de memória:
 
 ```
-Before:
-[████████████████████████████████] 100MB contiguous
+Programa  →  "Preciso de 64 bytes"  →  Allocator
+Allocator → encontra bloco livre → retorna ponteiro
+Programa usa a memória
+Programa  →  "Terminei com isso"  →  Allocator
+Allocator → marca bloco como livre → disponível para reutilização
+```
 
-After many allocs/frees:
+### O Problema: Fragmentação
+
+Com o tempo, a memória fica parecendo queijo suíço — muitos buracos pequenos que são difíceis de reutilizar:
+
+```
+Antes:
+[████████████████████████████████] 100MB contíguo
+
+Depois de muitas alocações/liberações:
 [used][    ][used][used][    ][used][    ]
        16MB        8MB        4MB
 ```
 
-You have 28MB free total, but in separate chunks. If you need 20MB contiguous — it is not available.
+Você tem 28MB livres no total, mas em pedaços separados. Se precisar de 20MB contíguo — não está disponível.
 
-### How ptmalloc (glibc) Works — and Why It Is Slow
+### Como ptmalloc (glibc) Funciona — e Por que É Lento
 
-ptmalloc was designed in 1987 for single-threaded workloads and had threading bolted on later. Its model is too simple for modern servers:
-
-```
-Thread 1 wants to alloc  →  locks the heap  →  allocs  →  unlocks
-Thread 2 wants to alloc  →  waiting in queue...
-Thread 3 wants to alloc  →  waiting in queue...
-```
-
-In systems with many threads, threads sleep waiting for the lock. This becomes latency.
-
-### How jemalloc Solves This — Arenas
-
-jemalloc divides memory into independent **arenas**. Each thread is assigned to an arena, so threads rarely compete for the same lock:
+ptmalloc foi projetado em 1987 para cargas de trabalho single-threaded e teve suporte a threads adicionado depois. Seu modelo é simples demais para servidores modernos:
 
 ```
-Thread 1  →  Arena 1  (own lock)
-Thread 2  →  Arena 2  (own lock)
-Thread 3  →  Arena 1  (shares with Thread 1, but rarely conflicts)
+Thread 1 quer alocar  →  trava a heap  →  aloca  →  destrava
+Thread 2 quer alocar  →  esperando na fila...
+Thread 3 quer alocar  →  esperando na fila...
 ```
 
-Inside each arena, jemalloc divides allocations into **size classes** — predefined fixed sizes:
+Em sistemas com muitas threads, as threads ficam dormindo esperando o lock. Isso vira latência.
+
+### Como jemalloc Resolve Isso — Arenas
+
+jemalloc divide a memória em **arenas** independentes. Cada thread é atribuída a uma arena, então threads raramente competem pelo mesmo lock:
 
 ```
-Small  (≤ 14KB)   →  thread-local cache (tcache) — zero locks
-Large  (14KB–4MB) →  directly from arena
-Huge   (> 4MB)    →  mmap'd directly from OS
+Thread 1  →  Arena 1  (lock próprio)
+Thread 2  →  Arena 2  (lock próprio)
+Thread 3  →  Arena 1  (compartilha com Thread 1, mas raramente conflita)
 ```
 
-For small allocations (the majority), jemalloc uses a **per-thread cache** (tcache) — zero contention, zero lock.
+Dentro de cada arena, jemalloc divide alocações em **classes de tamanho** — tamanhos fixos predefinidos:
 
-jemalloc also solves fragmentation with size classes — instead of allocating exactly what was requested, it rounds up to the nearest fixed size:
+```
+Small  (≤ 14KB)   →  cache por thread (tcache) — zero locks
+Large  (14KB–4MB) →  diretamente da arena
+Huge   (> 4MB)    →  mmap'd diretamente do OS
+```
+
+Para alocações pequenas (a maioria), jemalloc usa um **cache por thread** (tcache) — zero contenção, zero lock.
+
+jemalloc também resolve fragmentação com classes de tamanho — em vez de alocar exatamente o que foi requisitado, arredonda para o tamanho fixo mais próximo:
 
 ```
 You request 57 bytes  →  jemalloc allocates 64 bytes (next size class)
 You request 100 bytes →  jemalloc allocates 128 bytes
 ```
 
-Result: blocks of the same size stay together, easy to reuse:
+Resultado: blocos do mesmo tamanho ficam juntos, fáceis de reutilizar:
 
 ```
-[64][64][64][64][64]  ← all equal, any one works for any ≤64 byte request
+[64][64][64][64][64]  ← todos iguais, qualquer um serve para qualquer requisição ≤64 bytes
 ```
 
-### Common Allocators
+### Allocators Comuns
 
-| Allocator | Used by | Notes |
+| Allocator | Usado por | Notas |
 |---|---|---|
-| **glibc (ptmalloc)** | Default on Linux | General purpose, slow under contention |
-| **jemalloc** | Redis, Firefox, Rust | Best fragmentation handling for long-running servers |
-| **tcmalloc** | Google, Go | Per-thread private cache, best throughput for high-concurrency |
-| **mimalloc** | Microsoft | Modern, very fast across workloads |
+| **glibc (ptmalloc)** | Padrão no Linux | Uso geral, lento sob contenção |
+| **jemalloc** | Redis, Firefox, Rust | Melhor tratamento de fragmentação para servidores de longa duração |
+| **tcmalloc** | Google, Go | Cache privado por thread, melhor throughput para alta concorrência |
+| **mimalloc** | Microsoft | Moderno, muito rápido em diversas cargas de trabalho |
 
 ### jemalloc vs tcmalloc
 
 | | **jemalloc** | **tcmalloc** |
 |---|---|---|
-| Strong at | Fragmentation — long-running servers | Throughput — many threads, many small allocs |
-| Thread model | Shared arenas | Fully private per-thread cache |
-| Ideal for | Redis, databases | HTTP servers, Google-style applications |
-| Weak at | High-frequency small allocs | Long-running with varied allocation patterns |
+| Forte em | Fragmentação — servidores de longa duração | Throughput — muitas threads, muitas alocações pequenas |
+| Modelo de thread | Arenas compartilhadas | Cache totalmente privado por thread |
+| Ideal para | Redis, bancos de dados | Servidores HTTP, aplicações estilo Google |
+| Fraco em | Alocações pequenas de alta frequência | Longa duração com padrões variados de alocação |
 
-### How This Appears in Redis
+### Como Isso Aparece no Redis
 
-Redis reports two memory metrics:
+Redis reporta duas métricas de memória:
 
 ```bash
 INFO memory
 
-used_memory:     1000000000   # 1GB — what Redis thinks it is using
-used_memory_rss: 1500000000   # 1.5GB — what the OS sees
+used_memory:     1000000000   # 1GB — o que o Redis acha que está usando
+used_memory_rss: 1500000000   # 1.5GB — o que o OS vê
 
 mem_fragmentation_ratio: 1.5  # used_by_OS / used_by_Redis
 ```
 
-**Fragmentation ratio above 1.5 = problem.** jemalloc is holding memory in its internal bins that the OS counts as used, but Redis is not actively using.
+**Fragmentation ratio acima de 1.5 = problema.** jemalloc está mantendo memória em seus bins internos que o OS conta como usada, mas Redis não está ativamente usando.
 
-**How to fix:**
+**Como corrigir:**
 
 ```bash
-MEMORY PURGE  # Redis 4.0+ — forces jemalloc to return idle pages to the OS
+MEMORY PURGE  # Redis 4.0+ — força jemalloc a retornar páginas ociosas ao OS
 ```
 
-Redis 4.0+ also has **active defragmentation** — automatically reallocates fragmented keys in the background.
+Redis 4.0+ também tem **active defragmentation** — realoca automaticamente chaves fragmentadas em background.
 
-### Why Redis Chose jemalloc
+### Por que Redis Escolheu jemalloc
 
-Redis is a process that runs for weeks or months, making millions of small allocations (keys, values, internal structures). This is exactly the scenario where jemalloc excels — controlled fragmentation over time.
+Redis é um processo que roda por semanas ou meses, fazendo milhões de pequenas alocações (chaves, valores, estruturas internas). Esse é exatamente o cenário onde jemalloc se destaca — fragmentação controlada ao longo do tempo.
 
-With ptmalloc, after weeks of running the process would consume 3-4x more RAM than the actual data occupies.
+Com ptmalloc, após semanas de execução o processo consumiria 3-4x mais RAM do que os dados reais ocupam.
 
-### Why It Matters
+### Por que Isso Importa
 
-A bad allocator on a high-traffic system can:
-- Fragment memory → process uses 2GB RAM but only 1GB is actual data
-- Slow down allocation → extra latency on every operation
-- Cause unexpected OOM (out of memory) kills
+Um alocador ruim em um sistema de alto tráfego pode:
+- Fragmentar a memória → processo usa 2GB de RAM mas apenas 1GB são dados reais
+- Lentificar alocações → latência extra em toda operação
+- Causar OOM (out of memory) inesperado
 
-**References:**
+**Referências:**
 - [Memory Allocators: malloc vs. tcmalloc vs. jemalloc](https://howtech.substack.com/p/memory-allocators-malloc-vs-tcmalloc)
 - [Exploring Different Memory Allocators](https://dev.to/frosnerd/libmalloc-jemalloc-tcmalloc-mimalloc-exploring-different-memory-allocators-4lp3)
 - [How Redis jemalloc Memory Allocator Works](https://oneuptime.com/blog/post/2026-03-31-redis-jemalloc-memory-allocator/view)
@@ -222,18 +222,18 @@ A bad allocator on a high-traffic system can:
 
 ## Benchmarking
 
-Benchmarking is the process of **measuring performance under controlled conditions** to understand where your system stands and where it can improve.
+Benchmarking é o processo de **medir performance em condições controladas** para entender onde seu sistema está e onde pode melhorar.
 
-### Why Benchmark
+### Por que Fazer Benchmark
 
-- Verify your system meets performance requirements
-- Compare two implementations (which is faster?)
-- Catch regressions — did the new code make things slower?
-- Find bottlenecks — where is time actually being spent?
+- Verificar se seu sistema atende aos requisitos de performance
+- Comparar duas implementações (qual é mais rápida?)
+- Detectar regressões — o novo código tornou as coisas mais lentas?
+- Encontrar gargalos — onde o tempo está realmente sendo gasto?
 
-### Types of Benchmarks
+### Tipos de Benchmarks
 
-**Microbenchmark** — measures a single small operation in isolation
+**Microbenchmark** — mede uma única operação pequena isoladamente
 
 ```go
 // how fast is a single SET command?
@@ -242,31 +242,31 @@ for i := 0; i < 1000000; i++ {
 }
 ```
 
-**Load test** — simulates real traffic at scale
+**Load test** — simula tráfego real em escala
 
 ```
-Send 10,000 requests/sec for 60 seconds
-Measure: latency P50/P95/P99, error rate, throughput
+Envia 10.000 requisições/seg por 60 segundos
+Mede: latência P50/P95/P99, taxa de erro, throughput
 ```
 
-**Stress test** — pushes beyond expected limits to find breaking points
+**Stress test** — empurra além dos limites esperados para encontrar pontos de ruptura
 
 ```
-Keep increasing load until the system fails
-Observe: when does it degrade? when does it break?
+Continua aumentando a carga até o sistema falhar
+Observa: quando ele degrada? quando quebra?
 ```
 
-### Common Benchmarking Tools
+### Ferramentas Comuns de Benchmarking
 
-| Tool | Use case |
+| Ferramenta | Caso de uso |
 |---|---|
-| **redis-benchmark** | Built-in Redis benchmark |
-| **wrk / wrk2** | HTTP load testing |
-| **k6** | Scriptable load testing |
-| **pprof** (Go) | CPU and memory profiling |
-| **perf** (Linux) | System-level performance analysis |
+| **redis-benchmark** | Benchmark integrado do Redis |
+| **wrk / wrk2** | Teste de carga HTTP |
+| **k6** | Teste de carga com scripts |
+| **pprof** (Go) | Profiling de CPU e memória |
+| **perf** (Linux) | Análise de performance em nível de sistema |
 
-### Redis Benchmark Example
+### Exemplo de Benchmark Redis
 
 ```bash
 # run 100,000 SET commands with 50 concurrent clients
@@ -278,51 +278,51 @@ redis-benchmark -t set -n 100000 -c 50
 # Latency: avg 0.5ms, P99 1.2ms
 ```
 
-### Benchmarking Pitfalls
+### Armadilhas de Benchmarking
 
-- **Benchmark in production-like conditions** — your laptop is not your server
-- **Warm up first** — cold start skews results (JIT, caches, connections)
-- **Measure P99, not just average** — averages hide outliers
-- **Isolate variables** — change one thing at a time
-- **Run multiple times** — variance is real, one run is not enough
-
----
-
-## How They Connect
-
-```
-Latency       →  what you measure (how slow is it?)
-Allocator     →  one source of latency (memory operations)
-Benchmarking  →  how you find where latency comes from
-```
-
-The loop:
-
-```
-Benchmark → find bottleneck → fix it (tune allocator, reduce copies, cache) → benchmark again
-```
+- **Faça benchmark em condições similares à produção** — seu laptop não é seu servidor
+- **Aqueça primeiro** — cold start distorce resultados (JIT, caches, conexões)
+- **Meça P99, não apenas a média** — médias escondem outliers
+- **Isole variáveis** — mude uma coisa por vez
+- **Execute múltiplas vezes** — variância é real, uma execução não é suficiente
 
 ---
 
-## In Redis Context
+## Como Eles Se Conectam
 
-- Redis is fast because it operates entirely in **RAM** — latency in microseconds
-- Uses **jemalloc** to minimize fragmentation over long uptimes
-- **redis-benchmark** is built-in for quick performance checks
-- Latency spikes in Redis often come from: large keys, blocking commands, persistence flushes (AOF fsync)
+```
+Latência      →  o que você mede (quão lento está?)
+Allocator     →  uma fonte de latência (operações de memória)
+Benchmarking  →  como você encontra de onde vem a latência
+```
 
----
+O ciclo:
 
-## Design Notes
-
-- Premature optimization is the root of all evil — benchmark first, optimize what the data shows
-- Latency budget: know how much latency each layer is allowed to add
-- Memory fragmentation ratio above 1.5 in Redis is a warning sign
-- Always measure before and after an optimization to confirm it helped
+```
+Benchmark → encontra gargalo → corrige (ajusta allocator, reduz cópias, cache) → benchmark novamente
+```
 
 ---
 
-## Related Notes
+## No Contexto Redis
+
+- Redis é rápido porque opera inteiramente em **RAM** — latência em microssegundos
+- Usa **jemalloc** para minimizar fragmentação ao longo de longas execuções
+- **redis-benchmark** é integrado para verificações rápidas de performance
+- Picos de latência no Redis geralmente vêm de: chaves grandes, comandos bloqueantes, flushes de persistência (AOF fsync)
+
+---
+
+## Notas de Design
+
+- Otimização prematura é a raiz de todo mal — faça benchmark primeiro, otimize o que os dados mostram
+- Orçamento de latência: saiba quanta latência cada camada pode adicionar
+- Fragmentation ratio de memória acima de 1.5 no Redis é um sinal de alerta
+- Sempre meça antes e depois de uma otimização para confirmar que ajudou
+
+---
+
+## Notas Relacionadas
 
 - [[Replication]]
 - [[Persistence]]

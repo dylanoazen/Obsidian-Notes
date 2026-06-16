@@ -1,12 +1,12 @@
 # Linux Security
 
-Hardening, access control, and security mechanisms built into the Linux kernel and userspace.
+Hardening, controle de acesso e mecanismos de segurança integrados ao kernel Linux e ao userspace.
 
 Related: [[Linux/Kernel]], [[Linux/ProcessManagement]]
 
 ---
 
-## Permissions Model
+## Modelo de Permissões
 
 ```
 -rwxr-x--- 1 user group 4096 Jan 1 file.txt
@@ -23,11 +23,11 @@ chown user:group file.txt
 umask 027                 # default permissions for new files
 ```
 
-## Special Permissions
+## Permissões Especiais
 
-- **SUID** (4xxx): run as file owner (e.g., `passwd` runs as root)
-- **SGID** (2xxx): run as file group / inherit group on directories
-- **Sticky bit** (1xxx): only owner can delete files in directory (`/tmp`)
+- **SUID** (4xxx): executa como o dono do arquivo (ex.: `passwd` executa como root)
+- **SGID** (2xxx): executa como o grupo do arquivo / herda o grupo em diretórios
+- **Sticky bit** (1xxx): apenas o dono pode deletar arquivos no diretório (`/tmp`)
 
 ```bash
 chmod u+s binary          # SUID
@@ -38,7 +38,7 @@ find / -perm -4000        # find all SUID binaries (audit this!)
 
 ## Capabilities
 
-Instead of giving a process full root access, give it specific capabilities:
+Em vez de conceder acesso root completo a um processo, conceda capabilities específicas:
 
 ```bash
 # View capabilities of a binary
@@ -53,15 +53,15 @@ setcap cap_net_bind_service=+ep ./myserver
 capsh --print
 ```
 
-Key capabilities:
-- `CAP_NET_BIND_SERVICE` — bind to ports < 1024
+Capabilities principais:
+- `CAP_NET_BIND_SERVICE` — fazer bind em portas < 1024
 - `CAP_NET_RAW` — raw sockets (ping)
-- `CAP_SYS_ADMIN` — catch-all admin (dangerous)
-- `CAP_DAC_OVERRIDE` — bypass file permission checks
+- `CAP_SYS_ADMIN` — admin genérico (perigoso)
+- `CAP_DAC_OVERRIDE` — ignorar verificações de permissão de arquivo
 
 ## SELinux / AppArmor
 
-Mandatory Access Control (MAC) — enforces policies even for root:
+Mandatory Access Control (MAC) — aplica políticas mesmo para root:
 
 **SELinux** (Red Hat, Fedora):
 ```bash
@@ -78,30 +78,30 @@ aa-enforce /etc/apparmor.d/profile
 aa-complain /etc/apparmor.d/profile  # log only, don't block
 ```
 
-## Namespaces for Isolation
+## Namespaces para Isolamento
 
-Foundation of container security ([[DevOps/Docker/Docker]]):
+Base da segurança de containers ([[DevOps/Docker/Docker]]):
 
-| Namespace | Isolates |
-|-----------|----------|
-| PID | Process IDs |
-| NET | Network interfaces, IPs, routes |
-| MNT | Filesystem mount points |
-| USER | UID/GID mappings |
+| Namespace | Isola |
+|-----------|-------|
+| PID | IDs de processo |
+| NET | Interfaces de rede, IPs, rotas |
+| MNT | Pontos de montagem do filesystem |
+| USER | Mapeamentos de UID/GID |
 | UTS | Hostname |
-| IPC | Inter-process communication |
-| cgroup | cgroup root |
+| IPC | Comunicação entre processos |
+| cgroup | Raiz do cgroup |
 
 ## seccomp
 
-Restrict which syscalls a process can make:
+Restringe quais syscalls um processo pode fazer:
 
 ```bash
 # Docker uses seccomp profiles to block dangerous syscalls
 docker run --security-opt seccomp=profile.json myapp
 ```
 
-Default Docker seccomp blocks ~44 syscalls including `reboot`, `mount`, `kexec_load`.
+O perfil seccomp padrão do Docker bloqueia ~44 syscalls, incluindo `reboot`, `mount` e `kexec_load`.
 
 ## Firewall
 
@@ -118,7 +118,7 @@ ufw allow from 10.0.0.0/8 to any port 22
 ufw enable
 ```
 
-## SSH Hardening
+## Hardening do SSH
 
 ```bash
 # /etc/ssh/sshd_config
@@ -130,7 +130,7 @@ AllowUsers deploy admin
 Protocol 2
 ```
 
-## Audit
+## Auditoria
 
 ```bash
 # auditd — kernel-level auditing
@@ -143,16 +143,16 @@ lastb                            # failed logins
 journalctl -u sshd --since today
 ```
 
-## Hardening Checklist
+## Checklist de Hardening
 
-- Disable root SSH, use key-based auth only
-- Keep packages updated (`unattended-upgrades`)
-- Remove unnecessary SUID binaries
-- Enable firewall, allow only needed ports
-- Enable SELinux/AppArmor
-- Configure fail2ban for brute-force protection
-- Audit SUID files, open ports, running services regularly
-- Use capabilities instead of root where possible
+- Desabilitar SSH como root, usar somente autenticação por chave
+- Manter pacotes atualizados (`unattended-upgrades`)
+- Remover binários SUID desnecessários
+- Habilitar firewall, permitir apenas as portas necessárias
+- Habilitar SELinux/AppArmor
+- Configurar fail2ban para proteção contra brute-force
+- Auditar arquivos SUID, portas abertas e serviços em execução regularmente
+- Usar capabilities em vez de root sempre que possível
 
 ## Related
 
@@ -160,10 +160,10 @@ journalctl -u sshd --since today
 - [[Linux/SystemCalls]]
 - [[Security/IAM]]
 
-## Resources
+## Recursos
 
 - https://www.cisecurity.org/benchmark/ubuntu_linux (CIS Benchmarks)
 - https://madaidans-insecurities.github.io/guides/linux-hardening.html
 
-#### My commentaries
+#### Meus comentários
 - 

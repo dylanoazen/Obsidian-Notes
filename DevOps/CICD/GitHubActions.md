@@ -1,12 +1,12 @@
 # GitHub Actions
 
-GitHub's built-in CI/CD platform — automate builds, tests, and deployments directly from your repo.
+A plataforma CI/CD nativa do GitHub — automatize builds, testes e deploys diretamente do seu repositório.
 
 Related: [[DevOps/CICD/CICD]], [[Git/Git]]
 
 ---
 
-## Core Concepts
+## Conceitos Principais
 
 ```
 Workflow (.github/workflows/*.yml)
@@ -22,13 +22,13 @@ Workflow (.github/workflows/*.yml)
       └── Step 1: deploy
 ```
 
-- **Workflow**: YAML file that defines automation
-- **Event**: what triggers the workflow
-- **Job**: set of steps that run on the same runner
-- **Step**: individual command or action
-- **Runner**: VM that executes the job (GitHub-hosted or self-hosted)
+- **Workflow**: arquivo YAML que define a automação
+- **Event**: o que dispara o workflow
+- **Job**: conjunto de steps que rodam no mesmo runner
+- **Step**: comando ou action individual
+- **Runner**: VM que executa o job (hospedada pelo GitHub ou self-hosted)
 
-## Basic Workflow
+## Workflow Básico
 
 ```yaml
 name: CI
@@ -75,7 +75,7 @@ on:
         options: [staging, production]
 ```
 
-## Secrets and Variables
+## Secrets e Variáveis
 
 ```yaml
 env:
@@ -90,11 +90,11 @@ jobs:
           API_KEY: ${{ secrets.API_KEY }}
 ```
 
-Never hardcode secrets — use Settings → Secrets and Variables.
+Nunca coloque secrets no código — use Settings → Secrets and Variables.
 
 ## Matrix Strategy
 
-Run tests across multiple versions/OS:
+Execute testes em múltiplas versões/SO:
 
 ```yaml
 jobs:
@@ -123,7 +123,7 @@ jobs:
 
 ## Artifacts
 
-Share data between jobs:
+Compartilhe dados entre jobs:
 
 ```yaml
 jobs:
@@ -143,7 +143,7 @@ jobs:
           name: binary
 ```
 
-## Docker Build and Push
+## Docker Build e Push
 
 ```yaml
 - uses: docker/setup-buildx-action@v3
@@ -184,13 +184,13 @@ jobs:
       deploy_key: ${{ secrets.DEPLOY_KEY }}
 ```
 
-## Security Best Practices
+## Boas Práticas de Segurança
 
-- Pin actions to commit SHA, not tags: `actions/checkout@abc123`
-- Use `permissions` to limit GITHUB_TOKEN scope
-- Never echo secrets in logs
-- Use environments with required reviewers for production deploys
-- Enable branch protection rules
+- Fixe actions em um commit SHA, não em tags: `actions/checkout@abc123`
+- Use `permissions` para limitar o escopo do GITHUB_TOKEN
+- Nunca exiba secrets nos logs
+- Use environments com aprovadores obrigatórios para deploys em produção
+- Habilite regras de proteção de branch
 
 ```yaml
 permissions:
@@ -198,7 +198,7 @@ permissions:
   packages: write
 ```
 
-## Related
+## Relacionados
 
 - [[DevOps/CICD/CICD]]
 - [[DevOps/Docker/DockerAdvanced]]
@@ -210,5 +210,5 @@ permissions:
 - https://docs.github.com/en/actions
 - https://github.com/sdras/awesome-actions
 
-#### My commentaries
+#### Meus comentários
 - 

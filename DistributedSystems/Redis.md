@@ -1,34 +1,34 @@
 # Redis
 
-Redis (Remote Dictionary Server) is an in-memory data structure store used as a database, cache, message broker, and streaming engine.
+Redis (Remote Dictionary Server) é um armazenamento de estruturas de dados em memória usado como banco de dados, cache, message broker e engine de streaming.
 
-It defines:
-- key-value storage with sub-millisecond latency
-- rich data structures beyond simple strings
-- persistence options for durability
-- built-in replication and clustering
+Ele oferece:
+- armazenamento key-value com latência sub-milissegundo
+- estruturas de dados ricas além de simples strings
+- opções de persistência para durabilidade
+- replicação e clustering integrados
 
 ---
 
-## Why Redis?
+## Por que Redis?
 
-- Extremely fast — all operations happen in memory
-- Versatile data structures (not just key-value)
-- Built-in pub/sub for real-time messaging
-- Persistence options (RDB snapshots, AOF logs)
-- Replication and high availability out of the box
-- Widely adopted — used by Twitter, GitHub, Stack Overflow, etc.
+- Extremamente rápido — todas as operações acontecem em memória
+- Estruturas de dados versáteis (não apenas key-value)
+- Pub/sub integrado para mensageria em tempo real
+- Opções de persistência (snapshots RDB, logs AOF)
+- Replicação e alta disponibilidade prontos para uso
+- Amplamente adotado — usado pelo Twitter, GitHub, Stack Overflow, etc.
 
-## Core Data Structures
+## Estruturas de Dados Principais
 
-- **String**: simplest type, can store text, numbers, or binary (max 512MB)
-- **List**: ordered collection, supports push/pop from both ends (queues, stacks)
-- **Set**: unordered unique elements, supports unions, intersections, diffs
-- **Sorted Set (ZSet)**: like Set but each member has a score, auto-sorted
-- **Hash**: field-value pairs inside a single key (like a mini object/document)
-- **Stream**: append-only log, used for event sourcing and message queues
+- **String**: tipo mais simples, pode armazenar texto, números ou binário (máx 512MB)
+- **List**: coleção ordenada, suporta push/pop em ambas as extremidades (filas, pilhas)
+- **Set**: elementos únicos sem ordem, suporta uniões, interseções e diferenças
+- **Sorted Set (ZSet)**: como Set mas cada membro tem um score, ordenado automaticamente
+- **Hash**: pares campo-valor dentro de uma única chave (como um mini objeto/documento)
+- **Stream**: log append-only, usado para event sourcing e filas de mensagens
 
-## Basic Commands
+## Comandos Básicos
 
 ```
 SET key value              # store a string
@@ -50,7 +50,7 @@ ZADD zset score member     # add to sorted set
 ZRANGE zset 0 -1           # get all sorted
 ```
 
-## Architecture
+## Arquitetura
 
 ```
 Client ──► Redis Server (single-threaded event loop)
@@ -61,11 +61,11 @@ Client ──► Redis Server (single-threaded event loop)
                 └── Replication → Replica nodes
 ```
 
-- Single-threaded for commands — no locks, no race conditions
-- I/O multiplexing handles thousands of concurrent connections
-- Background threads handle persistence and slow operations
+- Single-threaded para comandos — sem locks, sem race conditions
+- I/O multiplexing lida com milhares de conexões concorrentes
+- Threads em background cuidam de persistência e operações lentas
 
-## Topics
+## Tópicos
 
 - [[DistributedSystems/Persistence|Persistence (RDB & AOF)]]
 - [[DistributedSystems/Replication|Replication]]
@@ -79,56 +79,56 @@ Client ──► Redis Server (single-threaded event loop)
 - [[DistributedSystems/DataStructures|Data Structures]]
 - [[DistributedSystems/ExpirationTTL|Expiration & TTL]]
 
-## Use Cases
+## Casos de Uso
 
-- **Caching**: session storage, API response caching, page caching
-- **Rate Limiting**: track request counts with INCR + EXPIRE
-- **Leaderboards**: sorted sets with scores
-- **Real-time Chat**: pub/sub channels
-- **Job Queues**: lists with LPUSH/BRPOP pattern
-- **Session Store**: fast read/write for user sessions
+- **Caching**: armazenamento de sessão, cache de resposta de API, cache de página
+- **Rate Limiting**: rastreia contagens de requisições com INCR + EXPIRE
+- **Leaderboards**: sorted sets com scores
+- **Chat em tempo real**: channels pub/sub
+- **Filas de Jobs**: lists com padrão LPUSH/BRPOP
+- **Session Store**: leitura/escrita rápida para sessões de usuário
 
 ---
 
-## Session Management — How It Works in Practice
+## Gerenciamento de Sessão — Como Funciona na Prática
 
-Redis does not have tables or SQL. The "link" to the user is built into the key name itself:
+Redis não tem tabelas ou SQL. O "vínculo" com o usuário é construído no próprio nome da chave:
 
 ```
-key:   "session:token:abc32323"   ← identifies whose session it is
-value: "123"                       ← the user ID
-TTL:   3600 seconds                ← expires automatically
+key:   "session:token:abc32323"   ← identifica de quem é a sessão
+value: "123"                       ← o ID do usuário
+TTL:   3600 seconds                ← expira automaticamente
 ```
 
-### Full Flow
+### Fluxo Completo
 
 **Login:**
 ```
-User logs in with correct password
-→ server generates a random token: "abc32323"
+Usuário faz login com senha correta
+→ servidor gera um token aleatório: "abc32323"
 → SET session:token:abc32323 "123" EX 3600
-→ returns token to the browser (cookie/header)
+→ retorna o token para o browser (cookie/header)
 ```
 
-**Every request:**
+**Em cada requisição:**
 ```
-Browser sends token "abc32323"
-→ server asks Redis: GET session:token:abc32323
-→ Redis returns: "123" (the user ID)
-→ authenticated ✓
+Browser envia o token "abc32323"
+→ servidor pergunta ao Redis: GET session:token:abc32323
+→ Redis retorna: "123" (o ID do usuário)
+→ autenticado ✓
 
-If Redis returns nil → session expired or never existed → 401
+Se Redis retornar nil → sessão expirada ou nunca existiu → 401
 ```
 
 **Logout:**
 ```
 DEL session:token:abc32323
-→ next request: GET session:token:abc32323 → nil → not authenticated
+→ próxima requisição: GET session:token:abc32323 → nil → não autenticado
 ```
 
-### Middleware Pattern (PHP)
+### Padrão de Middleware (PHP)
 
-The session check does not live inside each action — it lives in a single file included everywhere. One check runs before anything else on every protected page.
+A verificação de sessão não fica dentro de cada ação — ela fica em um único arquivo incluído em todo lugar. Uma verificação roda antes de qualquer outra coisa em cada página protegida.
 
 ```php
 // config.php — included in every protected page
@@ -153,25 +153,25 @@ if (!$user_id) {
 // if we got here, $user_id is available for the entire page
 ```
 
-Every protected page:
+Cada página protegida:
 ```php
 <?php
-require_once 'config.php';  // ← check done, $user_id available
+require_once 'config.php';  // ← verificação feita, $user_id disponível
 
-// rest of the page normally
+// resto da página normalmente
 echo "Welcome, user $user_id";
 ?>
 ```
 
-The login page is the only one that does **not** include this file — or includes it without the redirect, since the user does not have a session yet.
+A página de login é a única que **não** inclui este arquivo — ou inclui sem o redirecionamento, já que o usuário ainda não tem sessão.
 
-> Redis does not notify you when a session expires — it just returns nil. Your application decides what to do: redirect to login, return 401, etc.
+> Redis não te notifica quando uma sessão expira — apenas retorna nil. Sua aplicação decide o que fazer: redirecionar para o login, retornar 401, etc.
 
-## Resources
+## Recursos
 
 - https://redis.io/docs
-- https://try.redis.io (interactive tutorial)
-- https://university.redis.io (free courses)
+- https://try.redis.io (tutorial interativo)
+- https://university.redis.io (cursos gratuitos)
 
-#### My commentaries
+#### Meus comentários
 -  

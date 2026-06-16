@@ -1,36 +1,36 @@
-Go isn't a hierarchy-oriented language.
+Go não é uma linguagem orientada a hierarquias.
 
-Basically, you have components that collaborate with each other instead of being extensions of one another.
+Basicamente, você tem componentes que colaboram entre si em vez de serem extensões uns dos outros.
 
-Objects "have" other objects, they don't "become" them.
+Objetos "têm" outros objetos, eles não "se tornam" eles.
 
-For example, a Client has a Person.
-The Client can use parts of Person, but it isn't a Person itself.
+Por exemplo, um Client tem uma Person.
+O Client pode usar partes de Person, mas não é uma Person em si.
 
-This creates a looser coupling between components.
+Isso cria um acoplamento mais fraco entre os componentes.
 
-So if I change something inside Person, it doesn't necessarily affect Client directly.
-## Composition vs Inheritance in Go
+Portanto, se eu mudar algo dentro de Person, isso não necessariamente afeta Client diretamente.
+## Composition vs Inheritance em Go
 
-Go prefers composition over inheritance.
+Go prefere composição a herança.
 
-Instead of creating deep hierarchies like:
+Em vez de criar hierarquias profundas como:
 
 Person
  └── Client
  └── Seller
 
-Go usually models relationships using composition.
+Go geralmente modela relacionamentos usando composição.
 
-## Example
+## Exemplo
 
-Instead of:
+Em vez de:
 
 ```text
 Seller extends Person
 ```
 
-Go uses:
+Go usa:
 
 ```go
 type Person struct {
@@ -54,9 +54,9 @@ type Seller struct {
 }
 ```
 
-## Why is this important?
+## Por que isso é importante?
 
-With inheritance, if you add a required field like Address to Person:
+Com herança, se você adicionar um campo obrigatório como Address a Person:
 
 ```text
 Person
@@ -66,32 +66,32 @@ Person
  └── Address
 ```
 
-every child automatically inherits it.
+todo filho automaticamente o herda.
 
-That means Seller would also require Address, even if it doesn't make sense for the business rules.
+Isso significa que Seller também exigiria Address, mesmo que não faça sentido para as regras de negócio.
 
-This creates strong coupling between entities.
+Isso cria um forte acoplamento entre as entidades.
 
-## Composition gives flexibility
+## Composition dá flexibilidade
 
-With composition:
+Com composição:
 
-- Client can have Address
-- Seller can avoid Address
-- components stay reusable
-- entities stay independent
-- changes become more localized
+- Client pode ter Address
+- Seller pode não ter Address
+- componentes permanecem reutilizáveis
+- entidades permanecem independentes
+- mudanças se tornam mais localizadas
 
-Instead of saying:
+Em vez de dizer:
 
 ```text
 Client IS A Person
 ```
 
-Go usually prefers:
+Go geralmente prefere:
 
 ```text
 Client HAS A Person
 ```
 
-This reduces hierarchy complexity and creates more maintainable systems.
+Isso reduz a complexidade da hierarquia e cria sistemas mais fáceis de manter.

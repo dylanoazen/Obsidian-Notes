@@ -1,19 +1,19 @@
 # Kernel
 
-The kernel is the core of the operating system. It's the layer between hardware and userspace programs. Every system call, every file read, every packet sent goes through the kernel.
+O kernel é o núcleo do sistema operacional. É a camada entre o hardware e os programas em userspace. Cada system call, cada leitura de arquivo, cada pacote enviado passa pelo kernel.
 
 Related: [[Linux/Linux|Linux Internals]]
 
 ---
 
-## What the Kernel Does
+## O que o Kernel Faz
 
-- **Process management**: create, schedule, and kill processes
-- **Memory management**: virtual memory, paging, allocation
-- **Device management**: drivers, hardware abstraction
-- **File systems**: VFS layer, ext4, btrfs, tmpfs
-- **Networking**: TCP/IP stack, sockets, routing
-- **Security**: permissions, capabilities, namespaces, cgroups
+- **Gerenciamento de processos**: criar, escalonar e encerrar processos
+- **Gerenciamento de memória**: memória virtual, paginação, alocação
+- **Gerenciamento de dispositivos**: drivers, abstração de hardware
+- **Filesystems**: camada VFS, ext4, btrfs, tmpfs
+- **Redes**: pilha TCP/IP, sockets, roteamento
+- **Segurança**: permissões, capabilities, namespaces, cgroups
 
 ## Kernel Space vs User Space
 
@@ -36,17 +36,17 @@ Related: [[Linux/Linux|Linux Internals]]
 └─────────────────────────────┘
 ```
 
-- **User space**: restricted access, runs in CPU Ring 3
-- **Kernel space**: full hardware access, runs in CPU Ring 0
-- Transition between them happens via **system calls** (expensive — context switch)
+- **User space**: acesso restrito, executa no CPU Ring 3
+- **Kernel space**: acesso total ao hardware, executa no CPU Ring 0
+- A transição entre eles ocorre via **system calls** (custosa — context switch)
 
-## Kernel Architecture
+## Arquitetura do Kernel
 
-Linux is a **monolithic kernel** with loadable modules:
+O Linux é um **kernel monolítico** com módulos carregáveis:
 
-- **Monolithic**: entire kernel runs in one address space (fast, no IPC overhead)
-- **Modules**: drivers and features can be loaded/unloaded at runtime without reboot
-- Contrast with **microkernel** (Minix, QNX): only minimal code in kernel space, everything else in userspace via IPC
+- **Monolítico**: todo o kernel executa em um único address space (rápido, sem overhead de IPC)
+- **Módulos**: drivers e funcionalidades podem ser carregados/descarregados em tempo de execução sem reinicialização
+- Contraste com **microkernel** (Minix, QNX): apenas código mínimo no kernel space, todo o resto em userspace via IPC
 
 ```bash
 # List loaded modules
@@ -62,9 +62,9 @@ modinfo module_name
 uname -r
 ```
 
-## Kernel Compilation
+## Compilação do Kernel
 
-You can build your own kernel — useful for understanding or embedded systems:
+Você pode compilar seu próprio kernel — útil para entender o funcionamento ou para sistemas embarcados:
 
 ```bash
 # Get source
@@ -85,9 +85,9 @@ make modules_install
 make install
 ```
 
-## /proc and /sys — Kernel Interfaces
+## /proc e /sys — Interfaces do Kernel
 
-The kernel exposes runtime info via virtual filesystems:
+O kernel expõe informações de runtime via filesystems virtuais:
 
 ```bash
 # Process info
@@ -105,7 +105,7 @@ ls /sys/class/net/         # network interfaces
 ls /sys/block/             # block devices
 ```
 
-## Kernel Rings (CPU Protection)
+## Rings do Kernel (Proteção da CPU)
 
 ```
 Ring 0: Kernel         — full access to hardware
@@ -114,7 +114,7 @@ Ring 2: (unused in Linux)
 Ring 3: User space     — restricted, must ask kernel via syscall
 ```
 
-Modern x86 only uses Ring 0 and Ring 3. ARM uses EL0 (user) and EL1 (kernel).
+O x86 moderno usa apenas Ring 0 e Ring 3. O ARM usa EL0 (user) e EL1 (kernel).
 
 ## Related
 
@@ -122,10 +122,10 @@ Modern x86 only uses Ring 0 and Ring 3. ARM uses EL0 (user) and EL1 (kernel).
 - [[Linux/MemoryManagement]]
 - [[Linux/SystemCalls]]
 
-## Resources
+## Recursos
 
-- https://www.kernel.org (official source)
+- https://www.kernel.org (fonte oficial)
 - https://0xax.gitbooks.io/linux-insides/content/
 
-#### My commentaries
+#### Meus comentários
 - 

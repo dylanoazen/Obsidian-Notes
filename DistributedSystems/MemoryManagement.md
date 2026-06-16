@@ -1,20 +1,20 @@
 # Memory Management
 
-Memory management is about understanding **where data lives, how it gets there, and how it gets cleaned up**.
+Gerenciamento de memória é sobre entender **onde os dados vivem, como chegam lá e como são limpos**.
 
-Every program needs memory to store data while it runs. How that memory is requested, used, and released determines the performance and reliability of the system.
+Todo programa precisa de memória para armazenar dados enquanto executa. Como essa memória é requisitada, usada e liberada determina a performance e a confiabilidade do sistema.
 
 ---
 
 ## Stack vs Heap
 
-Every program has two main places to store data:
+Todo programa tem dois lugares principais para armazenar dados:
 
 ```
 ┌─────────────────────────────────┐
-│             STACK               │  ← fast, small, automatic
+│             STACK               │  ← rápida, pequena, automática
 ├─────────────────────────────────┤
-│              HEAP               │  ← slower, large, managed
+│              HEAP               │  ← mais lenta, grande, gerenciada
 └─────────────────────────────────┘
 ```
 
@@ -22,12 +22,12 @@ Every program has two main places to store data:
 
 ## Stack
 
-The stack is fast, automatic memory tied to function calls.
+A stack é memória rápida e automática vinculada a chamadas de função.
 
-- When a function is called → a stack frame is created
-- When a function returns → the stack frame is destroyed
-- No allocator involved — just a pointer moving up and down
-- Each thread has its own stack
+- Quando uma função é chamada → um stack frame é criado
+- Quando uma função retorna → o stack frame é destruído
+- Nenhum alocador envolvido — apenas um ponteiro subindo e descendo
+- Cada thread tem sua própria stack
 
 ```
 main() calls handleRequest()
@@ -35,50 +35,50 @@ main() calls handleRequest()
 
 Stack:
 ┌──────────────────┐
-│  parseCommand()  │  ← top (current function)
+│  parseCommand()  │  ← topo (função atual)
 ├──────────────────┤
 │ handleRequest()  │
 ├──────────────────┤
 │     main()       │
 └──────────────────┘
 
-parseCommand() returns → frame destroyed
-handleRequest() returns → frame destroyed
+parseCommand() retorna → frame destruído
+handleRequest() retorna → frame destruído
 ```
 
-### What lives on the stack
+### O que vive na stack
 
-- Local variables with known, fixed size
-- Function arguments and return values
-- Variables that do not outlive the function
+- Variáveis locais com tamanho fixo e conhecido
+- Argumentos de função e valores de retorno
+- Variáveis que não sobrevivem além da função
 
-**Analogy:** a whiteboard you erase after each meeting. Instant to write, instant to erase, but limited space.
+**Analogia:** um quadro branco que você apaga após cada reunião. Instantâneo para escrever, instantâneo para apagar, mas com espaço limitado.
 
 ---
 
 ## Heap
 
-The heap is a large pool of memory for data that needs to **outlive a function** or has a **size unknown at compile time**.
+A heap é um grande pool de memória para dados que precisam **sobreviver além de uma função** ou que têm **tamanho desconhecido em tempo de compilação**.
 
-- Slower to allocate — goes through a memory allocator (jemalloc, tcmalloc, etc.)
-- Lives until explicitly freed or garbage collected
-- Shared across threads
+- Mais lenta para alocar — passa por um alocador de memória (jemalloc, tcmalloc, etc.)
+- Vive até ser explicitamente liberada ou coletada pelo garbage collector
+- Compartilhada entre threads
 
-If a variable needs to survive after the function that created it returns, it must live on the heap.
+Se uma variável precisa sobreviver após o retorno da função que a criou, ela deve viver na heap.
 
-**Analogy:** a storage unit you rent. More space, but someone has to manage it — and the rent has to be paid until you leave.
+**Analogia:** um depósito que você aluga. Mais espaço, mas alguém precisa gerenciá-lo — e o aluguel precisa ser pago até você sair.
 
 ---
 
-## Manual vs Automatic Memory Management
+## Gerenciamento Manual vs Automático de Memória
 
-Different languages handle heap cleanup differently:
+Linguagens diferentes lidam com a limpeza da heap de formas distintas:
 
-| Approach | Language | How |
+| Abordagem | Linguagem | Como |
 |---|---|---|
-| **Manual** | C, C++ | Programmer calls `free()` — fast but error-prone |
-| **Garbage Collected** | Go, Java, Python | Runtime cleans up automatically |
-| **Ownership system** | Rust | Compiler enforces rules at compile time — no GC needed |
+| **Manual** | C, C++ | Programador chama `free()` — rápido mas propenso a erros |
+| **Garbage Collected** | Go, Java, Python | Runtime limpa automaticamente |
+| **Sistema de Ownership** | Rust | Compilador impõe regras em tempo de compilação — sem GC necessário |
 
 ### Manual (C / C++)
 
@@ -91,25 +91,25 @@ free(buf);                 // you must free it
 // if you use after free → undefined behavior
 ```
 
-Fast, but dangerous. Redis is written in C — every allocation is manual.
+Rápido, mas perigoso. Redis é escrito em C — cada alocação é manual.
 
 ### Garbage Collector
 
-The runtime periodically scans the heap, finds data that nothing points to anymore, and frees it automatically.
+O runtime periodicamente varre a heap, encontra dados para os quais nada mais aponta e os libera automaticamente.
 
 ```
 heap:
 [User A ✓][string ✓][int ✗][User B ✓][[]byte ✗]
-                      ↑ nothing points here    ↑ nothing points here
+                      ↑ nada aponta aqui    ↑ nada aponta aqui
 
-GC runs → frees the ✗ blocks
+GC roda → libera os blocos ✗
 ```
 
-Safer and easier, but the GC has a cost — it runs on CPU and can cause latency pauses.
+Mais seguro e mais fácil, mas o GC tem um custo — roda na CPU e pode causar pausas de latência.
 
 ### Ownership (Rust)
 
-The compiler tracks who owns each piece of memory. When the owner goes out of scope, memory is freed automatically — at compile time, with no runtime cost.
+O compilador rastreia quem possui cada pedaço de memória. Quando o dono sai do escopo, a memória é liberada automaticamente — em tempo de compilação, sem custo em runtime.
 
 ```rust
 {
@@ -120,48 +120,48 @@ The compiler tracks who owns each piece of memory. When the owner goes out of sc
 
 ---
 
-## Garbage Collector — How It Works
+## Garbage Collector — Como Funciona
 
-The most common GC algorithm is **Mark and Sweep**:
+O algoritmo de GC mais comum é o **Mark and Sweep**:
 
-**Phase 1 — Mark:**
-Starting from roots (stack variables, globals), follow all pointers and mark everything reachable:
+**Fase 1 — Mark:**
+A partir das raízes (variáveis na stack, globais), segue todos os ponteiros e marca tudo que é alcançável:
 
 ```
 roots → User{} ✓ → name string ✓
       → cache map ✓ → entries ✓
-      → (old buffer nobody points to) ✗ — never reached
+      → (old buffer nobody points to) ✗ — nunca alcançado
 ```
 
-**Phase 2 — Sweep:**
-Free everything unmarked:
+**Fase 2 — Sweep:**
+Libera tudo que não foi marcado:
 
 ```
 [User ✓][string ✓][buffer ✗ freed][map ✓][[]byte ✗ freed]
 ```
 
-### Stop-the-World vs Concurrent GC
+### Stop-the-World vs GC Concorrente
 
-Older GC implementations paused the entire program while collecting:
+Implementações mais antigas de GC pausavam o programa inteiro durante a coleta:
 
 ```
 Stop-the-world:
 ────────────────|░░░░░░░GC░░░░░░|────────────────
-program runs     everything pauses   program resumes
+programa roda    tudo pausa       programa retoma
 ```
 
-This caused latency spikes. Modern GCs (Go, JVM G1) run **concurrently** — most work happens while the program keeps running, with only brief pauses.
+Isso causava picos de latência. GCs modernos (Go, JVM G1) rodam **concorrentemente** — a maior parte do trabalho acontece enquanto o programa continua rodando, com apenas breves pausas.
 
 ---
 
 ## Memory Leaks
 
-A memory leak happens when memory is allocated but never freed — the program slowly consumes more and more RAM until it crashes or is killed.
+Um memory leak acontece quando memória é alocada mas nunca liberada — o programa consome cada vez mais RAM até travar ou ser encerrado.
 
-Common causes:
-- **Manual:** forgetting to call `free()`
-- **GC languages:** keeping a reference to data you no longer need (GC can't collect it if something still points to it)
-- **Caches without eviction:** storing data forever without a TTL
+Causas comuns:
+- **Manual:** esquecer de chamar `free()`
+- **Linguagens com GC:** manter uma referência a dados que você não precisa mais (o GC não consegue coletar se algo ainda aponta para eles)
+- **Caches sem eviction:** armazenar dados indefinidamente sem TTL
 
 ```
 // leak in a GC language — cache grows forever
@@ -174,37 +174,37 @@ func store(key string, data []byte) {
 
 ---
 
-## Stack vs Heap — Summary
+## Stack vs Heap — Resumo
 
 | | **Stack** | **Heap** |
 |---|---|---|
-| Speed | Instant | Slower (allocator + GC) |
-| Size | Small, per-thread | Large, shared |
-| Lifetime | Function scope | Until freed or GC'd |
-| Managed by | Automatically | Allocator + GC or programmer |
-| Fragmentation | None | Yes |
-| GC involvement | None | Yes |
+| Velocidade | Instantânea | Mais lenta (alocador + GC) |
+| Tamanho | Pequena, por thread | Grande, compartilhada |
+| Tempo de vida | Escopo da função | Até ser liberada ou coletada pelo GC |
+| Gerenciada por | Automaticamente | Alocador + GC ou programador |
+| Fragmentação | Nenhuma | Sim |
+| Envolvimento do GC | Nenhum | Sim |
 
 ---
 
-## Design Notes
+## Notas de Design
 
-- Stack allocations are essentially free — prefer them when possible
-- Heap allocations have cost: allocator time + future cleanup work
-- GC is not free — it runs on CPU and competes with your program
-- Memory leaks in long-running servers are fatal — they compound over time
-- Measure before optimizing — profilers show exactly where allocations happen
-
----
-
-## Language-Specific Notes
-
-- **Go** → see [[GO/MemoryManagement]]
-- **Redis (C)** → manual memory management via jemalloc, see [[Performance]]
+- Alocações na stack são essencialmente gratuitas — prefira-as quando possível
+- Alocações na heap têm custo: tempo do alocador + trabalho futuro de limpeza
+- GC não é gratuito — roda na CPU e compete com seu programa
+- Memory leaks em servidores de longa duração são fatais — se acumulam ao longo do tempo
+- Meça antes de otimizar — profilers mostram exatamente onde as alocações acontecem
 
 ---
 
-## Related Notes
+## Notas por Linguagem
+
+- **Go** → veja [[GO/MemoryManagement]]
+- **Redis (C)** → gerenciamento manual de memória via jemalloc, veja [[Performance]]
+
+---
+
+## Notas Relacionadas
 
 - [[Performance]]
 - [[Concurrency]]

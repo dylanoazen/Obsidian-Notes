@@ -70,8 +70,8 @@ $request = Request::createFromGlobals();
 ```
 
 Componentes Symfony que todo dev PHP usa (mesmo sem Symfony):
-- **HttpFoundation** — Request/Response objects
-- **Console** — CLI apps
+- **HttpFoundation** — objetos Request/Response
+- **Console** — aplicações CLI
 - **Mailer** — envio de emails
 - **Messenger** — message bus / queues
 - **Security** — autenticação e autorização
@@ -292,7 +292,7 @@ Spatie é o publisher mais importante do ecossistema Laravel:
 | spatie/laravel-activitylog | Audit log de models |
 | spatie/laravel-backup | Backup automatizado |
 | spatie/laravel-data | DTOs tipados |
-| spatie/laravel-query-builder | Filter/sort/include via query string |
+| spatie/laravel-query-builder | Filtro/ordenação/inclusão via query string |
 | spatie/laravel-settings | Settings key-value persistidas |
 
 ## Features do PHP 8.1+ que Deve Dominar
@@ -347,17 +347,17 @@ class Child extends Parent {
 
 ## Monitoramento e Debug
 
-- **Laravel Telescope** — debug dashboard (dev)
-- **Laravel Debugbar** — debug bar no browser
-- **Sentry (sentry/sentry-laravel)** — error tracking (prod)
+- **Laravel Telescope** — dashboard de debug (dev)
+- **Laravel Debugbar** — barra de debug no browser
+- **Sentry (sentry/sentry-laravel)** — monitoramento de erros (prod)
 - **Xdebug** — step debugging, profiling
 - **Clockwork** — profiling de requests
 
 ## DevOps / Deploy
 
-- **Laravel Forge** — provisioning de servers
-- **Laravel Vapor** — serverless deploy na AWS Lambda
-- **Deployer (deployer/deployer)** — deploy automation
+- **Laravel Forge** — provisionamento de servidores
+- **Laravel Vapor** — deploy serverless na AWS Lambda
+- **Deployer (deployer/deployer)** — automação de deploy
 - **Laravel Octane** — servidor de alta performance (Swoole/RoadRunner)
 
 ```php

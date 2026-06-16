@@ -1,12 +1,12 @@
 
-This section explains the semantic meaning behind the Go cache implementation.
+Esta seção explica o significado semântico por trás da implementação do cache em Go.
 
-The goal is not only to understand the syntax, but also to understand:
+O objetivo não é apenas entender a sintaxe, mas também compreender:
 - ownership
-- mutability
-- visibility
-- memory behavior
-- component boundaries
+- mutabilidade
+- visibilidade
+- comportamento de memória
+- limites de componentes
 
 ---
 
@@ -21,42 +21,42 @@ type Cache struct {
 ## Semantics
 
 ### `type Cache`
-Creates a new type in the language.
+Cria um novo tipo na linguagem.
 
-In Go, types are first-class citizens, not just classes or objects.
+Em Go, tipos são cidadãos de primeira classe, não apenas classes ou objetos.
 
 ---
 
 ### `struct`
-A struct is a group of related data.
+Uma struct é um grupo de dados relacionados.
 
-Go structs are usually about:
-- composition
-- state
-- organization
+Structs em Go geralmente tratam de:
+- composição
+- estado
+- organização
 
-not deep object-oriented hierarchies.
+e não de hierarquias profundas orientadas a objetos.
 
 ---
 
 ### `data`
-Lowercase names are private to the package.
+Nomes em minúsculo são privados ao package.
 
 ```go
 data
 ```
 
-means:
-- internal field
-- not accessible outside the package
+significa:
+- campo interno
+- não acessível fora do package
 
-Uppercase names are exported/public:
+Nomes em maiúsculo são exportados/públicos:
 
 ```go
 Data
 ```
 
-Go uses capitalization as visibility control instead of keywords like:
+Go usa a capitalização como controle de visibilidade em vez de keywords como:
 - private
 - public
 - protected
@@ -64,12 +64,12 @@ Go uses capitalization as visibility control instead of keywords like:
 ---
 
 ### `map[string]string`
-Represents a hash map:
-- dynamic
-- mutable
-- fast lookup
+Representa um hash map:
+- dinâmico
+- mutável
+- busca rápida
 
-Maps are reference-like structures internally.
+Maps são estruturas do tipo referência internamente.
 
 ---
 
@@ -82,47 +82,47 @@ func (c *Cache) Set(key, value string)
 ## Semantics
 
 ### `func`
-Defines a function.
+Define uma função.
 
 ---
 
 ### `(c *Cache)`
-This is a receiver.
+Isso é um receiver.
 
-It means:
-> "This method operates on a Cache instance."
+Significa:
+> "Este method opera em uma instância de Cache."
 
 ---
 
 ### `*Cache`
 Pointer receiver.
 
-It means:
-> "Operate on the original object in memory."
+Significa:
+> "Operar no objeto original na memória."
 
-Used when:
-- modifying state
-- avoiding unnecessary copies
-- working with shared resources
+Usado quando:
+- modificando estado
+- evitando cópias desnecessárias
+- trabalhando com recursos compartilhados
 
 ---
 
 ### `c`
-Just a short local variable name for the receiver.
+Apenas um nome de variável local curto para o receiver.
 
-Small names are common in Go when the scope is small and obvious.
+Nomes curtos são comuns em Go quando o escopo é pequeno e óbvio.
 
 ---
 
 # Pointer vs Value Receivers
 
-The important question is not:
+A questão importante não é:
 
 ```text
 "Am I reading or writing?"
 ```
 
-The real question is:
+A questão real é:
 
 ```text
 "Should this method operate on the original object?"
@@ -136,12 +136,12 @@ The real question is:
 func (c *Cache) Set()
 ```
 
-Used when:
-- modifying shared state
-- working on the original object
-- managing mutable components
+Usado quando:
+- modificando estado compartilhado
+- trabalhando no objeto original
+- gerenciando componentes mutáveis
 
-Examples:
+Exemplos:
 - SET
 - DELETE
 
@@ -153,14 +153,14 @@ Examples:
 func (p Product) ApplyDiscount()
 ```
 
-Usually used for:
-- temporary transformations
-- immutable behavior
-- calculations
-- avoiding side effects
+Geralmente usado para:
+- transformações temporárias
+- comportamento imutável
+- cálculos
+- evitar efeitos colaterais
 
-Example:
-- applying discounts without changing the original product
+Exemplo:
+- aplicar descontos sem alterar o produto original
 
 ---
 
@@ -172,29 +172,29 @@ func (c *Cache) Get(key string) (string, bool)
 
 ## Semantics
 
-Go supports multiple explicit return values.
+Go suporta múltiplos valores de retorno explícitos.
 
-Instead of:
+Em vez de:
 - exceptions
 - null
-- hidden states
+- estados ocultos
 
-Go prefers:
-- explicit values
-- explicit status checking
+Go prefere:
+- valores explícitos
+- verificação explícita de status
 
 ---
 
 ### `bool`
-Represents whether the key exists.
+Representa se a key existe.
 
-Example:
+Exemplo:
 
 ```go
 value, exists := cache.Get("name")
 ```
 
-This is very idiomatic in Go.
+Isso é muito idiomático em Go.
 
 ---
 
@@ -204,9 +204,9 @@ This is very idiomatic in Go.
 delete(c.data, key)
 ```
 
-`delete` is a built-in language function.
+`delete` é uma função built-in da linguagem.
 
-It removes an entry from the map.
+Ela remove uma entrada do map.
 
 ---
 
@@ -216,15 +216,15 @@ It removes an entry from the map.
 func NewCache() *Cache
 ```
 
-Go does not have official constructors.
+Go não tem construtores oficiais.
 
-The idiomatic convention is:
+A convenção idiomática é:
 
 ```text
 New<Type>()
 ```
 
-Example:
+Exemplo:
 
 ```go
 func NewCache() *Cache
@@ -238,9 +238,9 @@ func NewCache() *Cache
 &Cache{}
 ```
 
-The `&` operator returns the memory address of the object.
+O operador `&` retorna o endereço de memória do objeto.
 
-This creates a pointer to the struct.
+Isso cria um ponteiro para a struct.
 
 ---
 
@@ -250,27 +250,27 @@ This creates a pointer to the struct.
 make(map[string]string)
 ```
 
-Used to initialize runtime-backed structures like:
+Usado para inicializar estruturas com suporte em runtime como:
 - maps
 - slices
 - channels
 
-Without `make`, a map is `nil` and writing to it causes a panic.
+Sem `make`, um map é `nil` e escrever nele causa um panic.
 
 ---
 
-# Final Semantic Summary
+# Resumo Semântico Final
 
-This simple cache implementation already introduces:
+Esta implementação simples de cache já introduz:
 
-- custom types
-- encapsulation
-- mutable state
-- public APIs
+- tipos customizados
+- encapsulamento
+- estado mutável
+- APIs públicas
 - pointer semantics
 - ownership
-- memory behavior
-- package visibility
-- component boundaries
+- comportamento de memória
+- visibilidade de package
+- limites de componentes
 
-Even small Go programs already teach important systems engineering concepts.
+Mesmo programas pequenos em Go já ensinam conceitos importantes de engenharia de sistemas.

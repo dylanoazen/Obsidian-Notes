@@ -2,7 +2,7 @@
 
 Separação de camadas, inversão de dependência e como tornar código testável.
 
-Related: [[PHP/PHP]], [[PHP/Testing]]
+Related: [[PHP/PHP]], [[SoftwareEngineering/Testing]]
 
 ---
 
@@ -169,7 +169,7 @@ O service **não sabe** se está rodando com banco, in-memory, ou Redis. Isso é
 
 ## Related
 
-- [[PHP/Testing]]
+- [[SoftwareEngineering/Testing]]
 - [[PHP/PHP]]
 - [[PHP/Persistence]]
 

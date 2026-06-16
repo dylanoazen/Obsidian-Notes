@@ -26,12 +26,12 @@
 ## PHP — Entrevista EBANX
 
 - [ ] ⚡ [[PHP/EventLoop|Event Loop e ReactPHP]]
-- [ ] 🏗️ [[PHP/SOLID|SOLID e Injeção de Dependência]]
+- [ ] 🏗️ [[SoftwareEngineering/SOLID|SOLID e Injeção de Dependência]]
 - [ ] 🔒 [[PHP/Concurrency|Concorrência e Atomicidade]]
-- [ ] 🧪 [[PHP/Testing|Testing]]
-- [ ] 🌐 [[PHP/REST|REST e HTTP Semantics]]
-- [ ] 🔑 [[PHP/Idempotency|Idempotência]]
-- [ ] 💰 [[PHP/MoneyPattern|Representação de Dinheiro]]
+- [ ] 🧪 [[SoftwareEngineering/Testing|Testing]]
+- [ ] 🌐 [[SoftwareEngineering/REST|REST e HTTP Semantics]]
+- [ ] 🔑 [[DistributedSystems/Idempotency|Idempotência]]
+- [ ] 💰 [[SoftwareEngineering/MoneyPattern|Representação de Dinheiro]]
 - [ ] 💾 [[PHP/Persistence|Persistência e Durabilidade]]
 
 ## Sistemas Operacionais

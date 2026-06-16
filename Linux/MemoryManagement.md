@@ -1,14 +1,14 @@
 # Memory Management
 
-How Linux manages memory — virtual memory, paging, allocation, and swap.
+Como o Linux gerencia memória — memória virtual, paginação, alocação e swap.
 
 Related: [[Linux/Kernel]], [[GO/MemoryManagement|Go Memory Management]]
 
 ---
 
-## Virtual Memory
+## Memória Virtual
 
-Every process thinks it has the entire address space to itself. The kernel + MMU (Memory Management Unit) translate virtual addresses to physical addresses.
+Todo processo acredita ter o address space inteiro para si mesmo. O kernel + MMU (Memory Management Unit) traduzem endereços virtuais para endereços físicos.
 
 ```
 Process A sees:          Physical RAM:
@@ -26,18 +26,18 @@ Process B sees:          Same Physical RAM:
 └──────────────┘         └──────────────┘
 ```
 
-Benefits:
-- **Isolation**: processes can't read each other's memory
-- **Overcommit**: total virtual memory can exceed physical RAM
-- **Shared libraries**: libc loaded once in RAM, mapped into every process
+Benefícios:
+- **Isolamento**: processos não conseguem ler a memória uns dos outros
+- **Overcommit**: a memória virtual total pode exceder a RAM física
+- **Bibliotecas compartilhadas**: a libc é carregada uma vez na RAM e mapeada em todos os processos
 
-## Paging
+## Paginação
 
-Memory is divided into fixed-size **pages** (typically 4KB on x86):
+A memória é dividida em **pages** de tamanho fixo (tipicamente 4KB no x86):
 
-- **Page table**: per-process mapping of virtual → physical pages
-- **TLB** (Translation Lookaside Buffer): CPU cache for recent translations
-- **Page fault**: access to a page not in RAM → kernel loads it from disk or allocates
+- **Page table**: mapeamento por processo de páginas virtuais → físicas
+- **TLB** (Translation Lookaside Buffer): cache da CPU para traduções recentes
+- **Page fault**: acesso a uma página que não está na RAM → o kernel a carrega do disco ou aloca
 
 ```bash
 # Page size
@@ -53,9 +53,9 @@ pmap -x <pid>
 
 ## Huge Pages
 
-- Default 4KB pages mean large page tables for processes with lots of memory
-- **Huge Pages**: 2MB or 1GB pages — fewer TLB misses, better performance for large workloads
-- **Transparent Huge Pages (THP)**: kernel auto-promotes 4KB pages to 2MB when beneficial
+- Pages padrão de 4KB geram page tables grandes para processos que usam muita memória
+- **Huge Pages**: pages de 2MB ou 1GB — menos TLB misses, melhor desempenho para cargas de trabalho grandes
+- **Transparent Huge Pages (THP)**: o kernel promove automaticamente pages de 4KB para 2MB quando benéfico
 
 ```bash
 # Check THP status
@@ -65,18 +65,18 @@ cat /sys/kernel/mm/transparent_hugepage/enabled
 grep Huge /proc/meminfo
 ```
 
-## Memory Allocation
+## Alocação de Memória
 
-User space requests memory via:
-- `malloc()` → C library allocator (glibc uses ptmalloc2)
-- `brk()`/`sbrk()` → expand heap (small allocations)
-- `mmap()` → map new memory region (large allocations, file mapping)
+O user space solicita memória via:
+- `malloc()` → alocador da biblioteca C (glibc usa ptmalloc2)
+- `brk()`/`sbrk()` → expande o heap (alocações pequenas)
+- `mmap()` → mapeia uma nova região de memória (alocações grandes, mapeamento de arquivo)
 
-The kernel manages physical pages via the **buddy allocator** (powers of 2 page blocks) and **slab allocator** (efficient allocation of same-size kernel objects).
+O kernel gerencia páginas físicas via o **buddy allocator** (blocos de páginas em potências de 2) e o **slab allocator** (alocação eficiente de objetos de tamanho fixo do kernel).
 
 ## Swap
 
-When physical RAM is full, the kernel moves inactive pages to disk:
+Quando a RAM física está cheia, o kernel move páginas inativas para o disco:
 
 ```
 RAM full → find least recently used pages → write to swap → free RAM
@@ -95,11 +95,11 @@ echo 10 > /proc/sys/vm/swappiness   # prefer keeping in RAM
 
 ## OOM Killer
 
-When RAM + swap are exhausted, the kernel's **Out-Of-Memory Killer** picks a process to kill:
+Quando RAM + swap estão esgotados, o **Out-Of-Memory Killer** do kernel escolhe um processo para encerrar:
 
-- Scores each process by memory usage (higher score = more likely to be killed)
-- Check a process's OOM score: `cat /proc/<pid>/oom_score`
-- Protect a process: `echo -1000 > /proc/<pid>/oom_score_adj`
+- Atribui uma pontuação a cada processo com base no uso de memória (pontuação mais alta = mais chance de ser encerrado)
+- Verificar a pontuação OOM de um processo: `cat /proc/<pid>/oom_score`
+- Proteger um processo: `echo -1000 > /proc/<pid>/oom_score_adj`
 
 ```bash
 # View OOM logs
@@ -113,5 +113,5 @@ journalctl | grep -i "out of memory"
 - [[Linux/Kernel]]
 - [[Linux/FileSystem]]
 
-#### My commentaries
+#### Meus comentários
 - 

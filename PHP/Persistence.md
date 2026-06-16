@@ -2,7 +2,7 @@
 
 Como tornar dados duráveis — ACID, transações, locking e estratégias de migração.
 
-Related: [[PHP/Concurrency]], [[PHP/SOLID]], [[DistributedSystems/Persistence]]
+Related: [[PHP/Concurrency]], [[SoftwareEngineering/SOLID]], [[DistributedSystems/Persistence]]
 
 ---
 
@@ -10,7 +10,7 @@ Related: [[PHP/Concurrency]], [[PHP/SOLID]], [[DistributedSystems/Persistence]]
 
 > "Como você faria isso sobreviver a um restart?"
 
-A resposta: **trocar a implementação do Repository**. Se o código seguiu DIP ([[PHP/SOLID]]), é plug-and-play:
+A resposta: **trocar a implementação do Repository**. Se o código seguiu DIP ([[SoftwareEngineering/SOLID]]), é plug-and-play:
 
 ```php
 // Antes (in-memory, pra desafio)
@@ -125,10 +125,10 @@ Estado atual de A = replay dos eventos = 0 + 1000 - 300 + 500 = 1200
 
 ## Related
 
-- [[PHP/SOLID]]
+- [[SoftwareEngineering/SOLID]]
 - [[PHP/Concurrency]]
-- [[PHP/MoneyPattern]]
-- [[PHP/Idempotency]]
+- [[SoftwareEngineering/MoneyPattern]]
+- [[DistributedSystems/Idempotency]]
 - [[DistributedSystems/Persistence]]
 
 #### My commentaries

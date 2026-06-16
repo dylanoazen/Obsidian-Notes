@@ -1,31 +1,31 @@
 # Framing
 
-Framing is a technique to mark where a message starts and where it ends inside a TCP byte stream.
+Framing é uma técnica para marcar onde uma mensagem começa e onde ela termina dentro de um byte stream do [[TCP]].
 
-Since [[TCP]] does not preserve message boundaries, the application itself must define how to separate messages. Without framing, the receiver has no way to know if it received a complete message, half a message, or two messages at once.
+Como o [[TCP]] não preserva limites de mensagem, a própria aplicação deve definir como separar as mensagens. Sem framing, o receptor não tem como saber se recebeu uma mensagem completa, metade de uma mensagem ou duas mensagens ao mesmo tempo.
 
-## Framing Types
+## Tipos de Framing
 
 ### Delimiter-based
 
-Uses a special character to signal the end of a message. The most common delimiter is `\n` (newline).
+Usa um caractere especial para sinalizar o fim de uma mensagem. O delimitador mais comum é `\n` (newline).
 
 ```text
 SET name Dylan\n   ← message 1
 GET name\n         ← message 2
 ```
 
-The receiver reads byte by byte until it finds the delimiter, then processes the complete message.
+O receptor lê byte a byte até encontrar o delimitador, então processa a mensagem completa.
 
-**Used in:** Redis protocol, HTTP headers, simple TCP servers.
+**Usado em:** Redis protocol, HTTP headers, servidores TCP simples.
 
-**Downside:** The delimiter character cannot appear inside the message data.
+**Desvantagem:** O caractere delimitador não pode aparecer dentro dos dados da mensagem.
 
 ---
 
 ### Length-prefix
 
-Sends the size of the message before the message itself. The receiver reads the length first, then reads exactly that many bytes.
+Envia o tamanho da mensagem antes da própria mensagem. O receptor lê o comprimento primeiro, depois lê exatamente aquela quantidade de bytes.
 
 ```text
 [0 0 0 11] [SET name Dylan]
@@ -45,30 +45,30 @@ buf := make([]byte, length)
 io.ReadFull(conn, buf)
 ```
 
-**Used in:** gRPC, databases, most binary protocols.
+**Usado em:** gRPC, databases, a maioria dos protocolos binários.
 
-**Advantage:** Works with any data, including binary.
+**Vantagem:** Funciona com qualquer dado, incluindo binário.
 
 ---
 
 ### Fixed-size
 
-Every message is always the same size. The receiver always reads exactly N bytes.
+Cada mensagem sempre tem o mesmo tamanho. O receptor sempre lê exatamente N bytes.
 
 ```text
 [msg 1 - 64 bytes][msg 2 - 64 bytes][msg 3 - 64 bytes]
 ```
 
-**Used in:** low-level hardware protocols, some game engines.
+**Usado em:** protocolos de hardware de baixo nível, alguns game engines.
 
-**Downside:** Wastes space if messages are shorter than the fixed size.
+**Desvantagem:** Desperdiça espaço se as mensagens forem menores que o tamanho fixo.
 
 ---
 
-## Summary
+## Resumo
 
-| Type | How it works | Best for |
+| Tipo | Como funciona | Melhor para |
 |------|-------------|----------|
-| Delimiter | Special character marks the end | Text protocols, simple servers |
-| Length-prefix | Size sent before the message | Binary data, production systems |
-| Fixed-size | Every message is the same size | Known, predictable message sizes |
+| Delimiter | Caractere especial marca o fim | Protocolos de texto, servidores simples |
+| Length-prefix | Tamanho enviado antes da mensagem | Dados binários, sistemas em produção |
+| Fixed-size | Cada mensagem tem o mesmo tamanho | Tamanhos de mensagem conhecidos e previsíveis |

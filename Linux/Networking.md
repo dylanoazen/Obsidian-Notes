@@ -1,12 +1,12 @@
 # Networking
 
-How Linux handles network communication — from the TCP/IP stack to sockets.
+Como o Linux lida com comunicação de rede — da pilha TCP/IP aos sockets.
 
 Related: [[Linux/Kernel]], [[Network/Protocols]]
 
 ---
 
-## The Network Stack
+## A Pilha de Rede
 
 ```
 Application layer     HTTP, DNS, SSH
@@ -20,11 +20,11 @@ Link layer            Ethernet, ARP, NIC driver
 Hardware              Network Interface Card (NIC)
 ```
 
-Each layer adds/removes headers as packets move through the stack.
+Cada camada adiciona/remove headers conforme os pacotes percorrem a pilha.
 
 ## Sockets
 
-Sockets are the API for network communication:
+Sockets são a API para comunicação de rede:
 
 ```
 Server:                          Client:
@@ -45,14 +45,14 @@ netstat -tlnp      # legacy equivalent
 
 ## Network Namespaces
 
-Each namespace has its own:
-- Network interfaces
-- IP addresses
-- Routing table
-- Firewall rules (iptables/nftables)
-- Socket bindings
+Cada namespace possui seus próprios:
+- Interfaces de rede
+- Endereços IP
+- Tabela de roteamento
+- Regras de firewall (iptables/nftables)
+- Bindings de socket
 
-This is how containers get isolated networking.
+É assim que containers obtêm isolamento de rede.
 
 ```bash
 # Create network namespace
@@ -68,7 +68,7 @@ ip link set veth1 netns myns
 
 ## iptables / nftables
 
-Kernel-level packet filtering and NAT:
+Filtragem de pacotes e NAT no nível do kernel:
 
 ```bash
 # View rules
@@ -81,9 +81,9 @@ iptables -A INPUT -p tcp --dport 8080 -j DROP
 iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 ```
 
-nftables is the modern replacement with cleaner syntax.
+nftables é o substituto moderno com sintaxe mais limpa.
 
-## Key Files and Commands
+## Arquivos e Comandos Principais
 
 ```bash
 # DNS resolution
@@ -113,5 +113,5 @@ curl -v https://example.com
 - [[Network/TCP]]
 - [[Network/Protocols]]
 
-#### My commentaries
+#### Meus comentários
 - 

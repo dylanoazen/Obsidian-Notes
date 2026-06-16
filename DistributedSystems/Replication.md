@@ -1,34 +1,34 @@
 # Replication
 
-Replication is the process of keeping data synchronized across multiple nodes. A primary node receives writes and one or more replicas copy the data.
+Replication é o processo de manter dados sincronizados entre múltiplos nós. Um nó primary recebe escritas e uma ou mais réplicas copiam os dados.
 
 ---
 
-## Core Terms
+## Termos Principais
 
-- **Primary (master):** node that accepts writes.
-- **Replica:** node that receives a copy of data from the primary.
-- **Replication stream:** ordered sequence of changes sent from primary to replicas.
-- **Offset:** current position in the replication stream.
-- **Backlog:** buffer of recent changes kept by the primary.
+- **Primary (master):** nó que aceita escritas.
+- **Replica:** nó que recebe uma cópia dos dados do primary.
+- **Replication stream:** sequência ordenada de mudanças enviadas do primary para as réplicas.
+- **Offset:** posição atual no replication stream.
+- **Backlog:** buffer de mudanças recentes mantido pelo primary.
 
 ---
 
 ## Offsets
 
-An **offset** is the position in the replication stream — a single integer that grows monotonically as commands are processed.
+Um **offset** é a posição no replication stream — um único inteiro que cresce monotonicamente conforme os comandos são processados.
 
-- Primary keeps a current offset (advances with every write)
-- Each replica tracks its own offset (advances as it applies commands)
-- If a replica reconnects, it sends its last known offset to the primary
+- O primary mantém um offset atual (avança a cada escrita)
+- Cada réplica rastreia seu próprio offset (avança conforme aplica comandos)
+- Se uma réplica se reconecta, ela envia seu último offset conhecido para o primary
 
-The primary then compares offsets:
-- Gap is small and still in backlog → **partial resync** (send only the missing commands)
-- Gap is too large or offset not found → **full resync** (send a full RDB snapshot)
+O primary então compara os offsets:
+- Gap é pequeno e ainda está no backlog → **partial resync** (envia apenas os comandos faltantes)
+- Gap é muito grande ou offset não encontrado → **full resync** (envia um snapshot RDB completo)
 
-This allows incremental catch-up instead of always copying everything from scratch.
+Isso permite recuperação incremental em vez de sempre copiar tudo do zero.
 
-### How the offset works step by step
+### Como o offset funciona passo a passo
 
 ```
 Primary offset: 100
@@ -37,140 +37,140 @@ Primary offset: 100
   [write: SET age 25]       → primary offset becomes 102
   [write: SET name "Maria"] → primary offset becomes 103
 
-Replica was at offset 101 and reconnects:
-  → asks: "give me everything after 101"
-  → primary sends: commands at 102 and 103
-  → replica applies them, now also at offset 103 ✓
+Réplica estava no offset 101 e se reconecta:
+  → pergunta: "me dê tudo depois do 101"
+  → primary envia: comandos em 102 e 103
+  → réplica os aplica, agora também em offset 103 ✓
 ```
 
-### Why offset and not a timestamp?
+### Por que offset e não timestamp?
 
-Timestamps have problems in distributed systems — clocks drift between machines. An offset is just a counter: deterministic, unambiguous, and always increasing. There is no disagreement about what "103" means.
+Timestamps têm problemas em sistemas distribuídos — os relógios divergem entre máquinas. Um offset é apenas um contador: determinístico, sem ambiguidade e sempre crescente. Não há discordância sobre o que "103" significa.
 
 ---
 
 ## Backlog
 
-A **backlog** is a buffer of recent changes kept by the primary.
+Um **backlog** é um buffer de mudanças recentes mantido pelo primary.
 
-- Stores the last N bytes/commands of the replication stream
-- Enables replicas to catch up after a short disconnect
-- If the replica is too far behind, a full resync is required
+- Armazena os últimos N bytes/comandos do replication stream
+- Permite que réplicas se recuperem após uma breve desconexão
+- Se a réplica estiver muito atrás, um full resync é necessário
 
-Backlog size is a trade-off: memory vs recovery speed.
+O tamanho do backlog é um trade-off: memória vs velocidade de recuperação.
 
 ---
 
 ## Full Resync vs Partial Resync
 
-- **Partial resync:** replica requests missing data starting at its offset
-- **Full resync:** replica discards state and copies a full snapshot
+- **Partial resync:** a réplica requisita os dados faltantes a partir do seu offset
+- **Full resync:** a réplica descarta o estado e copia um snapshot completo
 
-Partial resync is faster and cheaper, but only works if the backlog still contains the missing data.
-
----
-
-## Minimal Flow (Concept)
-
-1) Replica connects to primary
-2) Replica sends its last known offset
-3) Primary decides:
-   - If backlog covers the gap -> send missing data (partial resync)
-   - Else -> send full snapshot (full resync)
-4) Replica applies changes and updates its offset
+Partial resync é mais rápido e mais barato, mas só funciona se o backlog ainda contém os dados faltantes.
 
 ---
 
-## Failure Scenarios
+## Fluxo Mínimo (Conceito)
 
-- **Network drop:** replica reconnects using its last offset
-- **Long outage:** backlog too small -> full resync
-- **Lag:** replica behind -> reads may be stale
+1) Réplica se conecta ao primary
+2) Réplica envia seu último offset conhecido
+3) Primary decide:
+   - Se o backlog cobre o gap -> envia os dados faltantes (partial resync)
+   - Caso contrário -> envia snapshot completo (full resync)
+4) Réplica aplica as mudanças e atualiza seu offset
+
+---
+
+## Cenários de Falha
+
+- **Queda de rede:** réplica se reconecta usando seu último offset
+- **Longa indisponibilidade:** backlog muito pequeno -> full resync
+- **Lag:** réplica atrasada -> leituras podem estar desatualizadas
 
 ## Failover
 
-Failover is when the primary dies and a replica automatically takes its place.
+Failover é quando o primary morre e uma réplica automaticamente ocupa seu lugar.
 
 ```
-Before:
+Antes:
 Primary (alive)  →  Replica
 
-Primary dies ↓
+Primary morre ↓
 
-After:
-Primary (dead)      Replica → promoted to new Primary
+Depois:
+Primary (dead)      Replica → promovida a novo Primary
 ```
 
-### How it works
+### Como funciona
 
-1. Primary stops responding
-2. The system detects it is down
-3. The replica with the least lag is **promoted** to primary
-4. The application starts writing to it
-5. When the old primary comes back, it becomes a replica of the new one
+1. Primary para de responder
+2. O sistema detecta que está fora do ar
+3. A réplica com menor lag é **promovida** a primary
+4. A aplicação começa a escrever nela
+5. Quando o antigo primary volta, ele se torna uma réplica do novo
 
-### Without failover vs with failover
+### Sem failover vs com failover
 
-| | **Without failover** | **With failover** |
+| | **Sem failover** | **Com failover** |
 |---|---|---|
-| Primary dies | App stops until someone fixes it manually | App recovers in seconds, automatically |
-| Human needed? | Yes | No |
+| Primary morre | App para até alguém consertar manualmente | App se recupera em segundos, automaticamente |
+| Requer humano? | Sim | Não |
 
-### Who manages failover in Redis
+### Quem gerencia failover no Redis
 
-- **Redis Sentinel** — monitors the primary, triggers failover, notifies the app of the new primary address
-- **Redis Cluster** — built-in failover as part of the cluster protocol
+- **Redis Sentinel** — monitora o primary, dispara failover, notifica a aplicação do novo endereço do primary
+- **Redis Cluster** — failover integrado como parte do protocolo de cluster
 
-> Replication is the mechanism. Failover is what replication makes possible.
+> Replication é o mecanismo. Failover é o que replication torna possível.
 
 ---
 
-## When to Use Replication
+## Quando Usar Replication
 
-Replication makes sense when:
+Replication faz sentido quando:
 
-- **Data loss has real cost** — shopping carts, queues, application state that cannot be trivially rebuilt
-- **Read throughput needs to scale** — distribute reads across replicas, keep writes on the primary
-- **Availability matters** — if the primary goes down, a replica takes over and the system keeps running
+- **Perda de dados tem custo real** — carrinhos de compra, filas, estado da aplicação que não pode ser trivialmente reconstruído
+- **Throughput de leitura precisa escalar** — distribua leituras entre réplicas, mantenha escritas no primary
+- **Disponibilidade importa** — se o primary cair, uma réplica assume e o sistema continua funcionando
 
-A single Redis instance is fine when the data is purely a disposable cache — if it dies, you rebuild from the source of truth elsewhere.
+Uma única instância Redis é suficiente quando os dados são puramente um cache descartável — se morrer, você reconstrói a partir da fonte da verdade em outro lugar.
 
-> Set up replication when the cost of losing the data exceeds the cost of running two instances.
+> Configure replication quando o custo de perder os dados supera o custo de rodar duas instâncias.
 
 ## Replication vs Horizontal Scaling
 
-These are often confused but solve different problems:
+Frequentemente confundidos, mas resolvem problemas diferentes:
 
 | | **Replication** | **Horizontal Scaling** |
 |---|---|---|
-| What is copied | Data (state) | The application (logic) |
-| Example | Redis primary + replicas | 10 containers of your backend |
-| Why | Survival + read scaling | Throughput + availability |
-| Needs sync? | Yes — replicas must stay in sync | No — each instance is independent |
+| O que é copiado | Dados (estado) | A aplicação (lógica) |
+| Exemplo | Redis primary + réplicas | 10 containers do seu backend |
+| Por quê | Sobrevivência + escala de leitura | Throughput + disponibilidade |
+| Precisa de sincronização? | Sim — réplicas precisam ficar em sincronia | Não — cada instância é independente |
 
-Your **backend** (the application) you scale by adding more instances — no replication needed, because it is **stateless**: it does not hold state, it just processes requests. Any instance can handle any request.
+Seu **backend** (a aplicação) você escala adicionando mais instâncias — sem replication necessária, porque é **stateless**: não mantém estado, apenas processa requisições. Qualquer instância pode lidar com qualquer requisição.
 
-Your **Redis** you replicate because it is **stateful**: it *is* the state. If it dies without a replica, the data is gone.
+Seu **Redis** você replica porque é **stateful**: ele *é* o estado. Se morrer sem uma réplica, os dados se foram.
 
-> Stateless things you scale. Stateful things you replicate.
+> Coisas stateless você escala. Coisas stateful você replica.
 
-### Horizontal Scaling in Practice
+### Horizontal Scaling na Prática
 
-When your backend is under heavy load, you scale it by launching more instances — more containers, more processes, more machines. This works because the backend is **stateless**: every request carries everything it needs (token, body, params), so any instance can handle any request.
+Quando seu backend está sob carga pesada, você o escala lançando mais instâncias — mais containers, mais processos, mais máquinas. Isso funciona porque o backend é **stateless**: cada requisição carrega tudo que precisa (token, body, params), então qualquer instância pode lidar com qualquer requisição.
 
 ```
-Before:
-[Container 1 - Backend]  ← overloaded
+Antes:
+[Container 1 - Backend]  ← sobrecarregado
 
-After:
+Depois:
 [Container 1 - Backend]
-[Container 2 - Backend]  ← same app, more instances
+[Container 2 - Backend]  ← mesma aplicação, mais instâncias
 [Container 3 - Backend]
          ↑
-    Load Balancer distributes requests across them
+    Load Balancer distribui requisições entre eles
 ```
 
-State lives **outside** the containers:
+O estado vive **fora** dos containers:
 
 ```
 [Container 1]  ↘
@@ -178,30 +178,30 @@ State lives **outside** the containers:
 [Container 3]  ↗
 ```
 
-All containers read and write to the same Redis and the same database. None of them store anything locally.
+Todos os containers leem e escrevem no mesmo Redis e no mesmo banco de dados. Nenhum deles armazena nada localmente.
 
-This is exactly why Redis replication matters at scale — if 3 containers depend on a single Redis and it dies, all 3 stop. Replication ensures Redis survives.
+É exatamente por isso que replication do Redis importa em escala — se 3 containers dependem de um único Redis e ele morre, os 3 param. Replication garante que o Redis sobreviva.
 
-> You scale the backend horizontally because it is stateless.
-> You replicate Redis because it carries the state of all of them.
+> Você escala o backend horizontalmente porque é stateless.
+> Você replica o Redis porque ele carrega o estado de todos eles.
 
-## Design Notes
+## Notas de Design
 
-- Offsets are sequence positions, not timestamps
-- Replication is often async; replicas can lag behind
-- If backlog is smaller than the write rate over the disconnect window, full resync is inevitable
-- These concepts (offset, backlog, partial/full resync) only matter when something breaks — on the happy path, the primary just streams commands to replicas continuously and offsets stay in sync
+- Offsets são posições de sequência, não timestamps
+- Replication costuma ser assíncrona; réplicas podem ficar atrás
+- Se o backlog for menor que a taxa de escrita durante a janela de desconexão, full resync é inevitável
+- Esses conceitos (offset, backlog, partial/full resync) só importam quando algo quebra — no caminho feliz, o primary apenas transmite comandos para as réplicas continuamente e os offsets ficam em sincronia
 
 ---
 
-## Minimal Protocol Sketch
+## Esboço Mínimo do Protocolo
 
 - Replica -> Primary: `PSYNC <replica_id> <offset>`
-- Primary -> Replica: `+CONTINUE <offset>` or `+FULLRESYNC <offset>`
-- Primary -> Replica: stream of writes (each write advances offset)
+- Primary -> Replica: `+CONTINUE <offset>` ou `+FULLRESYNC <offset>`
+- Primary -> Replica: stream de escritas (cada escrita avança o offset)
 ---
 
-## Related Notes
+## Notas Relacionadas
 
 - [[Persistence]] — RDB, AOF, e como se conectam com replicação
 - [[Concurrency]]

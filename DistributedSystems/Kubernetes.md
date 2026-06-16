@@ -1,177 +1,177 @@
 # Kubernetes
 
-Kubernetes (K8s) is a container orchestration platform — it manages where and how your containers run across multiple machines.
+Kubernetes (K8s) é uma plataforma de orquestração de containers — ela gerencia onde e como seus containers rodam em múltiplas máquinas.
 
 ---
 
-## The Problem It Solves
+## O Problema que Resolve
 
-Docker lets you run a container on one machine. But in production you have questions Docker alone cannot answer:
+Docker permite rodar um container em uma máquina. Mas em produção você tem perguntas que o Docker sozinho não consegue responder:
 
-- What if that machine dies?
-- How do I run 10 copies of my backend?
-- How do I update my app without downtime?
-- How do containers talk to each other?
+- E se essa máquina morrer?
+- Como rodo 10 cópias do meu backend?
+- Como atualizo minha aplicação sem downtime?
+- Como os containers se comunicam entre si?
 
-Kubernetes answers all of these.
+Kubernetes responde a tudo isso.
 
-**Analogy:** Docker is a shipping container. Kubernetes is the port that decides which ship carries which container, handles damaged ships, and keeps everything moving.
+**Analogia:** Docker é um container de carga. Kubernetes é o porto que decide qual navio carrega qual container, lida com navios danificados e mantém tudo funcionando.
 
 ---
 
-## Core Concepts
+## Conceitos Fundamentais
 
 ### Cluster
 
-A **cluster** is the full Kubernetes environment — a set of machines working together.
+Um **cluster** é o ambiente Kubernetes completo — um conjunto de máquinas trabalhando juntas.
 
 ```
 Cluster
-├── Control Plane (the brain)
-└── Nodes (the workers)
+├── Control Plane (o cérebro)
+└── Nodes (os trabalhadores)
 ```
 
 ### Node
 
-A **node** is a machine (physical or virtual) that runs your containers. You can have many nodes in a cluster.
+Um **node** é uma máquina (física ou virtual) que roda seus containers. Você pode ter muitos nodes em um cluster.
 
 ### Pod
 
-A **pod** is the smallest deployable unit in Kubernetes — a wrapper around one or more containers.
+Um **pod** é a menor unidade implantável no Kubernetes — um wrapper em torno de um ou mais containers.
 
 ```
 Pod
-└── Container (your app)
+└── Container (sua aplicação)
 ```
 
-- Pods are ephemeral — they can die and be replaced at any time
-- Each pod gets its own IP address inside the cluster
-- If a pod dies, Kubernetes creates a new one automatically
+- Pods são efêmeros — podem morrer e ser substituídos a qualquer momento
+- Cada pod recebe seu próprio endereço IP dentro do cluster
+- Se um pod morre, o Kubernetes cria um novo automaticamente
 
 ### Deployment
 
-A **deployment** tells Kubernetes how many copies (replicas) of your pod to keep running at all times.
+Um **deployment** diz ao Kubernetes quantas cópias (réplicas) do seu pod manter em execução o tempo todo.
 
 ```yaml
-replicas: 3  ← always keep 3 pods running
+replicas: 3  ← mantenha sempre 3 pods rodando
 ```
 
-If one pod dies, the deployment notices and creates a new one. You declare the desired state — Kubernetes figures out how to get there.
+Se um pod morre, o deployment percebe e cria um novo. Você declara o estado desejado — o Kubernetes descobre como chegar lá.
 
 ### Service
 
-A **service** is a stable network endpoint that sits in front of your pods.
+Um **service** é um endpoint de rede estável que fica na frente dos seus pods.
 
-Since pods come and go (new IPs each time), a service gives you a fixed address that always routes to healthy pods.
+Como pods vêm e vão (novos IPs a cada vez), um service fornece um endereço fixo que sempre roteia para pods saudáveis.
 
 ```
-Client → Service (fixed IP) → Pod 1
-                            → Pod 2
-                            → Pod 3
+Client → Service (IP fixo) → Pod 1
+                           → Pod 2
+                           → Pod 3
 ```
 
-**Analogy:** the service is the receptionist — you always call the same number, and she routes you to whoever is available.
+**Analogia:** o service é a recepcionista — você sempre liga para o mesmo número, e ela te direciona para quem está disponível.
 
 ### Ingress
 
-An **ingress** exposes your services to the outside world (internet).
+Um **ingress** expõe seus services para o mundo externo (internet).
 
 ```
 Internet → Ingress → Service → Pods
 ```
 
-It handles routing, TLS termination, and domain-based routing (e.g. `api.myapp.com` → backend service).
+Ele cuida de roteamento, terminação TLS e roteamento baseado em domínio (ex.: `api.myapp.com` → backend service).
 
 ---
 
-## How It Connects to What You Already Know
+## Como Se Conecta ao que Você Já Conhece
 
-You studied horizontal scaling — adding more backend instances when under load. Kubernetes is what manages that in production:
+Você estudou horizontal scaling — adicionar mais instâncias de backend sob carga. Kubernetes é o que gerencia isso em produção:
 
 ```
-High traffic detected
-→ Kubernetes scales Deployment from 3 to 10 pods automatically
-→ Service routes traffic across all 10
-→ Traffic drops → scales back to 3
+Alto tráfego detectado
+→ Kubernetes escala o Deployment de 3 para 10 pods automaticamente
+→ Service roteia o tráfego entre os 10
+→ Tráfego cai → escala de volta para 3
 ```
 
-This is called **autoscaling**.
+Isso se chama **autoscaling**.
 
 ---
 
-## Desired State vs Actual State
+## Estado Desejado vs Estado Real
 
-This is the core philosophy of Kubernetes:
+Esta é a filosofia central do Kubernetes:
 
-You describe **what you want** (desired state), Kubernetes figures out **how to make it happen** (actual state).
+Você descreve **o que quer** (estado desejado), o Kubernetes descobre **como fazer acontecer** (estado real).
 
 ```
-You say:   "I want 3 replicas of my backend running"
-K8s does:  creates pods, monitors them, replaces dead ones
+Você diz:   "Quero 3 réplicas do meu backend rodando"
+K8s faz:    cria pods, monitora, substitui os que morrem
 ```
 
-You never say "start this container on that machine" — you declare intent and Kubernetes acts.
+Você nunca diz "inicie este container naquela máquina" — você declara a intenção e o Kubernetes age.
 
 ---
 
-## Key Objects Summary
+## Resumo dos Objetos Principais
 
-| Object | What it does |
+| Objeto | O que faz |
 |---|---|
-| Pod | Runs your container |
-| Deployment | Manages how many pods run and keeps them healthy |
-| Service | Stable network access to pods |
-| Ingress | Exposes services to the internet |
-| ConfigMap | Stores configuration (non-sensitive) |
-| Secret | Stores sensitive data (passwords, tokens) |
-| Namespace | Logical isolation within a cluster |
+| Pod | Roda seu container |
+| Deployment | Gerencia quantos pods rodam e os mantém saudáveis |
+| Service | Acesso de rede estável aos pods |
+| Ingress | Expõe services para a internet |
+| ConfigMap | Armazena configurações (não sensíveis) |
+| Secret | Armazena dados sensíveis (senhas, tokens) |
+| Namespace | Isolamento lógico dentro de um cluster |
 
 ---
 
-## Rolling Updates — Zero Downtime Deploys
+## Rolling Updates — Deploys sem Downtime
 
-When you deploy a new version of your app, Kubernetes updates pods one at a time:
+Quando você faz deploy de uma nova versão da sua aplicação, o Kubernetes atualiza os pods um por vez:
 
 ```
 v1 v1 v1 v1
-→ replace one at a time
+→ substitui um por vez
 v2 v1 v1 v1
 v2 v2 v1 v1
 v2 v2 v2 v1
 v2 v2 v2 v2
 ```
 
-At no point is the app fully down. If the new version is broken, Kubernetes rolls back automatically.
+Em nenhum momento a aplicação fica completamente fora do ar. Se a nova versão estiver quebrada, o Kubernetes faz rollback automaticamente.
 
 ---
 
-## Kubernetes and Redis
+## Kubernetes e Redis
 
-In your MiniRedisGo context:
+No contexto do MiniRedisGo:
 
 ```
 [Backend Pods x3]  →  Redis Service  →  Redis Pod (primary)
                                       →  Redis Pod (replica)
 ```
 
-- Your backend scales horizontally across pods
-- Redis runs as a stateful workload with replication
-- The Service ensures backends always find Redis at the same address
+- Seu backend escala horizontalmente entre os pods
+- Redis roda como uma carga de trabalho stateful com replicação
+- O Service garante que os backends sempre encontrem o Redis no mesmo endereço
 
-Redis in Kubernetes typically uses a **StatefulSet** instead of a Deployment — because Redis pods need stable identities and persistent storage, unlike stateless backends.
-
----
-
-## Design Notes
-
-- Kubernetes does not build your containers — that is Docker's job
-- K8s manages state at the infrastructure level, not the application level
-- `kubectl` is the CLI to interact with a cluster
-- Kubernetes is complex — managed versions (GKE, EKS, AKS) hide most of the operational burden
+Redis no Kubernetes tipicamente usa um **StatefulSet** em vez de um Deployment — porque os pods do Redis precisam de identidades estáveis e armazenamento persistente, ao contrário de backends stateless.
 
 ---
 
-## Common kubectl Commands
+## Notas de Design
+
+- Kubernetes não constrói seus containers — esse é o trabalho do Docker
+- K8s gerencia o estado no nível de infraestrutura, não no nível de aplicação
+- `kubectl` é a CLI para interagir com um cluster
+- Kubernetes é complexo — versões gerenciadas (GKE, EKS, AKS) escondem a maior parte do peso operacional
+
+---
+
+## Comandos kubectl Comuns
 
 ```bash
 kubectl get pods                    # list running pods
@@ -184,7 +184,7 @@ kubectl apply -f deployment.yaml    # apply a config file
 
 ---
 
-## Related Notes
+## Notas Relacionadas
 
 - [[Replication]]
 - [[SecurityAuth]]

@@ -1,129 +1,129 @@
 # Expiration / TTL
 
-Expiration (TTL) is the ability to set a time limit on a key. After the TTL, the key is removed automatically.
+Expiration (TTL) é a capacidade de definir um limite de tempo para uma chave. Após o TTL, a chave é removida automaticamente.
 
 ---
 
-## Key Concepts
+## Conceitos Principais
 
-- **TTL (Time To Live):** how long a key should exist.
-- **Expire time:** absolute timestamp when the key becomes invalid.
-- **Expired key:** a key whose TTL has passed.
+- **TTL (Time To Live):** por quanto tempo uma chave deve existir.
+- **Expire time:** timestamp absoluto em que a chave se torna inválida.
+- **Expired key:** uma chave cujo TTL já passou.
 
 ---
 
-## Example (10s TTL, read at 12s)
+## Exemplo (TTL de 10s, leitura em 12s)
 
-- Key is set with TTL = 10 seconds.
-- If the client reads the key after 12 seconds, it is already expired.
-- The server deletes it and returns "missing".
+- A chave é definida com TTL = 10 segundos.
+- Se o cliente ler a chave após 12 segundos, ela já está expirada.
+- O servidor a deleta e retorna "ausente".
 
 ---
 
 ## Lazy Expiration
 
-**Lazy expire** means keys are removed only when they are accessed.
+**Lazy expire** significa que as chaves são removidas apenas quando são acessadas.
 
-**How it works:**
-- Client requests a key
-- Server checks if TTL has expired
-- If expired, delete and return missing
+**Como funciona:**
+- Cliente requisita uma chave
+- Servidor verifica se o TTL expirou
+- Se expirou, deleta e retorna ausente
 
-**Pros:**
-- Very cheap and simple
-- No background work
+**Prós:**
+- Muito barato e simples
+- Sem trabalho em background
 
-**Cons:**
-- Expired keys can stay in memory if never accessed
+**Contras:**
+- Chaves expiradas podem permanecer na memória se nunca forem acessadas
 
 ---
 
 ## Active Expiration
 
-**Active expire** means the server periodically scans keys and removes expired ones.
+**Active expire** significa que o servidor periodicamente varre as chaves e remove as expiradas.
 
-**How it works:**
-- Timer runs every N milliseconds
-- Random sample of keys is checked
-- Expired keys are deleted
+**Como funciona:**
+- Timer roda a cada N milissegundos
+- Uma amostra aleatória de chaves é verificada
+- Chaves expiradas são deletadas
 
-**Pros:**
-- Frees memory even if keys are never accessed
+**Prós:**
+- Libera memória mesmo que as chaves nunca sejam acessadas
 
-**Cons:**
-- Background cost (CPU)
-- Needs tuning to avoid latency spikes
+**Contras:**
+- Custo em background (CPU)
+- Precisa de ajuste fino para evitar picos de latência
 
 ---
 
-## Hybrid Approach
+## Abordagem Híbrida
 
-A common strategy is to use **both**:
-- Lazy expire on access
-- Active expire in background
+Uma estratégia comum é usar **ambas**:
+- Lazy expire no acesso
+- Active expire em background
 
-This balances correctness and performance.
+Isso equilibra corretude e performance.
 
 ---
 
 ## Eviction Policies
 
-Eviction happens **when memory is full**, not just when keys expire.
+Eviction acontece **quando a memória está cheia**, não apenas quando as chaves expiram.
 
-Common policies:
+Políticas comuns:
 
 - **noeviction**
-  - Reject new writes when memory is full
+  - Rejeita novas escritas quando a memória está cheia
 
 - **allkeys-lru**
-  - Remove least recently used key (any key)
+  - Remove a chave menos recentemente usada (qualquer chave)
 
 - **allkeys-lfu**
-  - Remove least frequently used key (any key)
+  - Remove a chave menos frequentemente usada (qualquer chave)
 
 - **allkeys-random**
-  - Remove random key
+  - Remove uma chave aleatória
 
 - **volatile-lru**
-  - Remove least recently used key **with TTL**
+  - Remove a chave menos recentemente usada **com TTL**
 
 - **volatile-lfu**
-  - Remove least frequently used key **with TTL**
+  - Remove a chave menos frequentemente usada **com TTL**
 
 - **volatile-random**
-  - Remove random key **with TTL**
+  - Remove uma chave aleatória **com TTL**
 
 - **volatile-ttl**
-  - Remove key with the **shortest remaining TTL**
+  - Remove a chave com o **menor TTL restante**
 
 ---
 
-## Implementation Model (Concept)
+## Modelo de Implementação (Conceito)
 
-You can store TTLs in a separate map:
+Você pode armazenar TTLs em um mapa separado:
 
 ```
 store:   map[string]string
 expires: map[string]time.Time
 ```
 
-Check on read:
-- If key has TTL and it expired -> delete and return missing
+Verificação na leitura:
+- Se a chave tem TTL e ele expirou -> deleta e retorna ausente
 
-Background cleanup:
-- On a timer, scan a sample of keys and remove expired
-
----
-
-## Quick Notes
-
-- TTL is not a promise of exact time, only an upper bound
-- Lazy expire ensures correctness on access
-- Active expire ensures memory does not fill with dead keys
+Limpeza em background:
+- Em um timer, varre uma amostra de chaves e remove as expiradas
 
 ---
 
-## Terms to Remember
+## Notas Rápidas
+
+- TTL não é uma promessa de tempo exato, apenas um limite superior
+- Lazy expire garante corretude no acesso
+- Active expire garante que a memória não encha com chaves mortas
+
+---
+
+## Termos para Lembrar
 
 - TTL
 - Expire time

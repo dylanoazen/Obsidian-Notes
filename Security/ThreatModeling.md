@@ -1,36 +1,36 @@
 # Threat Modeling
 
-A structured approach to identifying and addressing security threats before they become vulnerabilities.
+Uma abordagem estruturada para identificar e endereçar ameaças de segurança antes que se tornem vulnerabilidades.
 
 ---
 
-## What is Threat Modeling?
+## O Que é Threat Modeling?
 
-Asking four questions about your system:
+Fazer quatro perguntas sobre o seu sistema:
 
-1. **What are we building?** (scope, architecture)
-2. **What can go wrong?** (threats)
-3. **What are we going to do about it?** (mitigations)
-4. **Did we do a good job?** (validation)
+1. **O que estamos construindo?** (escopo, arquitetura)
+2. **O que pode dar errado?** (ameaças)
+3. **O que vamos fazer a respeito?** (mitigações)
+4. **Fizemos um bom trabalho?** (validação)
 
-Do it early — designing security in is cheaper than patching it later.
+Faça cedo — projetar a segurança desde o início é mais barato do que corrigir depois.
 
 ## STRIDE
 
-Microsoft's threat classification model:
+O modelo de classificação de ameaças da Microsoft:
 
-| Threat | Definition | Example |
+| Ameaça | Definição | Exemplo |
 |--------|-----------|---------|
-| **S**poofing | Pretending to be someone else | Stolen JWT, forged email |
-| **T**ampering | Modifying data | Man-in-the-middle, SQL injection |
-| **R**epudiation | Denying an action | Deleting logs, unsigned transactions |
-| **I**nformation Disclosure | Leaking data | Exposed S3 bucket, verbose error |
-| **D**enial of Service | Making service unavailable | DDoS, resource exhaustion |
-| **E**levation of Privilege | Gaining unauthorized access | Container escape, IDOR |
+| **S**poofing | Fingir ser outra pessoa | JWT roubado, e-mail forjado |
+| **T**ampering | Modificar dados | Man-in-the-middle, SQL injection |
+| **R**epudiation | Negar uma ação | Deletar logs, transações não assinadas |
+| **I**nformation Disclosure | Vazar dados | Bucket S3 exposto, erro verboso |
+| **D**enial of Service | Tornar o serviço indisponível | DDoS, esgotamento de recursos |
+| **E**levation of Privilege | Obter acesso não autorizado | Container escape, IDOR |
 
-## The Process
+## O Processo
 
-### Step 1: Diagram the System
+### Passo 1: Diagrame o Sistema
 
 ```
 User ──HTTPS──► Load Balancer ──► API Server ──► Database
@@ -40,41 +40,41 @@ User ──HTTPS──► Load Balancer ──► API Server ──► Database
                                       └──► External Payment API
 ```
 
-Draw:
-- Trust boundaries (where security context changes)
-- Data flows (what moves where)
-- Data stores (where sensitive data lives)
-- External entities (users, third-party services)
+Desenhe:
+- Fronteiras de confiança (onde o contexto de segurança muda)
+- Fluxos de dados (o que se move para onde)
+- Armazenamentos de dados (onde dados sensíveis ficam)
+- Entidades externas (usuários, serviços de terceiros)
 
-### Step 2: Identify Threats (per component)
+### Passo 2: Identifique Ameaças (por componente)
 
-For each component and data flow, apply STRIDE:
+Para cada componente e fluxo de dados, aplique STRIDE:
 
 ```
 API Server:
-  [S] Spoofing   → attacker uses stolen API key
-  [T] Tampering  → modify request body without validation
-  [I] Info Disc  → stack trace in error response
-  [E] Elevation  → IDOR: change user_id in request to access other accounts
+  [S] Spoofing   → atacante usa API key roubada
+  [T] Tampering  → modificar o corpo da requisição sem validação
+  [I] Info Disc  → stack trace na resposta de erro
+  [E] Elevation  → IDOR: alterar user_id na requisição para acessar outras contas
 
 Database:
   [T] Tampering  → SQL injection
-  [I] Info Disc  → unencrypted backups
-  [D] DoS        → slow query exhausts connections
+  [I] Info Disc  → backups não criptografados
+  [D] DoS        → query lenta esgota conexões
 ```
 
-### Step 3: Prioritize (Risk = Likelihood × Impact)
+### Passo 3: Priorize (Risco = Probabilidade × Impacto)
 
-| Threat | Likelihood | Impact | Risk | Priority |
+| Ameaça | Probabilidade | Impacto | Risco | Prioridade |
 |--------|-----------|--------|------|----------|
-| SQL injection | Medium | Critical | High | P1 |
-| DDoS on API | High | High | High | P1 |
-| Stolen API key | Medium | High | High | P2 |
-| Verbose errors | High | Low | Medium | P3 |
+| SQL injection | Média | Crítico | Alto | P1 |
+| DDoS na API | Alta | Alto | Alto | P1 |
+| API key roubada | Média | Alto | Alto | P2 |
+| Erros verbosos | Alta | Baixo | Médio | P3 |
 
-### Step 4: Mitigate
+### Passo 4: Mitigue
 
-For each threat, decide: **mitigate, accept, transfer, or avoid**.
+Para cada ameaça, decida: **mitigar, aceitar, transferir ou evitar**.
 
 ```
 SQL injection     → parameterized queries (mitigate)
@@ -84,9 +84,9 @@ Verbose errors    → generic error messages in production (mitigate)
 Earthquake at DC  → multi-region deployment (transfer to AWS)
 ```
 
-## DREAD (Risk Scoring)
+## DREAD (Pontuação de Risco)
 
-Alternative to simple likelihood × impact:
+Alternativa ao simples probabilidade × impacto:
 
 - **D**amage potential (0-10)
 - **R**eproducibility (0-10)
@@ -94,11 +94,11 @@ Alternative to simple likelihood × impact:
 - **A**ffected users (0-10)
 - **D**iscoverability (0-10)
 
-Score = average → prioritize highest.
+Pontuação = média → priorize os mais altos.
 
 ## Attack Trees
 
-Visual representation of how an attacker could achieve a goal:
+Representação visual de como um atacante poderia atingir um objetivo:
 
 ```
 Goal: Access admin panel
@@ -113,15 +113,15 @@ Goal: Access admin panel
     └── Call support, impersonate admin
 ```
 
-## When to Threat Model
+## Quando Fazer Threat Modeling
 
-- New feature or service design
-- Architecture changes
-- Before security review / audit
-- After a security incident (what did we miss?)
-- Regularly (quarterly review)
+- Design de nova feature ou serviço
+- Mudanças de arquitetura
+- Antes de revisão de segurança / auditoria
+- Após um incidente de segurança (o que deixamos passar?)
+- Regularmente (revisão trimestral)
 
-## Related
+## Relacionados
 
 - [[Security/IAM]]
 - [[Security/CloudSecurity]]
@@ -130,8 +130,8 @@ Goal: Access admin panel
 ## Resources
 
 - https://owasp.org/www-community/Threat_Modeling
-- Threat Modeling: Designing for Security — Adam Shostack (book)
-- https://github.com/OWASP/threat-dragon (open source tool)
+- Threat Modeling: Designing for Security — Adam Shostack (livro)
+- https://github.com/OWASP/threat-dragon (ferramenta open source)
 
-#### My commentaries
+#### Meus comentários
 - 

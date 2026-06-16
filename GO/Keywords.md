@@ -1,27 +1,27 @@
 # Keywords
 
-Go has exactly **25 reserved keywords**. They cannot be used as variable names, function names, or identifiers.
+Go tem exatamente **25 keywords reservadas**. Elas não podem ser usadas como nomes de variáveis, funções ou identificadores.
 
 ---
 
-## Declarations
+## Declarações
 
 ### var
-Declares a variable.
+Declara uma variável.
 ```go
 var name string = "Dylan"
 var age int // zero value = 0
 ```
 
 ### const
-Declares a constant — a value that cannot change.
+Declara uma constante — um valor que não pode mudar.
 ```go
 const Pi = 3.14
 const MaxSize = 100
 ```
 
 ### type
-Declares a new type.
+Declara um novo tipo.
 ```go
 type User struct {
     Name string
@@ -31,7 +31,7 @@ type ID int // alias
 ```
 
 ### func
-Declares a function.
+Declara uma função.
 ```go
 func add(a int, b int) int {
     return a + b
@@ -39,13 +39,13 @@ func add(a int, b int) int {
 ```
 
 ### package
-Declares which package the file belongs to.
+Declara a qual package o arquivo pertence.
 ```go
 package main
 ```
 
 ### import
-Imports external packages.
+Importa packages externos.
 ```go
 import "fmt"
 import (
@@ -56,10 +56,10 @@ import (
 
 ---
 
-## Data Types
+## Tipos de Dados
 
 ### struct
-Defines a structure — a group of fields.
+Define uma estrutura — um grupo de campos.
 ```go
 type Point struct {
     X int
@@ -68,7 +68,7 @@ type Point struct {
 ```
 
 ### interface
-Defines a set of methods a type must implement.
+Define um conjunto de métodos que um tipo deve implementar.
 ```go
 type Animal interface {
     Sound() string
@@ -76,7 +76,7 @@ type Animal interface {
 ```
 
 ### map
-Declares a key/value collection.
+Declara uma coleção chave/valor.
 ```go
 m := map[string]int{
     "apples": 5,
@@ -84,7 +84,7 @@ m := map[string]int{
 ```
 
 ### chan
-Declares a channel — used to communicate between goroutines.
+Declara um channel — usado para comunicação entre goroutines.
 ```go
 ch := make(chan int)
 ch <- 42  // send
@@ -93,10 +93,10 @@ v := <-ch // receive
 
 ---
 
-## Control Flow
+## Controle de Fluxo
 
 ### if / else
-Conditional execution.
+Execução condicional.
 ```go
 if age > 18 {
     fmt.Println("adult")
@@ -106,7 +106,7 @@ if age > 18 {
 ```
 
 ### for
-The only loop in Go — works as while, for, and foreach.
+O único loop do Go — funciona como while, for e foreach.
 ```go
 for i := 0; i < 10; i++ {}       // classic
 for i < 10 {}                     // while-style
@@ -114,7 +114,7 @@ for range slice {}                // foreach-style
 ```
 
 ### range
-Iterates over arrays, slices, maps, strings, and channels.
+Itera sobre arrays, slices, maps, strings e channels.
 ```go
 for i, v := range []int{1, 2, 3} {
     fmt.Println(i, v)
@@ -122,7 +122,7 @@ for i, v := range []int{1, 2, 3} {
 ```
 
 ### switch / case / default
-Multi-branch conditional.
+Condicional com múltiplos ramos.
 ```go
 switch status {
 case "ok":
@@ -135,7 +135,7 @@ default:
 ```
 
 ### fallthrough
-Forces execution to continue into the next case (unusual in Go).
+Força a execução continuar para o próximo case (incomum em Go).
 ```go
 switch x {
 case 1:
@@ -147,7 +147,7 @@ case 2:
 ```
 
 ### select
-Like switch, but for channels — waits for whichever channel is ready first.
+Como switch, mas para channels — espera pelo channel que ficar pronto primeiro.
 ```go
 select {
 case msg := <-ch1:
@@ -159,10 +159,10 @@ case msg := <-ch2:
 
 ---
 
-## Flow Control
+## Controle de Execução
 
 ### return
-Exits a function and optionally returns values.
+Sai de uma função e opcionalmente retorna valores.
 ```go
 func double(n int) int {
     return n * 2
@@ -170,7 +170,7 @@ func double(n int) int {
 ```
 
 ### break
-Exits a loop or switch early.
+Sai de um loop ou switch antecipadamente.
 ```go
 for i := 0; i < 10; i++ {
     if i == 5 {
@@ -180,7 +180,7 @@ for i := 0; i < 10; i++ {
 ```
 
 ### continue
-Skips to the next iteration of a loop.
+Pula para a próxima iteração de um loop.
 ```go
 for i := 0; i < 10; i++ {
     if i%2 == 0 {
@@ -191,7 +191,7 @@ for i := 0; i < 10; i++ {
 ```
 
 ### goto
-Jumps to a labeled line. Rarely used — considered bad practice in most cases.
+Salta para uma linha marcada com label. Raramente usado — considerado má prática na maioria dos casos.
 ```go
 goto end
 fmt.Println("this is skipped")
@@ -201,10 +201,10 @@ fmt.Println("jumped here")
 
 ---
 
-## Concurrency
+## Concorrência
 
 ### go
-Starts a goroutine — runs a function concurrently.
+Inicia uma goroutine — executa uma função concorrentemente.
 ```go
 go doSomething()
 go func() {
@@ -213,7 +213,7 @@ go func() {
 ```
 
 ### defer
-Schedules a function to run when the surrounding function returns. Runs in LIFO order.
+Agenda uma função para rodar quando a função ao redor retornar. Executa em ordem LIFO.
 ```go
 func readFile() {
     f, _ := os.Open("file.txt")
@@ -224,32 +224,32 @@ func readFile() {
 
 ---
 
-## Summary Table
+## Tabela Resumo
 
 | Keyword | Category | Purpose |
 |---------|----------|---------|
-| `var` | Declaration | Declare variable |
-| `const` | Declaration | Declare constant |
-| `type` | Declaration | Declare new type |
-| `func` | Declaration | Declare function |
-| `package` | Declaration | Declare package |
-| `import` | Declaration | Import packages |
-| `struct` | Type | Group of fields |
-| `interface` | Type | Set of methods |
-| `map` | Type | Key/value collection |
-| `chan` | Type | Communication channel |
-| `if` | Control | Conditional |
-| `else` | Control | Conditional fallback |
+| `var` | Declaration | Declarar variável |
+| `const` | Declaration | Declarar constante |
+| `type` | Declaration | Declarar novo tipo |
+| `func` | Declaration | Declarar função |
+| `package` | Declaration | Declarar package |
+| `import` | Declaration | Importar packages |
+| `struct` | Type | Grupo de campos |
+| `interface` | Type | Conjunto de métodos |
+| `map` | Type | Coleção chave/valor |
+| `chan` | Type | Channel de comunicação |
+| `if` | Control | Condicional |
+| `else` | Control | Alternativa condicional |
 | `for` | Control | Loop |
-| `range` | Control | Iterate over collection |
-| `switch` | Control | Multi-branch conditional |
-| `case` | Control | Branch of switch |
-| `default` | Control | Fallback of switch |
-| `fallthrough` | Control | Continue to next case |
-| `select` | Control | Wait on channels |
-| `return` | Flow | Exit function |
-| `break` | Flow | Exit loop or switch |
-| `continue` | Flow | Next loop iteration |
-| `goto` | Flow | Jump to label |
-| `go` | Concurrency | Start goroutine |
-| `defer` | Concurrency | Delay function call |
+| `range` | Control | Iterar sobre coleção |
+| `switch` | Control | Condicional com múltiplos ramos |
+| `case` | Control | Ramo do switch |
+| `default` | Control | Fallback do switch |
+| `fallthrough` | Control | Continuar para o próximo case |
+| `select` | Control | Aguardar channels |
+| `return` | Flow | Sair da função |
+| `break` | Flow | Sair do loop ou switch |
+| `continue` | Flow | Próxima iteração do loop |
+| `goto` | Flow | Saltar para label |
+| `go` | Concurrency | Iniciar goroutine |
+| `defer` | Concurrency | Atrasar chamada de função |

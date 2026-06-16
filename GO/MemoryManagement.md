@@ -1,18 +1,18 @@
 # Memory Management in Go
 
-Go manages memory automatically — you allocate, the runtime cleans up. But understanding how it works internally lets you write faster, more predictable code.
+Go gerencia memória automaticamente — você aloca, o runtime faz a limpeza. Mas entender como funciona internamente permite escrever código mais rápido e previsível.
 
-Three concepts: **Stack**, **Heap**, and **Garbage Collector**.
+Três conceitos: **Stack**, **Heap** e **Garbage Collector**.
 
 ---
 
 ## Stack
 
-The stack is fast, automatic memory tied to function calls.
+A stack é uma memória rápida e automática vinculada às chamadas de função.
 
-- When a function is called → stack frame is created
-- When a function returns → stack frame is destroyed
-- Each goroutine has its own stack (starts at ~2KB, grows as needed)
+- Quando uma função é chamada → um stack frame é criado
+- Quando uma função retorna → o stack frame é destruído
+- Cada goroutine tem sua própria stack (começa em ~2KB, cresce conforme necessário)
 
 ```go
 func add(a, b int) int {
@@ -21,15 +21,15 @@ func add(a, b int) int {
 }
 ```
 
-**Key property:** stack memory is free — no allocator, no GC. Just a pointer moving up and down.
+**Propriedade chave:** memória na stack é gratuita — sem alocador, sem GC. Apenas um ponteiro movendo para cima e para baixo.
 
-**Analogy:** a whiteboard you erase after each meeting. Instant to write, instant to erase.
+**Analogia:** um quadro branco que você apaga após cada reunião. Instantâneo para escrever, instantâneo para apagar.
 
 ---
 
 ## Heap
 
-The heap is memory for data that needs to **outlive a function** or has a **size unknown at compile time**.
+O heap é a memória para dados que precisam **sobreviver a uma função** ou têm um **tamanho desconhecido em tempo de compilação**.
 
 ```go
 func newUser(name string) *User {
@@ -38,20 +38,20 @@ func newUser(name string) *User {
 }
 ```
 
-If `User` lived on the stack, it would be destroyed when `newUser` returns. Since we return a pointer to it, Go puts it on the heap.
+Se `User` vivesse na stack, seria destruído quando `newUser` retornasse. Como retornamos um ponteiro para ele, Go o coloca no heap.
 
-Heap allocations are slower — they go through the memory allocator (Go uses a custom allocator inspired by tcmalloc) and eventually need to be cleaned up by the GC.
+Alocações no heap são mais lentas — passam pelo alocador de memória (Go usa um alocador customizado inspirado no tcmalloc) e eventualmente precisam ser limpas pelo GC.
 
-**Analogy:** a storage unit you rent. More space, but someone has to manage it.
+**Analogia:** um depósito que você aluga. Mais espaço, mas alguém precisa gerenciá-lo.
 
 ---
 
 ## Escape Analysis
 
-Go decides at **compile time** whether a variable goes to the stack or heap.
+Go decide em **tempo de compilação** se uma variável vai para a stack ou para o heap.
 
-> If the variable is used only inside the function → **stack**
-> If the variable "escapes" the function → **heap**
+> Se a variável é usada apenas dentro da função → **stack**
+> Se a variável "escapa" da função → **heap**
 
 ```go
 // stack — used only locally
@@ -73,7 +73,7 @@ func toChannel(ch chan *User) {
 }
 ```
 
-### See escape analysis decisions
+### Visualizando as decisões do escape analysis
 
 ```bash
 go build -gcflags="-m" ./...
@@ -83,17 +83,17 @@ go build -gcflags="-m" ./...
 # ./main.go:14:6: u does not escape
 ```
 
-This is useful when optimizing hot paths — every heap escape has a GC cost.
+Isso é útil ao otimizar hot paths — cada escape para o heap tem um custo de GC.
 
 ---
 
 ## Garbage Collector
 
-The GC automatically frees heap memory that nothing points to anymore.
+O GC libera automaticamente a memória heap que nada mais aponta.
 
-### How it works — Tri-color Mark and Sweep
+### Como funciona — Tri-color Mark and Sweep
 
-**Mark phase:** starting from roots (stack variables, globals), follow all pointers and mark everything reachable:
+**Mark phase:** começando pelas roots (variáveis de stack, globals), seguir todos os ponteiros e marcar tudo que é acessível:
 
 ```
 roots → User{} ✓ → name string ✓ → ...
@@ -101,15 +101,15 @@ roots → User{} ✓ → name string ✓ → ...
       → (old buffer nobody points to) ✗ — never reached
 ```
 
-**Sweep phase:** free everything unmarked:
+**Sweep phase:** liberar tudo que não foi marcado:
 
 ```
 [User ✓][string ✓][buffer ✗ freed][map ✓][[]byte ✗ freed]
 ```
 
-### Concurrent GC — Go's approach
+### Concurrent GC — a abordagem do Go
 
-Go's GC runs **concurrently** with your program. Most work happens while goroutines keep running:
+O GC do Go roda **concorrentemente** com o seu programa. A maior parte do trabalho acontece enquanto as goroutines continuam executando:
 
 ```
 your program:  ────────────────────────────────────────
@@ -117,9 +117,9 @@ GC:                  ░░░░░░░░░░░░░░░░░░░�
                               |short STW|   ← stop-the-world pause (< 1ms)
 ```
 
-STW (stop-the-world) pauses in modern Go are typically under **1ms**. But under heavy allocation, GC runs more frequently — and the pauses add up in P99 latency.
+As pausas STW (stop-the-world) no Go moderno são tipicamente abaixo de **1ms**. Mas sob alocação intensa, o GC roda com mais frequência — e as pausas se acumulam na latência P99.
 
-### GOGC — controlling GC frequency
+### GOGC — controlando a frequência do GC
 
 ```bash
 GOGC=100   # default — GC triggers when heap doubles in size
@@ -128,18 +128,18 @@ GOGC=50    # GC runs more often — less memory, more CPU
 GOGC=off   # disable GC entirely (only for special cases)
 ```
 
-Higher GOGC = less GC work = lower CPU cost = higher memory usage.
-Lower GOGC = more GC work = more CPU cost = lower memory usage.
+GOGC maior = menos trabalho de GC = menor custo de CPU = maior uso de memória.
+GOGC menor = mais trabalho de GC = maior custo de CPU = menor uso de memória.
 
 ---
 
-## Reducing GC Pressure
+## Reduzindo a Pressão no GC
 
-Every heap allocation is future GC work. Reducing allocations = reducing GC pressure = lower P99 latency.
+Cada alocação no heap é trabalho futuro para o GC. Reduzir alocações = reduzir pressão no GC = menor latência P99.
 
-### 1. sync.Pool — reuse objects
+### 1. sync.Pool — reutilizar objetos
 
-Instead of allocating a new buffer on every request, reuse them:
+Em vez de alocar um novo buffer a cada requisição, reutilizá-los:
 
 ```go
 var bufPool = sync.Pool{
@@ -155,11 +155,11 @@ func handleRequest() {
 }
 ```
 
-The buffer is reused across requests — allocator and GC never see it after the first allocation.
+O buffer é reutilizado entre requisições — o alocador e o GC nunca o veem após a primeira alocação.
 
-### 2. Avoid unnecessary pointers
+### 2. Evitar ponteiros desnecessários
 
-Every pointer the GC has to follow is more work. Flat structs with value types are GC-friendly:
+Cada ponteiro que o GC precisa seguir é mais trabalho. Structs planas com tipos por valor são amigáveis ao GC:
 
 ```go
 // GC-heavy — pointer to every field
@@ -177,7 +177,7 @@ type Light struct {
 }
 ```
 
-### 3. Preallocate slices
+### 3. Pré-alocar slices
 
 ```go
 // bad — slice grows, reallocates multiple times
@@ -193,7 +193,7 @@ for _, item := range items {
 }
 ```
 
-### 4. Avoid string + concatenation in loops
+### 4. Evitar concatenação com + em loops
 
 ```go
 // bad — allocates a new string on every iteration
@@ -212,9 +212,9 @@ s := sb.String()
 
 ---
 
-## Profiling — Find Where Allocations Happen
+## Profiling — Encontrando Onde as Alocações Acontecem
 
-Do not guess. Measure.
+Não adivinhe. Meça.
 
 ```bash
 # run with profiling
@@ -230,7 +230,7 @@ import _ "net/http/pprof"
 go http.ListenAndServe(":6060", nil)
 ```
 
-### Runtime memory stats
+### Estatísticas de memória em tempo de execução
 
 ```go
 var stats runtime.MemStats
@@ -243,21 +243,21 @@ fmt.Println("GC pause total:", stats.PauseTotalNs)
 
 ---
 
-## Stack vs Heap — Summary
+## Stack vs Heap — Resumo
 
 | | **Stack** | **Heap** |
 |---|---|---|
-| Speed | Instant | Slower (allocator + GC) |
-| Size | Small, per-goroutine | Large, shared |
-| Lifetime | Function scope | Until GC frees it |
-| GC involvement | None | Yes |
-| How to use | Local variables | Pointers, interfaces, closures |
+| Velocidade | Instantâneo | Mais lento (alocador + GC) |
+| Tamanho | Pequeno, por goroutine | Grande, compartilhado |
+| Tempo de vida | Escopo da função | Até o GC liberar |
+| Envolvimento do GC | Nenhum | Sim |
+| Como usar | Variáveis locais | Ponteiros, interfaces, closures |
 
 ---
 
-## In MiniRedisGo Context
+## No Contexto do MiniRedisGo
 
-Every `SET key value` command your server handles involves allocations:
+Cada comando `SET key value` que o seu servidor processa envolve alocações:
 
 ```
 parse command  → []byte buffer  → heap
@@ -266,16 +266,16 @@ store value    → []byte         → heap
 write response → []byte buffer  → heap
 ```
 
-Under heavy load, this becomes significant GC pressure. Optimizations:
+Sob carga intensa, isso se torna pressão significativa no GC. Otimizações:
 
-- Use `sync.Pool` for command parsing buffers
-- Reuse response buffers
-- Profile with pprof under load to find the biggest allocators
-- Watch `mem_fragmentation_ratio` if you add a persistence layer
+- Usar `sync.Pool` para buffers de parsing de comandos
+- Reutilizar buffers de resposta
+- Fazer profiling com pprof sob carga para encontrar os maiores alocadores
+- Monitorar `mem_fragmentation_ratio` se você adicionar uma camada de persistência
 
 ---
 
-## Related Notes
+## Notas Relacionadas
 
 - [[DistributedSystems/MemoryManagement]]
 - [[DistributedSystems/Performance]]

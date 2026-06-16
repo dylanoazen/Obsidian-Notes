@@ -1,6 +1,6 @@
 # Distributed Systems
 
-Entry point for distributed systems topics.
+Ponto de entrada para os tópicos de sistemas distribuídos.
 
 ---
 
@@ -8,7 +8,7 @@ Entry point for distributed systems topics.
 
 - [[DistributedSystems/Redis]]
 
-## Topics
+## Tópicos
 
 - [[DistributedSystems/Replication]]
 - [[DistributedSystems/Persistence]]

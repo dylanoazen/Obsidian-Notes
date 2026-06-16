@@ -106,7 +106,7 @@ Em caso de falha no meio da operação:
 
 - [[PHP/EventLoop]]
 - [[PHP/Persistence]]
-- [[PHP/Idempotency]]
+- [[DistributedSystems/Idempotency]]
 - [[DistributedSystems/TransactionsPipeline]]
 
 #### My commentaries

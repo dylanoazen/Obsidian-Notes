@@ -1,48 +1,48 @@
 # Supply Chain Security
 
-Securing the entire chain from code to production — dependencies, builds, artifacts, and delivery.
+Protegendo toda a cadeia desde o código até a produção — dependências, builds, artifacts e entrega.
 
 ---
 
-## What is Supply Chain Security?
+## O Que é Supply Chain Security?
 
-Your software isn't just your code. It's:
+Seu software não é apenas o seu código. É:
 
 ```
-Your code
-  + open source dependencies (npm, pip, go modules)
-  + base images (Docker)
-  + build tools (compilers, bundlers)
-  + CI/CD pipeline (GitHub Actions, Jenkins)
-  + artifact storage (registries, S3)
-  + deployment infrastructure
+Seu código
+  + dependências open source (npm, pip, go modules)
+  + imagens base (Docker)
+  + ferramentas de build (compiladores, bundlers)
+  + pipeline CI/CD (GitHub Actions, Jenkins)
+  + armazenamento de artifacts (registries, S3)
+  + infraestrutura de deploy
 ```
 
-An attacker who compromises ANY link in this chain compromises your software.
+Um atacante que comprometa QUALQUER elo dessa cadeia compromete o seu software.
 
-## Attack Vectors
+## Vetores de Ataque
 
-| Vector | Example |
+| Vetor | Exemplo |
 |--------|---------|
-| Dependency confusion | Malicious package with same name as internal one |
-| Typosquatting | `reqeusts` instead of `requests` on PyPI |
-| Compromised maintainer | Attacker gains access to popular package |
-| Malicious CI action | Trojanized GitHub Action exfiltrates secrets |
-| Stolen signing keys | Attacker signs malicious release as legitimate |
-| Build server compromise | Inject code during build, not in source |
-| Registry poisoning | Push malicious image tag to Docker Hub |
+| Dependency confusion | Pacote malicioso com o mesmo nome de um interno |
+| Typosquatting | `reqeusts` em vez de `requests` no PyPI |
+| Maintainer comprometido | Atacante obtém acesso a um pacote popular |
+| CI action maliciosa | GitHub Action trojanizada exfiltra secrets |
+| Chaves de assinatura roubadas | Atacante assina release maliciosa como legítima |
+| Servidor de build comprometido | Injeção de código durante o build, não no source |
+| Registry poisoning | Push de tag de imagem maliciosa para Docker Hub |
 
-## SLSA Framework (Supply-chain Levels for Software Artifacts)
+## Framework SLSA (Supply-chain Levels for Software Artifacts)
 
 ```
-Level 0: No guarantees
-Level 1: Build process is documented
-Level 2: Build service is authenticated (e.g., GitHub Actions)
-Level 3: Build is isolated, reproducible, auditable
-Level 4: Hermetic build, two-person review, reproducible
+Level 0: Sem garantias
+Level 1: Processo de build documentado
+Level 2: Serviço de build autenticado (ex: GitHub Actions)
+Level 3: Build isolado, reproduzível e auditável
+Level 4: Build hermético, revisão por duas pessoas, reproduzível
 ```
 
-## Protecting Dependencies
+## Protegendo Dependências
 
 ```bash
 # Pin exact versions (no ^ or ~)
@@ -54,13 +54,13 @@ npm audit
 pip-audit
 go list -m -json all | nancy sleuth
 
-# Lockfiles are critical
+# Lockfiles são críticos
 package-lock.json / yarn.lock / go.sum / Pipfile.lock
 ```
 
-**Dependabot / Renovate**: auto-PR for dependency updates.
+**Dependabot / Renovate**: PR automático para atualizações de dependências.
 
-## Signing and Verification
+## Assinatura e Verificação
 
 ### Sigstore / Cosign (containers)
 
@@ -75,7 +75,7 @@ cosign verify ghcr.io/myorg/myapp:v1.0
 cosign sign --identity-token=$(gcloud auth print-identity-token) image
 ```
 
-### Git Commit Signing
+### Assinatura de Commits Git
 
 ```bash
 git config --global commit.gpgsign true
@@ -84,7 +84,7 @@ git log --show-signature
 
 ## SBOM (Software Bill of Materials)
 
-A complete inventory of every component in your software:
+Um inventário completo de cada componente do seu software:
 
 ```bash
 # Generate SBOM
@@ -94,9 +94,9 @@ syft packages myimage:latest -o spdx-json > sbom.json
 grype sbom:sbom.json
 ```
 
-Formats: SPDX, CycloneDX
+Formatos: SPDX, CycloneDX
 
-## CI/CD Security
+## Segurança de CI/CD
 
 ```yaml
 # Pin actions to SHA (not tags — tags can be moved)
@@ -112,11 +112,11 @@ permissions:
     TOKEN: ${{ secrets.DEPLOY_TOKEN }}
 ```
 
-- Use OIDC for cloud auth instead of stored secrets
-- Require PR reviews before merge
-- Run security scans in pipeline (SAST, SCA, container scanning)
+- Use OIDC para autenticação na cloud em vez de secrets armazenados
+- Exija revisões de PR antes do merge
+- Execute varreduras de segurança no pipeline (SAST, SCA, container scanning)
 
-## Related
+## Relacionados
 
 - [[DevOps/CICD/GitHubActions]]
 - [[DevOps/Docker/DockerAdvanced]]
@@ -129,5 +129,5 @@ permissions:
 - https://www.sigstore.dev
 - https://openssf.org/projects/
 
-#### My commentaries
+#### Meus comentários
 - 

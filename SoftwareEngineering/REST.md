@@ -2,7 +2,7 @@
 
 O que significa ser RESTful, status codes, idempotência e convenção sobre configuração.
 
-Related: [[PHP/Idempotency]]
+Related: [[DistributedSystems/Idempotency]]
 
 ---
 
@@ -107,7 +107,7 @@ Princípio que EBANX valoriza: seguir padrões previsíveis em vez de inventar.
 
 ## Related
 
-- [[PHP/Idempotency]]
+- [[DistributedSystems/Idempotency]]
 - [[PHP/PHP]]
 - [[Network/Protocols]]
 

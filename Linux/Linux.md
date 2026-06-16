@@ -1,14 +1,14 @@
 # Linux Internals
 
-A deep dive into how Linux works under the hood — from power button to running process.
+Uma análise profunda de como o Linux funciona por baixo dos panos — do botão de ligar ao processo em execução.
 
-This is not about distros. This is about the operating system itself: how it boots, how the kernel manages hardware, memory, processes, and everything in between.
+Isso não é sobre distros. É sobre o sistema operacional em si: como ele inicializa, como o kernel gerencia hardware, memória, processos e tudo mais.
 
 ---
 
-## The Boot Process
+## O Processo de Boot
 
-What happens from power on to login prompt:
+O que acontece desde o power on até o prompt de login:
 
 ```
 Power On
@@ -36,25 +36,25 @@ Login Prompt / Desktop
 
 ### BIOS vs UEFI
 
-- **BIOS** (legacy): 16-bit, MBR partition table, max 2TB disks, sequential boot
-- **UEFI**: 64-bit, GPT partition table, no size limit, Secure Boot, faster
-- UEFI stores bootloaders in the **ESP** (EFI System Partition), usually at `/boot/efi`
+- **BIOS** (legado): 16-bit, tabela de partição MBR, máximo de 2TB por disco, boot sequencial
+- **UEFI**: 64-bit, tabela de partição GPT, sem limite de tamanho, Secure Boot, mais rápido
+- O UEFI armazena bootloaders na **ESP** (EFI System Partition), geralmente em `/boot/efi`
 
 ### GRUB2
 
-- Grand Unified Bootloader — most common Linux bootloader
-- Config at `/boot/grub/grub.cfg` (generated, don't edit directly)
-- Edit `/etc/default/grub` → run `grub-mkconfig -o /boot/grub/grub.cfg`
-- Can chainload other OS bootloaders (dual boot)
+- Grand Unified Bootloader — o bootloader Linux mais comum
+- Configuração em `/boot/grub/grub.cfg` (gerado automaticamente, não edite diretamente)
+- Edite `/etc/default/grub` → execute `grub-mkconfig -o /boot/grub/grub.cfg`
+- Pode fazer chainload de outros bootloaders de SO (dual boot)
 
 ### initramfs
 
-- Compressed archive loaded into RAM alongside the kernel
-- Contains minimal filesystem with drivers needed to mount the real root
-- Why? Kernel image can't contain every possible disk/filesystem driver
-- After real root is mounted, initramfs is discarded
+- Arquivo comprimido carregado na RAM junto com o kernel
+- Contém um filesystem mínimo com os drivers necessários para montar o root real
+- Por quê? A imagem do kernel não pode conter todos os drivers possíveis de disco/filesystem
+- Após o root real ser montado, o initramfs é descartado
 
-## Topics
+## Tópicos
 
 - [[Linux/Kernel]]
 - [[Linux/ProcessManagement]]
@@ -64,13 +64,13 @@ Login Prompt / Desktop
 - [[Linux/Networking]]
 - [[Linux/ProcessesAndThreads]]
 
-## Resources
+## Recursos
 
-- https://0xax.gitbooks.io/linux-insides/content/ (Linux Insides — deep dive)
+- https://0xax.gitbooks.io/linux-insides/content/ (Linux Insides — análise profunda)
 - https://tldp.org/LDP/tlk/tlk.html (The Linux Kernel)
 - https://man7.org/linux/man-pages/ (man pages online)
-- Linux Kernel Development — Robert Love (book)
-- Operating Systems: Three Easy Pieces — free online textbook
+- Linux Kernel Development — Robert Love (livro)
+- Operating Systems: Three Easy Pieces — livro didático gratuito online
 
-#### My commentaries
+#### Meus comentários
 - 

@@ -2,7 +2,7 @@
 
 O tema nº 1 em entrevistas de fintech — como evitar processar a mesma operação duas vezes.
 
-Related: [[PHP/REST]], [[PHP/Concurrency]]
+Related: [[SoftwareEngineering/REST]], [[PHP/Concurrency]]
 
 ---
 
@@ -132,7 +132,7 @@ Stripe guarda a key por 24h e retorna o mesmo resultado em retries.
 
 ## Related
 
-- [[PHP/REST]]
+- [[SoftwareEngineering/REST]]
 - [[PHP/Concurrency]]
 - [[PHP/Persistence]]
 - [[Security/IAM]]

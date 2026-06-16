@@ -2,37 +2,37 @@
 
 # Protocols
 
-A protocol is a set of rules that defines how to request data, and how it is transmitted and received over a network. Without protocols, the receiver wouldn't know where the message ends or how to interpret it.
+Um protocolo é um conjunto de regras que define como solicitar dados e como eles são transmitidos e recebidos em uma rede. Sem protocolos, o receptor não saberia onde a mensagem termina ou como interpretá-la.
 
 ## TCP vs UDP
 
 | | [[TCP]] | [[UDP]] |
 |---|---|---|
-| Connection | Fixed between two sides | No fixed connection |
-| Delivery | Guaranteed | Not guaranteed |
-| Order | Guaranteed | Not guaranteed |
-| Speed | Slower | Faster |
-| Use case | Chat, API, file transfer | Games, streaming, video calls |
+| Conexão | Fixada entre dois lados | Sem conexão fixa |
+| Entrega | Garantida | Não garantida |
+| Ordem | Garantida | Não garantida |
+| Velocidade | Mais lento | Mais rápido |
+| Caso de uso | Chat, API, transferência de arquivos | Games, streaming, chamadas de vídeo |
 
-**TCP** is like a phone call — the line stays open between both sides until someone hangs up. Everything sent goes directly to the other side in order.
+**TCP** é como uma ligação telefônica — a linha permanece aberta entre os dois lados até alguém desligar. Tudo que é enviado vai diretamente para o outro lado, em ordem.
 
-**UDP** is like sending a letter — each packet is independent, can take different routes, and there's no guarantee it arrives or arrives in order.
+**UDP** é como enviar uma carta — cada pacote é independente, pode tomar rotas diferentes e não há garantia de que chegará ou chegará em ordem.
 
-### When to use each:
-- **TCP** → when order and delivery matter
-- **UDP** → when speed matters more than perfection
+### Quando usar cada um:
+- **TCP** → quando ordem e entrega são importantes
+- **UDP** → quando velocidade importa mais do que perfeição
 
 ## TCP
 
-TCP is a byte stream — it does not preserve message boundaries:
-- One message can arrive fragmented
-- Two messages can arrive at the same time (coalesced)
+TCP é um byte stream — ele não preserva limites de mensagem:
+- Uma mensagem pode chegar fragmentada
+- Duas mensagens podem chegar ao mesmo tempo (coalesced)
 
-That's why you need framing.
+É por isso que você precisa de framing.
 
 ## Framing
 
-Framing is a technique to mark where a message starts and where it ends. See [[Framing]] for the full breakdown.
+Framing é uma técnica para marcar onde uma mensagem começa e onde ela termina. Veja [[Framing]] para o detalhamento completo.
 
-### Framing Types
+### Tipos de Framing
 

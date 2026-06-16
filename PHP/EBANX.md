@@ -4,7 +4,7 @@ API bancária in-memory em PHP 8.1 + ReactPHP. Processo de longa duração, sem 
 
 Projeto: `~/Projects/testeEbanx`
 
-Related: [[PHP/ReactPHP]], [[PHP/EventLoop]], [[PHP/Testing]], [[PHP/EBANX-Entrevista]]
+Related: [[PHP/ReactPHP]], [[PHP/EventLoop]], [[SoftwareEngineering/Testing]], [[PHP/EBANX-Entrevista]]
 
 ---
 
@@ -12,10 +12,10 @@ Related: [[PHP/ReactPHP]], [[PHP/EventLoop]], [[PHP/Testing]], [[PHP/EBANX-Entre
 
 Três operações bancárias via HTTP:
 
-| Evento     | O que faz                                  |
-|------------|--------------------------------------------|
-| `deposit`  | Cria conta se não existir + adiciona saldo |
-| `withdraw` | Subtrai saldo (erro se insuficiente)       |
+| Evento     | O que faz                                      |
+|------------|------------------------------------------------|
+| `deposit`  | Cria conta se não existir + adiciona saldo     |
+| `withdraw` | Subtrai saldo (erro se insuficiente)           |
 | `transfer` | Subtrai de `origin`, adiciona em `destination` |
 
 Rotas:
@@ -56,7 +56,7 @@ testeEbanx/
 
 ### Account.php
 
-Entidade. Encapsula id + balance, não expõe o balance diretamente.
+Entidade. Encapsula `id` + `balance`, não expõe o `balance` diretamente.
 
 ```php
 final class Account
@@ -79,7 +79,7 @@ final class Account
 
 ### AccountRepository.php
 
-Estado em memória. Um array `string → Account` que vive enquanto o processo viver.
+Estado em memória. Um array `string → Account` que persiste enquanto o processo estiver vivo.
 
 ```php
 final class AccountRepository
@@ -94,7 +94,7 @@ final class AccountRepository
 
 ### InsufficientFundsException.php
 
-Carrega contexto: qual conta, qual saldo, quanto foi pedido.
+Carrega contexto: qual conta, qual saldo, quanto foi solicitado.
 
 ```php
 final class InsufficientFundsException extends \RuntimeException
@@ -113,7 +113,7 @@ final class InsufficientFundsException extends \RuntimeException
 
 ### 1. EventService.php — `src/Application/EventService.php`
 
-Recebe o array do body JSON e executa a operação correta.
+Recebe o array do body JSON e executa a operação correspondente.
 
 ```php
 final class EventService
@@ -174,7 +174,7 @@ final class EventService
 
 ### 2. EventController.php — `src/Http/EventController.php`
 
-Traduz `$request` HTTP → array → chama service → monta `Response`.
+Traduz `$request` HTTP → array → chama o service → monta a `Response`.
 
 ```php
 use React\Http\Message\Response;
@@ -204,7 +204,7 @@ final class EventController
 
 ### 3. server.php — `public/server.php`
 
-Entry point. Instancia tudo e sobe o ReactPHP.
+Ponto de entrada. Instancia tudo e sobe o ReactPHP.
 
 ```php
 <?php
@@ -311,8 +311,8 @@ curl -X POST http://localhost:8080/event \
 
 ## Conceitos Aplicados
 
-- **Domain-Driven Design** — Account encapsula regra, Repository guarda estado
-- **ReactPHP** — processo longa duração, estado em memória entre requests
+- **Domain-Driven Design** — `Account` encapsula a regra, `Repository` guarda o estado
+- **ReactPHP** — processo de longa duração, estado em memória entre requests
 - **PHP 8.1** — `readonly`, constructor promotion, `match`, `declare(strict_types=1)`
 - **PHPUnit** — testes unitários do domain sem subir o servidor
 - **PSR-4** — autoload via Composer (`App\` → `src/`)

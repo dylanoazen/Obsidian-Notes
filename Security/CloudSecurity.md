@@ -1,12 +1,12 @@
 # Cloud Security (AWS)
 
-Securing infrastructure, data, and workloads in AWS.
+Segurança de infraestrutura, dados e workloads na AWS.
 
 Related: [[Security/IAM]]
 
 ---
 
-## Shared Responsibility Model
+## Modelo de Responsabilidade Compartilhada
 
 ```
 AWS manages:                    You manage:
@@ -19,7 +19,7 @@ AWS manages:                    You manage:
                                 └── Compliance
 ```
 
-The higher up the stack you go (Lambda > ECS > EC2), the less you manage.
+Quanto mais alto na pilha você vai (Lambda > ECS > EC2), menos você gerencia.
 
 ## IAM Security
 
@@ -29,13 +29,13 @@ Principle of Least Privilege:
   Do:    "Effect": "Allow", "Action": "s3:GetObject", "Resource": "arn:.../*"
 ```
 
-- Use **IAM Roles** for services (not access keys)
-- Enable **MFA** on all human accounts
-- Use **AWS Organizations + SCPs** to set guardrails across accounts
-- Rotate credentials regularly
-- Use **IAM Access Analyzer** to find overly permissive policies
+- Use **IAM Roles** para serviços (não access keys)
+- Habilite **MFA** em todas as contas humanas
+- Use **AWS Organizations + SCPs** para definir guardrails entre contas
+- Rotacione credenciais regularmente
+- Use o **IAM Access Analyzer** para encontrar políticas excessivamente permissivas
 
-## Network Security
+## Segurança de Rede
 
 ```
 VPC
@@ -55,20 +55,20 @@ VPC
     └── Allow/Deny rules evaluated in order
 ```
 
-- Put databases in private subnets
-- Use VPC endpoints for AWS services (no internet traversal)
-- Enable VPC Flow Logs
+- Coloque databases em subnets privadas
+- Use VPC endpoints para serviços AWS (sem travessia pela internet)
+- Habilite VPC Flow Logs
 
-## Encryption
+## Criptografia
 
-**At rest:**
-- S3: SSE-S3, SSE-KMS, or SSE-C
-- EBS: KMS-encrypted volumes
-- RDS: KMS encryption at creation (can't add later)
+**Em repouso:**
+- S3: SSE-S3, SSE-KMS, ou SSE-C
+- EBS: volumes criptografados com KMS
+- RDS: criptografia KMS na criação (não pode ser adicionada depois)
 
-**In transit:**
-- Enforce TLS everywhere (ALB → target, service → service)
-- Use ACM (AWS Certificate Manager) for free TLS certs
+**Em trânsito:**
+- Enforce TLS em todo lugar (ALB → target, serviço → serviço)
+- Use ACM (AWS Certificate Manager) para certificados TLS gratuitos
 
 **KMS (Key Management Service):**
 ```bash
@@ -81,16 +81,16 @@ aws kms encrypt --key-id alias/mykey --plaintext "secret"
 # Key policies control who can use/manage keys
 ```
 
-## Logging and Monitoring
+## Logging e Monitoramento
 
-| Service | Purpose |
+| Serviço | Propósito |
 |---------|---------|
-| CloudTrail | API call audit log (who did what) |
-| CloudWatch | Metrics, logs, alarms |
-| GuardDuty | Threat detection (ML-based) |
-| Security Hub | Central security findings dashboard |
-| Config | Track resource configuration changes |
-| VPC Flow Logs | Network traffic logs |
+| CloudTrail | Audit log de chamadas de API (quem fez o quê) |
+| CloudWatch | Métricas, logs, alarmes |
+| GuardDuty | Detecção de ameaças (baseado em ML) |
+| Security Hub | Dashboard central de achados de segurança |
+| Config | Rastreamento de mudanças na configuração de recursos |
+| VPC Flow Logs | Logs de tráfego de rede |
 
 ```bash
 # Enable CloudTrail (should be on in every account)
@@ -100,13 +100,13 @@ aws cloudtrail create-trail --name main --s3-bucket-name my-trail-bucket
 aws guardduty create-detector --enable
 ```
 
-## Container Security on AWS
+## Segurança de Container na AWS
 
-- **ECR scanning**: automatic vulnerability scanning on push
-- **ECS**: use Fargate (no EC2 to patch), task roles (least privilege)
+- **ECR scanning**: varredura automática de vulnerabilidades no push
+- **ECS**: use Fargate (sem EC2 para patchar), task roles (menor privilégio)
 - **EKS**: pod security standards, IRSA (IAM Roles for Service Accounts)
 
-## Secrets Management
+## Gerenciamento de Secrets
 
 ```bash
 # AWS Secrets Manager
@@ -116,21 +116,21 @@ aws secretsmanager create-secret --name prod/db-password --secret-string "s3cret
 aws secretsmanager get-secret-value --secret-id prod/db-password
 ```
 
-Never put secrets in: environment variables in console, code, CloudFormation parameters.
+Nunca coloque secrets em: variáveis de ambiente no console, código, parâmetros de CloudFormation.
 
-## Security Checklist
+## Checklist de Segurança
 
-- Enable CloudTrail in all regions
-- Enable GuardDuty
-- No IAM users with console access without MFA
-- No access keys on root account
-- S3 buckets: block public access by default
-- Enable default EBS encryption
-- Use Security Hub for aggregated findings
-- Regular IAM Access Analyzer reviews
-- Tag everything for accountability
+- Habilite CloudTrail em todas as regiões
+- Habilite GuardDuty
+- Sem usuários IAM com acesso ao console sem MFA
+- Sem access keys na conta root
+- Buckets S3: bloqueie acesso público por padrão
+- Habilite criptografia padrão de EBS
+- Use Security Hub para achados agregados
+- Revisões regulares do IAM Access Analyzer
+- Tageie tudo para accountability
 
-## Related
+## Relacionados
 
 - [[Security/IAM]]
 - [[Security/ThreatModeling]]
@@ -142,5 +142,5 @@ Never put secrets in: environment variables in console, code, CloudFormation par
 - https://docs.aws.amazon.com/wellarchitected/latest/security-pillar/
 - https://d1.awsstatic.com/whitepapers/aws-security-best-practices.pdf
 
-#### My commentaries
+#### Meus comentários
 - 

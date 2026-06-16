@@ -1,25 +1,25 @@
 ## Go Modules
 
-A module is the versioned root of a Go project.
+Um módulo é a raiz versionada de um projeto Go.
 
-It defines:
-- the project's identity
-- dependency management
-- versioning
-- the root import namespace
+Ele define:
+- a identidade do projeto
+- gerenciamento de dependências
+- versionamento
+- o namespace de import raiz
 
-Inside a module, the code is organized into packages.
+Dentro de um módulo, o código é organizado em packages.
 
 ### Module
-- Project root
-- Versioned unit
-- Dependency boundary
-- Import namespace
+- Raiz do projeto
+- Unidade versionada
+- Limite de dependências
+- Namespace de import
 
 ### Packages
-- Logical code organization
-- Group of related files
-- Internal project divisions
+- Organização lógica do código
+- Grupo de arquivos relacionados
+- Divisões internas do projeto
 
 
 ### Packages
@@ -28,7 +28,7 @@ Inside a module, the code is organized into packages.
 
 ### Exported Identifiers
 
-- Functions with uppercase names are exported (public) and can be imported from other packages.
+- Funções com nomes em maiúsculo são exportadas (públicas) e podem ser importadas por outros packages.
 
 ## Topics
 
@@ -42,7 +42,7 @@ Inside a module, the code is organized into packages.
 - [[GO/Context]]
 - [[GO/EstruturaDeProjetoGo]]
 
-#### My commentaries
-- The main reason for doing this is, for example, to avoid breaking an older version of a project using the Go project due to incompatibility of the new version
+#### Meus comentários
+- O principal motivo para isso é, por exemplo, evitar quebrar uma versão mais antiga de um projeto que usa o projeto Go por causa de incompatibilidade da nova versão
 
 

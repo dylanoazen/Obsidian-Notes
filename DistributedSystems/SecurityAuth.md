@@ -1,91 +1,91 @@
 # Security & Auth
 
-Security in distributed systems is about two fundamental questions:
+Segurança em sistemas distribuídos trata de duas perguntas fundamentais:
 
-- **Who are you?** → Authentication
-- **What can you do?** → Authorization
+- **Quem é você?** → Authentication
+- **O que você pode fazer?** → Authorization
 
 ---
 
 ## Authentication
 
-Authentication is the act of proving your identity before being allowed in.
+Authentication é o ato de provar sua identidade antes de ser permitido entrar.
 
-The most common forms:
+As formas mais comuns:
 
-| Method | How it works |
+| Método | Como funciona |
 |---|---|
-| Password | You know a secret string |
-| Token (JWT) | You hold a signed token issued by the server |
-| API Key | You hold a key tied to your identity |
-| SSH Key | You hold a private key that matches a public key on the server |
-| Certificate (mTLS) | Your machine holds a cryptographic certificate |
+| Senha | Você conhece uma string secreta |
+| Token (JWT) | Você possui um token assinado emitido pelo servidor |
+| API Key | Você possui uma chave vinculada à sua identidade |
+| SSH Key | Você possui uma chave privada que corresponde a uma chave pública no servidor |
+| Certificate (mTLS) | Sua máquina possui um certificado criptográfico |
 
-**Analogy:** the bouncer at the door — you only get in if you can prove who you are.
+**Analogia:** o segurança na porta — você só entra se puder provar quem é.
 
-Authentication answers: **"are you who you say you are?"**
+Authentication responde: **"você é quem diz ser?"**
 
 ### SSH Keys
 
-SSH keys work as a key pair:
+SSH keys funcionam como um par de chaves:
 
 ```
-Private key  ← stays on your machine, never leaves
-Public key   ← you give to the server upfront
+Private key  ← fica na sua máquina, nunca sai
+Public key   ← você dá ao servidor antecipadamente
 ```
 
-When you try to connect:
+Quando você tenta se conectar:
 
 ```
-You        →  "I want in"
-Server     →  sends an encrypted challenge
-You        →  deciphers it with your private key and responds
-Server     →  only the private key holder could do that → allowed in ✓
+Você        →  "Quero entrar"
+Servidor    →  envia um desafio criptografado
+Você        →  decifra com sua chave privada e responde
+Servidor    →  somente o dono da chave privada poderia fazer isso → permitido ✓
 ```
 
-You never send a password over the network — you prove your identity by solving a cryptographic challenge.
+Você nunca envia uma senha pela rede — prova sua identidade resolvendo um desafio criptográfico.
 
-**Analogy:** a padlock with two keys. You give the open padlock to the server. Only you have the key to open it. If you can open it, you proved you are you.
+**Analogia:** um cadeado com duas chaves. Você dá o cadeado aberto ao servidor. Apenas você tem a chave para abrí-lo. Se você conseguir abrí-lo, provou que é você.
 
-| | **Password** | **SSH Key** |
+| | **Senha** | **SSH Key** |
 |---|---|---|
-| What travels over the network | The password (even if encrypted) | Nothing sensitive — only the proof |
-| Can be stolen remotely | Yes | No — the private key never leaves your machine |
-| Brute force possible | Yes | Practically impossible |
+| O que trafega pela rede | A senha (mesmo que criptografada) | Nada sensível — apenas a prova |
+| Pode ser roubada remotamente | Sim | Não — a chave privada nunca sai da sua máquina |
+| Força bruta possível | Sim | Praticamente impossível |
 
 ---
 
 ## Authorization
 
-Authorization happens after authentication — it defines what an authenticated identity is allowed to do.
+Authorization acontece após authentication — ela define o que uma identidade autenticada está autorizada a fazer.
 
-You can be authenticated (proven who you are) but still not authorized to do certain things.
+Você pode estar autenticado (ter provado quem é) e ainda não estar autorizado a fazer certas coisas.
 
-**Analogy:** you have a keycard to enter the building *(authentication)*, but your keycard only opens the front door and your floor — not the server room *(authorization)*.
+**Analogia:** você tem um crachá para entrar no prédio *(authentication)*, mas seu crachá só abre a porta principal e o seu andar — não a sala de servidores *(authorization)*.
 
-Authorization answers: **"are you allowed to do this?"**
+Authorization responde: **"você tem permissão para fazer isso?"**
 
 ---
 
 ## ACL (Access Control List)
 
-An ACL is the most common way to implement authorization — a list that maps identities to permissions.
+Uma ACL é a forma mais comum de implementar authorization — uma lista que mapeia identidades a permissões.
 
 ```
-user: analytics  → can read  user:* keys
-user: api        → can read and write user:* keys
-user: admin      → can do everything
+user: analytics  → pode ler chaves user:*
+user: api        → pode ler e escrever chaves user:*
+user: admin      → pode fazer tudo
 ```
 
-Each entry says: *this identity can do these actions on these resources.*
+Cada entrada diz: *esta identidade pode fazer essas ações nesses recursos.*
 
-**Principle of least privilege:** give each user the minimum access required to do its job — nothing more. If a service is compromised, the blast radius is contained.
+**Princípio do menor privilégio:** dê a cada usuário o acesso mínimo necessário para fazer seu trabalho — nada mais. Se um serviço for comprometido, o raio de impacto é contido.
 
 ---
 
 ## Roles
 
-Instead of assigning permissions to each user individually, you define **roles** — named bundles of permissions — and assign roles to users.
+Em vez de atribuir permissões a cada usuário individualmente, você define **roles** — conjuntos nomeados de permissões — e atribui roles aos usuários.
 
 ```
 Role: readonly   → GET, LIST
@@ -97,43 +97,44 @@ User: api        → role: readwrite
 User: dylan      → role: admin
 ```
 
-This makes it easy to manage permissions at scale — change the role, all users with that role are updated.
+Isso facilita gerenciar permissões em escala — mude a role, todos os usuários com aquela role são atualizados.
 
-**Analogy:** job titles in a company. An intern has intern-level access. A manager has manager-level access. You define what each title can do, then assign titles to people.
+**Analogia:** cargos em uma empresa. Um estagiário tem acesso de estagiário. Um gerente tem acesso de gerente. Você define o que cada cargo pode fazer, depois atribui cargos às pessoas.
 
 ---
 
 ## Authentication vs Authorization
 
-A common source of confusion:
+Uma fonte comum de confusão:
 
 | | **Authentication** | **Authorization** |
 |---|---|---|
-| Question | Who are you? | What can you do? |
-| Happens | First | After authentication |
-| Example | Login with password | Can you access this endpoint? |
-| If it fails | "I don't know you" | "I know you, but you can't do this" |
+| Pergunta | Quem é você? | O que você pode fazer? |
+| Acontece | Primeiro | Após authentication |
+| Exemplo | Login com senha | Você pode acessar este endpoint? |
+| Se falhar | "Não te conheço" | "Te conheço, mas você não pode fazer isso" |
 
-You cannot have authorization without authentication — you need to know who someone is before deciding what they can do.
+Você não pode ter authorization sem authentication — você precisa saber quem alguém é antes de decidir o que pode fazer.
+
+---
+
+## TLS — Criptografando a Conexão
+
+Authentication prova quem você é. TLS criptografa o que trafega entre cliente e servidor.
+
+Sem TLS, senhas e dados trafegam em texto plano — qualquer roteador no caminho pode ler tudo. Com TLS, um túnel criptografado é criado e qualquer um que intercepte o tráfego vê apenas ruído.
+
+> Veja [[TLS]] para o detalhamento completo — handshake, troca de chaves Diffie-Hellman, certificados e como se sobrepõe ao TCP.
 
 ---
 
-## TLS — Encrypting the Connection
+a## No Redis
 
-Authentication proves who you are. TLS encrypts what travels between client and server.
+Redis implementa esses conceitos nativamente:
 
-Without TLS, passwords and data travel as plain text — any router in the path can read everything. With TLS, an encrypted tunnel is created and anyone who intercepts traffic sees only noise.
-
-> See [[TLS]] for the full breakdown — handshake, Diffie-Hellman key exchange, certificates, and how it layers on top of TCP.
-
----
-a## In Redis
-
-Redis implements these concepts natively:
-
-- **Authentication** → `AUTH password` or username + password
-- **Authorization** → ACL system with per-user command and key permissions
-- **TLS** → encrypted connections between clients and server
+- **Authentication** → `AUTH password` ou username + password
+- **Authorization** → sistema ACL com permissões de comandos e chaves por usuário
+- **TLS** → conexões criptografadas entre clientes e servidor
 
 ```bash
 # create a user with limited access
@@ -143,21 +144,21 @@ ACL SETUSER analytics on >secret ~user:* +GET
 # cannot SET, DEL, FLUSHALL, or access other keys
 ```
 
-Redis does not have built-in named roles — you simulate them by creating users with matching permission sets.
+Redis não tem roles nomeadas integradas — você as simula criando usuários com conjuntos de permissões equivalentes.
 
 ---
 
-## Design Notes
+## Notas de Design
 
-- Always authenticate in production — never leave systems open
-- Use roles to manage permissions at scale instead of per-user rules
-- Principle of least privilege reduces damage when something is compromised
-- TLS is mandatory when traffic crosses a network you do not fully control
-- Audit who has access regularly — remove what is no longer needed
+- Sempre autentique em produção — nunca deixe sistemas abertos
+- Use roles para gerenciar permissões em escala em vez de regras por usuário
+- O princípio do menor privilégio reduz os danos quando algo é comprometido
+- TLS é obrigatório quando o tráfego cruza uma rede que você não controla completamente
+- Audite regularmente quem tem acesso — remova o que não é mais necessário
 
 ---
 
-## Related Notes
+## Notas Relacionadas
 
 - [[Replication]]
 - [[Kubernetes]]

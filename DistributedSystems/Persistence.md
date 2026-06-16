@@ -1,47 +1,47 @@
 # Persistence
 
-Persistence is the ability to keep data alive after the process stops. Without it, everything stored in memory is lost when the server restarts.
+Persistence é a capacidade de manter os dados vivos após o processo parar. Sem ela, tudo armazenado em memória é perdido quando o servidor reinicia.
 
-There are two main strategies:
+Existem duas estratégias principais:
 
 ---
 
 ## RDB — Snapshot
 
-RDB (Redis Database) takes a **full snapshot** of all data in memory and saves it to disk at a given point in time.
+RDB (Redis Database) tira um **snapshot completo** de todos os dados em memória e o salva no disco em um determinado momento.
 
 ```
 memory ──► [snapshot] ──► dump.rdb (file on disk)
 ```
 
-**How it works:**
-- At a defined interval (or manually), Go forks the process
-- The child process writes a full copy of the data to a `.rdb` file
-- The main process keeps running without interruption
+**Como funciona:**
+- Em um intervalo definido (ou manualmente), o Go faz um fork do processo
+- O processo filho escreve uma cópia completa dos dados em um arquivo `.rdb`
+- O processo principal continua rodando sem interrupção
 
-**Configuration example:**
+**Exemplo de configuração:**
 ```
 save 900 1     # snapshot if at least 1 key changed in 900s
 save 300 10    # snapshot if at least 10 keys changed in 300s
 save 60 10000  # snapshot if at least 10000 keys changed in 60s
 ```
 
-**Pros:**
-- Compact single file — easy to backup and transfer
-- Fast restarts — loading one file is quick
-- No performance impact during normal operation
+**Prós:**
+- Arquivo único compacto — fácil de fazer backup e transferir
+- Reinicializações rápidas — carregar um arquivo é rápido
+- Sem impacto na performance durante operação normal
 
-**Cons:**
-- Data between snapshots is lost on crash
-- If the server crashes at 4:59 and snapshot runs every 5 minutes, you lose ~5 minutes of data
+**Contras:**
+- Dados entre snapshots são perdidos em caso de crash
+- Se o servidor travar às 4:59 e o snapshot roda a cada 5 minutos, você perde ~5 minutos de dados
 
-**Use when:** you can tolerate some data loss and want fast restarts.
+**Use quando:** você consegue tolerar alguma perda de dados e quer reinicializações rápidas.
 
 ---
 
 ## AOF — Append-Only File
 
-AOF records **every write operation** as it happens, appending it to a log file. On restart, it replays the log to rebuild the state.
+AOF registra **toda operação de escrita** conforme ela acontece, adicionando-a a um arquivo de log. Na reinicialização, reproduz o log para reconstruir o estado.
 
 ```
 SET name Dylan  ──► appended to file
@@ -51,29 +51,29 @@ DEL name        ──► appended to file
 restart ──► replay all entries ──► state restored
 ```
 
-**How it works:**
-- Every write command is appended to `appendonly.aof`
-- On restart, the file is read line by line and each command is re-executed
-- Over time the file grows — a rewrite (compaction) can shrink it
+**Como funciona:**
+- Todo comando de escrita é adicionado ao `appendonly.aof`
+- Na reinicialização, o arquivo é lido linha por linha e cada comando é re-executado
+- Com o tempo o arquivo cresce — uma reescrita (compactação) pode reduzi-lo
 
-**Fsync policies:**
+**Políticas de Fsync:**
 ```
 appendfsync always    # write to disk on every command (safest, slowest)
 appendfsync everysec  # write to disk every second (good balance)
 appendfsync no        # let the OS decide (fastest, least safe)
 ```
 
-**Pros:**
-- At most 1 second of data loss (with `everysec`)
-- Human-readable log — you can inspect or edit it
-- More durable than RDB
+**Prós:**
+- No máximo 1 segundo de perda de dados (com `everysec`)
+- Log legível por humanos — você pode inspecionar ou editá-lo
+- Mais durável que RDB
 
-**Cons:**
-- Larger file size than RDB
-- Slower restarts — must replay every command
-- Rewrite process needed to keep file size manageable
+**Contras:**
+- Tamanho de arquivo maior que RDB
+- Reinicializações mais lentas — precisa reproduzir todos os comandos
+- Processo de reescrita necessário para manter o tamanho do arquivo gerenciável
 
-**Use when:** data durability is critical and you cannot afford to lose more than 1 second of data.
+**Use quando:** durabilidade dos dados é crítica e você não pode perder mais de 1 segundo de dados.
 
 ---
 
@@ -81,28 +81,28 @@ appendfsync no        # let the OS decide (fastest, least safe)
 
 | | RDB | AOF |
 |---|---|---|
-| What it saves | Full snapshot | Every write command |
-| Data loss risk | Minutes (between snapshots) | At most 1 second |
-| File size | Small | Large (grows over time) |
-| Restart speed | Fast | Slow (replays all commands) |
-| Best for | Backups, fast restarts | Durability, audit log |
+| O que salva | Snapshot completo | Todo comando de escrita |
+| Risco de perda de dados | Minutos (entre snapshots) | No máximo 1 segundo |
+| Tamanho do arquivo | Pequeno | Grande (cresce com o tempo) |
+| Velocidade de reinicialização | Rápida | Lenta (reproduz todos os comandos) |
+| Melhor para | Backups, reinicializações rápidas | Durabilidade, log de auditoria |
 
 ---
 
-## Using Both Together
+## Usando Ambos Juntos
 
-RDB and AOF can be used simultaneously — RDB for fast restarts and AOF for durability. On restart, AOF takes priority since it has more recent data.
+RDB e AOF podem ser usados simultaneamente — RDB para reinicializações rápidas e AOF para durabilidade. Na reinicialização, o AOF tem prioridade pois contém dados mais recentes.
 
 ```
-RDB  ──► fast restore of base snapshot
-AOF  ──► replay only the commands since last snapshot
+RDB  ──► restauração rápida do snapshot base
+AOF  ──► reproduz apenas os comandos desde o último snapshot
 ```
 
 ---
 
-## No Persistence
+## Sem Persistence
 
-If neither is enabled, the data lives only in memory — everything is lost on restart. Useful for pure caching where data can be rebuilt from the source.
+Se nenhum estiver habilitado, os dados vivem apenas em memória — tudo é perdido na reinicialização. Útil para cache puro onde os dados podem ser reconstruídos a partir da fonte.
 
 ```
 restart ──► empty state
@@ -110,7 +110,7 @@ restart ──► empty state
 
 ---
 
-## Implementation Concept in Go
+## Conceito de Implementação em Go
 
 ```go
 // RDB — save snapshot

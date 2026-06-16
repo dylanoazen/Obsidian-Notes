@@ -1,26 +1,26 @@
 # Concurrency & Ownership
 
-Concurrency is the ability to handle multiple tasks at the same time — or at least give the illusion of doing so.
+Concurrency é a capacidade de lidar com múltiplas tarefas ao mesmo tempo — ou pelo menos dar a ilusão de fazê-lo.
 
 ---
 
 ## Hardware Threads vs Software Threads
 
-These are two completely different things that share the same name — a common source of confusion.
+São duas coisas completamente diferentes que compartilham o mesmo nome — uma fonte comum de confusão.
 
-### Hardware Threads — Fixed
+### Hardware Threads — Fixos
 
-Hardware threads are physical — determined by your CPU. This is the true limit of what runs truly simultaneously.
+Hardware threads são físicas — determinadas pela sua CPU. Este é o limite real do que executa verdadeiramente em paralelo.
 
 ```
-4 cores × 2 threads per core (hyper-threading) = 8 hardware threads
+4 cores × 2 threads por core (hyper-threading) = 8 hardware threads
 ```
 
-At any given moment, only 8 things can truly run at the same time on this machine. This never changes — it is physical.
+A qualquer momento, apenas 8 coisas podem realmente rodar ao mesmo tempo nesta máquina. Isso nunca muda — é físico.
 
-### Software Threads — Unlimited
+### Software Threads — Ilimitados
 
-Software threads are created by your program. You can create as many as you want:
+Software threads são criadas pelo seu programa. Você pode criar quantas quiser:
 
 ```go
 for i := 0; i < 10000; i++ {
@@ -28,82 +28,82 @@ for i := 0; i < 10000; i++ {
 }
 ```
 
-A web server can have thousands of software threads "running at the same time" on a machine with only 8 hardware threads.
+Um servidor web pode ter milhares de software threads "rodando ao mesmo tempo" em uma máquina com apenas 8 hardware threads.
 
-### The OS Scheduler — The Juggler
+### The OS Scheduler — O Malabarista
 
-The OS constantly switches which software thread runs on which hardware thread:
-
-```
-You have 8 "rails"
-You have 10,000 "trains"
-
-The OS keeps switching which train runs on which rail —
-so fast it looks like all trains are moving at once
-```
+O OS alterna constantemente qual software thread roda em qual hardware thread:
 
 ```
-Moment 1:  [req1][req2][req3][req4][req5][req6][req7][req8]   ← 8 running
-req3 goes to fetch from DB → sleeps, frees the rail
-Moment 2:  [req1][req2][req9][req4][req5][req6][req7][req8]   ← req9 slotted in
-req1 finishes → frees the rail
-Moment 3:  [req10][req2][req9][req4][req5][req6][req7][req8]  ← req10 slotted in
+Você tem 8 "trilhos"
+Você tem 10.000 "trens"
+
+O OS fica trocando qual trem roda em qual trilho —
+tão rápido que parece que todos os trens estão se movendo ao mesmo tempo
 ```
 
-### Why 8 Cores Can Handle 10,000 Connections
+```
+Momento 1:  [req1][req2][req3][req4][req5][req6][req7][req8]   ← 8 rodando
+req3 vai buscar no DB → dorme, libera o trilho
+Momento 2:  [req1][req2][req9][req4][req5][req6][req7][req8]   ← req9 entra
+req1 termina → libera o trilho
+Momento 3:  [req10][req2][req9][req4][req5][req6][req7][req8]  ← req10 entra
+```
 
-Most software threads spend **more time sleeping than running**:
+### Por que 8 Cores Conseguem Lidar com 10.000 Conexões
+
+A maioria das software threads passa **mais tempo dormindo do que rodando**:
 
 ```
 req1: received → fetched from DB (slept 10ms) → responded
       |← CPU 0.1ms →|←——— sleeping 10ms ———→|← CPU 0.1ms →|
 ```
 
-When a thread waits for the database, network, or disk — it is not using CPU. The OS puts another thread on that hardware thread while it waits. This is the key insight behind high-concurrency servers.
+Quando uma thread espera pelo banco de dados, rede ou disco — ela não está usando CPU. O OS coloca outra thread naquele hardware thread enquanto espera. Esse é o insight fundamental por trás de servidores de alta concorrência.
 
 ### Parallelism vs Concurrency
 
 | | **Concurrency** | **Parallelism** |
 |---|---|---|
-| Definition | Dealing with many things at once | Doing many things at once |
-| Requires | Just a scheduler | Multiple hardware threads |
-| Example | 1 chef juggling 10 orders | 10 chefs each cooking 1 order |
-| Limited by | Design / scheduler | Hardware |
+| Definição | Lidar com muitas coisas ao mesmo tempo | Fazer muitas coisas ao mesmo tempo |
+| Requer | Apenas um scheduler | Múltiplos hardware threads |
+| Exemplo | 1 chef equilibrando 10 pedidos | 10 chefs cada um cozinhando 1 pedido |
+| Limitado por | Design / scheduler | Hardware |
 
-> Concurrency is about structure. Parallelism is about execution.
+> Concurrency é sobre estrutura. Parallelism é sobre execução.
 
 ---
 
 ## Single-thread vs Multi-thread
 
 ### Single-thread
-The program has only one execution line. Everything runs sequentially — one thing at a time.
+O programa tem apenas uma linha de execução. Tudo roda sequencialmente — uma coisa por vez.
 
 ```
 task 1 → task 2 → task 3 → task 4
 ```
 
-If task 2 takes 5 seconds, tasks 3 and 4 wait.
+Se a task 2 levar 5 segundos, as tasks 3 e 4 esperam.
 
 ---
 
 ### Multi-thread
-Multiple execution lines run in parallel. Each thread handles its own task independently.
+Múltiplas linhas de execução rodam em paralelo. Cada thread cuida da sua própria tarefa de forma independente.
 
 ```
 thread 1 → task 1 → task 3
 thread 2 → task 2 → task 4
 ```
 
-**Problem:** threads share memory, which creates race conditions — two threads modifying the same data at the same time leads to unpredictable results.
+**Problema:** threads compartilham memória, o que cria race conditions — duas threads modificando os mesmos dados ao mesmo tempo leva a resultados imprevisíveis.
 
 ---
 
 ## Event Loop
 
-The event loop is the model used by single-threaded runtimes (like JavaScript/Node.js) to handle concurrency without multiple threads.
+O event loop é o modelo usado por runtimes single-threaded (como JavaScript/Node.js) para lidar com concorrência sem múltiplas threads.
 
-Instead of blocking and waiting, it registers a callback and moves on. When the result is ready, the callback is placed in the queue and executed.
+Em vez de bloquear e esperar, ele registra um callback e segue em frente. Quando o resultado fica pronto, o callback é colocado na fila e executado.
 
 ```
 ┌─────────────────────────────────────────┐
@@ -123,55 +123,55 @@ Instead of blocking and waiting, it registers a callback and moves on. When the 
 └─────────────────────────────────────────┘
 ```
 
-**How it works:**
-1. Code runs on the call stack
-2. When an async operation starts (I/O, timer), it's offloaded
-3. The stack continues with the next task
-4. When the async operation finishes, its callback goes to the queue
-5. The event loop picks it up when the stack is empty
+**Como funciona:**
+1. O código roda na call stack
+2. Quando uma operação assíncrona começa (I/O, timer), ela é delegada
+3. A stack continua com a próxima tarefa
+4. Quando a operação assíncrona termina, seu callback vai para a fila
+5. O event loop o pega quando a stack está vazia
 
 ---
 
 ## I/O and Blocking
 
-**I/O (Input/Output)** refers to operations that communicate with something outside the CPU — disk, network, database, keyboard.
+**I/O (Input/Output)** refere-se a operações que se comunicam com algo fora da CPU — disco, rede, banco de dados, teclado.
 
-These operations are **slow** compared to CPU execution. The two ways to handle them:
+Essas operações são **lentas** comparadas à execução da CPU. As duas formas de lidar com elas:
 
 ### Blocking I/O
-The thread stops and waits for the operation to complete.
+A thread para e espera a operação terminar.
 
 ```
 thread: ──── read file ░░░░░░░░░░░░░░ done ──── continue
                         ↑ waiting, doing nothing
 ```
 
-Wastes CPU time. Common in traditional servers — one thread per request.
+Desperdiça tempo de CPU. Comum em servidores tradicionais — uma thread por requisição.
 
 ### Non-blocking I/O
-The thread starts the operation and moves on. A notification arrives when it's done.
+A thread inicia a operação e segue em frente. Uma notificação chega quando ela termina.
 
 ```
 thread: ──── start read ──── other work ──── handle result
                                          ↑ callback/signal
 ```
 
-Efficient. One thread can handle thousands of connections.
+Eficiente. Uma thread consegue lidar com milhares de conexões.
 
 ---
 
-## Go's Approach: Goroutines
+## A Abordagem do Go: Goroutines
 
-Go doesn't use an event loop. Instead it uses **goroutines** — lightweight threads managed by the Go runtime, not the OS.
+Go não usa um event loop. Em vez disso, usa **goroutines** — threads leves gerenciadas pelo runtime do Go, não pelo OS.
 
 ```go
 go doSomething() // spawns a goroutine
 ```
 
-**Key differences from OS threads:**
-- A goroutine starts at ~2KB of stack (OS thread ~1MB)
-- The Go runtime schedules goroutines across available CPU cores
-- You can have millions of goroutines running simultaneously
+**Diferenças principais em relação às OS threads:**
+- Uma goroutine começa com ~2KB de stack (OS thread ~1MB)
+- O runtime do Go agenda goroutines nos cores de CPU disponíveis
+- Você pode ter milhões de goroutines rodando simultaneamente
 
 ```
 Go Runtime
@@ -182,13 +182,13 @@ Go Runtime
 └──────────────────────────────────────┘
 ```
 
-When a goroutine blocks on I/O, the runtime moves it off the thread and runs another goroutine in its place — so the thread is never idle.
+Quando uma goroutine bloqueia em I/O, o runtime a remove da thread e roda outra goroutine no lugar — para que a thread nunca fique ociosa.
 
 ---
 
 ## Ownership & Data Races
 
-When multiple goroutines access the same data, a **race condition** can occur — both read and write at the same time, producing unpredictable results.
+Quando múltiplas goroutines acessam os mesmos dados, uma **race condition** pode ocorrer — ambas leem e escrevem ao mesmo tempo, produzindo resultados imprevisíveis.
 
 ```go
 // DANGEROUS — race condition
@@ -198,8 +198,8 @@ go func() { counter++ }()
 // result could be 1 or 2
 ```
 
-### Channels — ownership transfer
-Go's idiomatic way to share data between goroutines. Instead of sharing memory, you **send** data through a channel — transferring ownership. Think of it like a pipe: one goroutine puts data in, another takes it out.
+### Channels — transferência de ownership
+A forma idiomática do Go de compartilhar dados entre goroutines. Em vez de compartilhar memória, você **envia** dados por um channel — transferindo o ownership. Pense como um cano: uma goroutine coloca dados dentro, outra retira.
 
 ```go
 ch := make(chan int)
@@ -211,9 +211,9 @@ go func() {
 value := <-ch // receive — blocks until something is sent
 ```
 
-Both sides block and wait for each other — this is what makes the transfer safe.
+Ambos os lados bloqueiam e esperam um pelo outro — é isso que torna a transferência segura.
 
-A common pattern is a **coordinator goroutine** that collects results from many workers running in parallel (fan-out / fan-in):
+Um padrão comum é uma **goroutine coordenadora** que coleta resultados de muitos workers rodando em paralelo (fan-out / fan-in):
 
 ```go
 ch := make(chan int)
@@ -236,28 +236,28 @@ goroutine 2 ──► ch ──┼──► coordinator (collects results)
 goroutine 3 ──► ch ──┘
 ```
 
-The coordinator doesn't know which goroutine finishes first — it just waits for the next result to arrive. Whoever finishes first sends first.
+O coordenador não sabe qual goroutine termina primeiro — apenas espera o próximo resultado chegar. Quem terminar primeiro envia primeiro.
 
-**Does this have a performance cost?**
-Yes — each send/receive involves synchronization between goroutines. But the cost is minimal in practice. The real bottleneck is almost always the work the goroutines are doing, not the channel itself.
+**Isso tem custo de performance?**
+Sim — cada envio/recebimento envolve sincronização entre goroutines. Mas o custo é mínimo na prática. O gargalo real é quase sempre o trabalho que as goroutines estão fazendo, não o channel em si.
 
-> "Do not communicate by sharing memory; share memory by communicating." — Go proverb
+> "Do not communicate by sharing memory; share memory by communicating." — Provérbio Go
 
 ### Channels vs Mutex
 
 | | Channel | Mutex |
 |---|---|---|
-| Model | Transfers the data | Shares the data |
-| Cost | Synchronization on transfer | Lock on access |
-| Risk | Deadlock if misused | Race condition if misused |
-| Readability | High — explicit flow | Low — hard to trace |
-| Best for | Communication between goroutines | Protecting shared state |
+| Modelo | Transfere os dados | Compartilha os dados |
+| Custo | Sincronização na transferência | Lock no acesso |
+| Risco | Deadlock se mal utilizado | Race condition se mal utilizado |
+| Legibilidade | Alta — fluxo explícito | Baixa — difícil de rastrear |
+| Melhor para | Comunicação entre goroutines | Proteger estado compartilhado |
 
-Use **channel** when goroutines need to **communicate**.
-Use **mutex** when goroutines need to **share state**.
+Use **channel** quando goroutines precisam se **comunicar**.
+Use **mutex** quando goroutines precisam **compartilhar estado**.
 
-### Mutex — shared access control
-When you must share memory, use a mutex to ensure only one goroutine accesses it at a time.
+### Mutex — controle de acesso compartilhado
+Quando você precisa compartilhar memória, use um mutex para garantir que apenas uma goroutine a acesse por vez.
 
 ```go
 var mu sync.Mutex
@@ -272,10 +272,10 @@ go func() {
 
 ---
 
-## Summary
+## Resumo
 
-| Model | Thread | I/O | Use case |
+| Modelo | Thread | I/O | Caso de uso |
 |-------|--------|-----|----------|
 | Single-thread + Event Loop | 1 | Non-blocking | Node.js, JS |
-| Multi-thread | Many | Blocking | Traditional servers |
-| Goroutines (Go) | Many (lightweight) | Non-blocking | Go servers |
+| Multi-thread | Muitas | Blocking | Servidores tradicionais |
+| Goroutines (Go) | Muitas (leves) | Non-blocking | Servidores Go |

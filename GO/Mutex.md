@@ -1,12 +1,12 @@
 # Mutex in Go
 
-A **Mutex** (mutual exclusion) is a lock that ensures only one goroutine accesses a piece of shared data at a time.
+Um **Mutex** (mutual exclusion) é um lock que garante que apenas uma goroutine acesse um dado compartilhado por vez.
 
 ---
 
-## The Problem — Race Condition
+## O Problema — Race Condition
 
-When multiple goroutines read and write the same variable simultaneously, the result is unpredictable:
+Quando múltiplas goroutines leem e escrevem a mesma variável simultaneamente, o resultado é imprevisível:
 
 ```go
 counter := 0
@@ -18,7 +18,7 @@ go func() { counter++ }()
 // actual: could be 1 or 2 — race condition
 ```
 
-Why? `counter++` is not one operation — it is three:
+Por quê? `counter++` não é uma operação — são três:
 
 ```
 1. read counter  (gets 0)
@@ -26,13 +26,13 @@ Why? `counter++` is not one operation — it is three:
 3. write counter (writes 1)
 ```
 
-If two goroutines do this simultaneously, both read `0`, both add `1`, both write `1` — and the final result is `1` instead of `2`.
+Se duas goroutines fazem isso simultaneamente, ambas leem `0`, ambas somam `1`, ambas escrevem `1` — e o resultado final é `1` em vez de `2`.
 
 ---
 
-## Mutex — The Fix
+## Mutex — A Solução
 
-A Mutex is a lock. Only one goroutine can hold the lock at a time. Others wait.
+Um Mutex é um lock. Apenas uma goroutine pode segurar o lock por vez. As outras aguardam.
 
 ```go
 var mu sync.Mutex
@@ -51,7 +51,7 @@ go func() {
 }()
 ```
 
-Now:
+Agora:
 ```
 goroutine 1: Lock() → reads 0 → adds 1 → writes 1 → Unlock()
 goroutine 2: waits... Lock() → reads 1 → adds 1 → writes 2 → Unlock()
@@ -62,11 +62,11 @@ result: 2 ✓
 
 ## sync.Mutex vs sync.RWMutex
 
-Go has two types of mutex:
+Go tem dois tipos de mutex:
 
-### sync.Mutex — exclusive lock
+### sync.Mutex — lock exclusivo
 
-Only one goroutine at a time, for both reads and writes.
+Apenas uma goroutine por vez, tanto para leituras quanto para escritas.
 
 ```go
 var mu sync.Mutex
@@ -76,9 +76,9 @@ mu.Lock()    // acquire exclusive lock
 mu.Unlock()  // release
 ```
 
-### sync.RWMutex — read/write lock
+### sync.RWMutex — lock de leitura/escrita
 
-Multiple goroutines can read simultaneously, but writes are exclusive.
+Múltiplas goroutines podem ler simultaneamente, mas escritas são exclusivas.
 
 ```go
 var mu sync.RWMutex
@@ -94,19 +94,19 @@ store[key] = value
 mu.Unlock()
 ```
 
-**When to use RWMutex:** when reads are much more frequent than writes. A cache is the classic example — thousands of reads, occasional writes.
+**Quando usar RWMutex:** quando leituras são muito mais frequentes que escritas. Um cache é o exemplo clássico — milhares de leituras, escritas ocasionais.
 
 | | **sync.Mutex** | **sync.RWMutex** |
 |---|---|---|
-| Reads | One at a time | Many simultaneously |
-| Writes | One at a time | One at a time |
-| Use when | Read/write equally frequent | Reads >> writes |
+| Leituras | Uma por vez | Muitas simultaneamente |
+| Escritas | Uma por vez | Uma por vez |
+| Usar quando | Leituras/escritas igualmente frequentes | Leituras >> escritas |
 
 ---
 
-## defer mu.Unlock() — Always Unlock
+## defer mu.Unlock() — Sempre Faça Unlock
 
-If your function returns early or panics without unlocking, the program deadlocks. Use `defer` to guarantee unlock:
+Se sua função retornar cedo ou entrar em panic sem fazer unlock, o programa entra em deadlock. Use `defer` para garantir o unlock:
 
 ```go
 func (s *Store) Get(key string) (string, bool) {
@@ -120,7 +120,7 @@ func (s *Store) Get(key string) (string, bool) {
 
 ---
 
-## Real Example — Thread-Safe Cache
+## Exemplo Real — Cache Thread-Safe
 
 ```go
 type Store struct {
@@ -154,13 +154,13 @@ func (s *Store) Delete(key string) {
 }
 ```
 
-This is exactly the pattern for your goCache store — multiple goroutines handling connections, all accessing the same map safely.
+Esse é exatamente o padrão para o seu store do goCache — múltiplas goroutines gerenciando conexões, todas acessando o mesmo map com segurança.
 
 ---
 
-## Deadlock — The Main Danger
+## Deadlock — O Principal Perigo
 
-A deadlock happens when two goroutines are each waiting for the other to release a lock — forever.
+Um deadlock acontece quando duas goroutines estão cada uma esperando a outra liberar um lock — para sempre.
 
 ```go
 var mu1, mu2 sync.Mutex
@@ -182,23 +182,23 @@ go func() {
 // both wait forever — deadlock
 ```
 
-**How to avoid:**
-- Always acquire locks in the same order
-- Keep the critical section (code between Lock and Unlock) as short as possible
-- Use `defer mu.Unlock()` so you never forget to unlock
+**Como evitar:**
+- Sempre adquirir locks na mesma ordem
+- Manter a seção crítica (código entre Lock e Unlock) o mais curta possível
+- Usar `defer mu.Unlock()` para nunca esquecer de fazer unlock
 
 ---
 
-## Detecting Race Conditions
+## Detectando Race Conditions
 
-Go has a built-in race detector:
+Go tem um race detector embutido:
 
 ```bash
 go run -race ./cmd/server
 go test -race ./...
 ```
 
-It instruments the code at runtime and reports any concurrent access to shared data without proper synchronization:
+Ele instrumenta o código em tempo de execução e reporta qualquer acesso concorrente a dados compartilhados sem sincronização adequada:
 
 ```
 WARNING: DATA RACE
@@ -211,11 +211,11 @@ Previous read at 0x00c0000b4010 by goroutine 6:
       /main.go:17
 ```
 
-Run with `-race` during development. It has a performance cost (~5x slower) so do not use in production.
+Rode com `-race` durante o desenvolvimento. Tem um custo de performance (~5x mais lento), portanto não use em produção.
 
 ---
 
-## Mutex vs Channel — When to Use Each
+## Mutex vs Channel — Quando Usar Cada Um
 
 ```
 Use Mutex when:   protecting shared state (a map, a counter, a struct)
@@ -232,15 +232,15 @@ results := make(chan string)
 go func() { results <- process() }()
 ```
 
-> "Do not communicate by sharing memory; share memory by communicating." — Go proverb
+> "Do not communicate by sharing memory; share memory by communicating." — provérbio do Go
 >
-> In practice: if you need a shared data structure → Mutex. If you need coordination between goroutines → Channel.
+> Na prática: se você precisa de uma estrutura de dados compartilhada → Mutex. Se você precisa de coordenação entre goroutines → Channel.
 
 ---
 
-## In goCache Context
+## No Contexto do goCache
 
-Your store is accessed by multiple goroutines simultaneously — one per client connection. Without a Mutex, two clients doing `SET` at the same time would corrupt the map.
+Seu store é acessado por múltiplas goroutines simultaneamente — uma por conexão de cliente. Sem um Mutex, dois clientes fazendo `SET` ao mesmo tempo corromperiam o map.
 
 ```go
 // store.go — the pattern to use
@@ -267,7 +267,7 @@ func (s *Store) Get(key string) (string, bool) {
 
 ---
 
-## Related Notes
+## Notas Relacionadas
 
 - [[GO/MemoryManagement]]
 - [[DistributedSystems/Concurrency]]

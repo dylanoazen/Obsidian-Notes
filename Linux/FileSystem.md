@@ -1,25 +1,25 @@
 # File System
 
-How Linux organizes, stores, and accesses files — from VFS to disk blocks.
+Como o Linux organiza, armazena e acessa arquivos — do VFS aos blocos de disco.
 
 Related: [[Linux/Kernel]]
 
 ---
 
-## Everything is a File
+## Tudo é um Arquivo
 
-In Linux, almost everything is represented as a file:
+No Linux, quase tudo é representado como um arquivo:
 
-- Regular files and directories
-- Devices (`/dev/sda`, `/dev/tty`)
-- Processes (`/proc/<pid>/`)
+- Arquivos regulares e diretórios
+- Dispositivos (`/dev/sda`, `/dev/tty`)
+- Processos (`/proc/<pid>/`)
 - Sockets, pipes, symlinks
 
-This abstraction lets you use the same `open/read/write/close` interface for everything.
+Essa abstração permite usar a mesma interface `open/read/write/close` para tudo.
 
 ## VFS — Virtual File System
 
-VFS is the kernel's abstraction layer that sits above all filesystem implementations:
+O VFS é a camada de abstração do kernel que fica acima de todas as implementações de filesystem:
 
 ```
 User space:  open(), read(), write()
@@ -36,9 +36,9 @@ Kernel:      ┌─── VFS (Virtual File System) ───┐
               Disk / SSD
 ```
 
-- **Superblock**: metadata about the filesystem (size, block count, status)
-- **Inode**: metadata about a file (permissions, size, timestamps, block pointers — NOT the name)
-- **Dentry**: directory entry — maps a filename to an inode (cached in memory)
+- **Superblock**: metadados sobre o filesystem (tamanho, contagem de blocos, status)
+- **Inode**: metadados sobre um arquivo (permissões, tamanho, timestamps, ponteiros de bloco — NÃO o nome)
+- **Dentry**: entrada de diretório — mapeia um nome de arquivo para um inode (cacheado em memória)
 
 ```bash
 # View inode info
@@ -50,28 +50,28 @@ df -hT            # disk usage with filesystem types
 lsblk             # block devices
 ```
 
-## Common Filesystems
+## Filesystems Comuns
 
-| FS | Use Case | Features |
-|----|----------|----------|
-| ext4 | Default for most distros | Journaling, stable, well-tested |
-| btrfs | Modern, advanced features | Snapshots, compression, RAID |
-| xfs | High-performance, large files | Scalable, used by RHEL |
-| tmpfs | Temporary data in RAM | Fast, volatile |
-| procfs | Process info (`/proc`) | Virtual, kernel-generated |
-| sysfs | Hardware info (`/sys`) | Virtual, kernel-generated |
+| FS | Caso de Uso | Características |
+|----|-------------|-----------------|
+| ext4 | Padrão para a maioria das distros | Journaling, estável, bem testado |
+| btrfs | Moderno, recursos avançados | Snapshots, compressão, RAID |
+| xfs | Alta performance, arquivos grandes | Escalável, usado pelo RHEL |
+| tmpfs | Dados temporários em RAM | Rápido, volátil |
+| procfs | Informações de processos (`/proc`) | Virtual, gerado pelo kernel |
+| sysfs | Informações de hardware (`/sys`) | Virtual, gerado pelo kernel |
 
 ## Journaling
 
-Protects against data corruption on crash:
+Protege contra corrupção de dados em caso de crash:
 
-- Before writing data, write a **journal entry** describing the change
-- If system crashes mid-write, replay the journal on boot
-- ext4 journals metadata by default; can journal data too (`data=journal`)
+- Antes de escrever dados, grava uma **entrada de journal** descrevendo a mudança
+- Se o sistema travar no meio de uma escrita, o journal é reexecutado no boot
+- O ext4 faz journal de metadados por padrão; pode fazer journal dos dados também (`data=journal`)
 
 ## Mount
 
-Attaching a filesystem to the directory tree:
+Anexar um filesystem à árvore de diretórios:
 
 ```bash
 # Mount a disk
@@ -91,12 +91,12 @@ umount /mnt/data
 
 ## File Descriptors
 
-Every open file gets a **file descriptor** (integer):
+Todo arquivo aberto recebe um **file descriptor** (inteiro):
 
 - `0` — stdin
 - `1` — stdout
 - `2` — stderr
-- `3+` — any other open file
+- `3+` — qualquer outro arquivo aberto
 
 ```bash
 # See open file descriptors of a process
@@ -115,5 +115,5 @@ ulimit -n
 - [[Linux/MemoryManagement]]
 - [[Linux/SystemCalls]]
 
-#### My commentaries
+#### Meus comentários
 - 

@@ -1,164 +1,164 @@
 # TLS (Transport Layer Security)
 
-TLS is the protocol that creates an **encrypted tunnel** between two parties over a network. Nobody in the middle can read or alter what travels through it.
+TLS é o protocolo que cria um **túnel criptografado** entre duas partes em uma rede. Ninguém no meio consegue ler ou alterar o que trafega por ele.
 
-It runs on top of TCP — TCP opens the connection, TLS secures it.
-
----
-
-## Three Goals
-
-1. **Identity** — verify the server is who it claims to be (certificate)
-2. **Key exchange** — agree on a secret key without ever sending it over the network
-3. **Encryption** — encrypt everything from that point on
+Ele roda em cima do TCP — o TCP abre a conexão, o TLS a protege.
 
 ---
 
-## The TLS Handshake Step by Step
+## Três Objetivos
 
-### Step 1 — ClientHello
-
-You send to the server:
-> "I want to communicate encrypted. I support these algorithms. Here is a random number from me."
-
-The random number will be used later to generate the session key.
-
-### Step 2 — ServerHello + Certificate
-
-The server responds:
-> "Ok, let's use this algorithm. Here is my certificate. Here is my random number."
-
-The certificate is the server's ID card — signed by a CA (Certificate Authority) that your browser already trusts.
-
-### Step 3 — You Verify the Certificate
-
-Your browser checks:
-> "Was this certificate signed by someone I trust?"
-
-- Yes → continue
-- No → red screen: "Your connection is not private"
-
-### Step 4 — Key Exchange (Diffie-Hellman)
-
-This is the elegant part. Both sides need to arrive at the same secret key **without ever sending it over the network**.
-
-**Paint analogy:**
-
-```
-Both agree on a public base color: yellow
-                👀 anyone can see this
-
-You pick a secret color: blue       (never sent over network)
-Server picks a secret color: red    (never sent over network)
-
-You send:    yellow + blue   = green
-Server sends: yellow + red   = orange
-                👀 anyone can see green and orange
-
-You take orange and mix with your secret blue   = brown
-Server takes green and mix with their secret red = brown
-
-Both arrived at brown — without ever sending their secret colors.
-```
-
-**Numerical analogy:**
-
-```
-Public base: 2
-
-You choose secret:    3    (never sent)
-Server chooses secret: 1   (never sent)
-
-You send:    2 + 3 = 5  →
-             ← 2 + 1 = 3  :Server sends
-
-You:    3 + your secret 3 = 6... wait no
-
-Actually:
-You send server: base + your secret
-Server sends you: base + their secret
-Both add the other's value to their own secret → same result
-```
-
-In cryptography, the math makes it impossible to reverse-engineer the secret from what was sent publicly. An attacker sees the public values but cannot derive the secret.
-
-### Step 5 — Everything Encrypted
-
-Both sides now share the same secret key. All communication from here is encrypted with it using **symmetric encryption** — fast and lightweight.
+1. **Identidade** — verificar que o servidor é quem diz ser (certificado)
+2. **Troca de chave** — concordar em uma chave secreta sem nunca enviá-la pela rede
+3. **Criptografia** — criptografar tudo a partir desse ponto
 
 ---
 
-## Symmetric vs Asymmetric in TLS
+## O TLS Handshake Passo a Passo
 
-### Symmetric Encryption
+### Passo 1 — ClientHello
 
-**One key only** — whoever encrypts and whoever decrypts use the same key.
+Você envia ao servidor:
+> "Quero me comunicar criptografado. Suporto esses algoritmos. Aqui está um número aleatório meu."
 
-```
-You      →  encrypt with key 🔑  →  "█▓▒░"
-Server   →  decrypt with key 🔑  →  "hello"
-```
+O número aleatório será usado depois para gerar a chave de sessão.
 
-**Problem:** how do you agree on the key with the server without sending it over the network? If someone intercepts it, it's over.
+### Passo 2 — ServerHello + Certificado
 
-**Advantage:** very fast — great for encrypting large volumes of data.
+O servidor responde:
+> "Ok, vamos usar este algoritmo. Aqui está meu certificado. Aqui está meu número aleatório."
 
-### Asymmetric Encryption
+O certificado é o documento de identidade do servidor — assinado por uma CA (Certificate Authority) em que seu browser já confia.
 
-**Two keys** — one public, one private. What one encrypts, only the other can decrypt.
+### Passo 3 — Você Verifica o Certificado
 
-```
-Public key  🔓  → you share with everyone
-Private key 🔑  → stays only with you, never leaves
-```
+Seu browser verifica:
+> "Este certificado foi assinado por alguém em quem confio?"
 
-Anyone can encrypt a message with your public key. Only you can decrypt it with your private key.
+- Sim → continue
+- Não → tela vermelha: "Sua conexão não é privada"
 
-**Advantage:** no need to agree on anything upfront — the public key can be distributed openly.
+### Passo 4 — Troca de Chave (Diffie-Hellman)
 
-**Problem:** much slower than symmetric.
+Essa é a parte elegante. Ambos os lados precisam chegar à mesma chave secreta **sem nunca enviá-la pela rede**.
 
-### Why TLS Uses Both
-
-TLS combines the best of both:
+**Analogia das tintas:**
 
 ```
-1. Handshake  →  uses asymmetric
-               → solves "how do we agree on a key without sending it over the network?"
-               → Diffie-Hellman does this with public/private keys
+Ambos concordam em uma cor base pública: amarelo
+                👀 qualquer um pode ver isso
 
-2. Session    →  uses symmetric
-               → now that both sides have the same secret key, use it for everything
-               → much faster for encrypting actual data
+Você escolhe uma cor secreta: azul       (nunca enviada pela rede)
+Servidor escolhe uma cor secreta: vermelho    (nunca enviada pela rede)
+
+Você envia:    amarelo + azul   = verde
+Servidor envia: amarelo + vermelho   = laranja
+                👀 qualquer um pode ver verde e laranja
+
+Você pega laranja e mistura com seu azul secreto   = marrom
+Servidor pega verde e mistura com seu vermelho secreto = marrom
+
+Ambos chegaram ao marrom — sem nunca enviar suas cores secretas.
 ```
 
-**Analogy:** you use secure mail *(asymmetric)* to agree on a secret code with someone. Once both have the code, you communicate by radio using that code *(symmetric)* — much faster.
+**Analogia numérica:**
 
-| | **Asymmetric** | **Symmetric** |
+```
+Base pública: 2
+
+Você escolhe secreto:    3    (nunca enviado)
+Servidor escolhe secreto: 1   (nunca enviado)
+
+Você envia:    2 + 3 = 5  →
+             ← 2 + 1 = 3  :Servidor envia
+
+Você:    3 + seu secreto 3 = 6... espera não
+
+Na verdade:
+Você envia ao servidor: base + seu secreto
+Servidor envia a você: base + secreto dele
+Ambos somam o valor do outro com seu próprio secreto → mesmo resultado
+```
+
+Em criptografia, a matemática torna impossível reverter o engenheiro do segredo a partir do que foi enviado publicamente. Um atacante vê os valores públicos mas não consegue derivar o segredo.
+
+### Passo 5 — Tudo Criptografado
+
+Ambos os lados agora compartilham a mesma chave secreta. Toda comunicação daqui em diante é criptografada com ela usando **criptografia simétrica** — rápida e leve.
+
+---
+
+## Simétrico vs Assimétrico no TLS
+
+### Criptografia Simétrica
+
+**Apenas uma chave** — quem criptografa e quem descriptografa usam a mesma chave.
+
+```
+Você      →  encrypt with key 🔑  →  "█▓▒░"
+Servidor  →  decrypt with key 🔑  →  "hello"
+```
+
+**Problema:** como você concorda com o servidor sobre a chave sem enviá-la pela rede? Se alguém interceptar, acabou.
+
+**Vantagem:** muito rápida — ótima para criptografar grandes volumes de dados.
+
+### Criptografia Assimétrica
+
+**Duas chaves** — uma pública, uma privada. O que uma criptografa, apenas a outra pode descriptografar.
+
+```
+Chave pública  🔓  → você compartilha com todos
+Chave privada  🔑  → fica apenas com você, nunca sai
+```
+
+Qualquer um pode criptografar uma mensagem com sua chave pública. Apenas você pode descriptografá-la com sua chave privada.
+
+**Vantagem:** não precisa concordar em nada previamente — a chave pública pode ser distribuída abertamente.
+
+**Problema:** muito mais lenta que a simétrica.
+
+### Por que TLS Usa Ambas
+
+TLS combina o melhor das duas:
+
+```
+1. Handshake  →  usa assimétrico
+               → resolve "como concordamos em uma chave sem enviá-la pela rede?"
+               → Diffie-Hellman faz isso com chaves pública/privada
+
+2. Sessão    →  usa simétrico
+               → agora que ambos têm a mesma chave secreta, use-a para tudo
+               → muito mais rápido para criptografar dados de verdade
+```
+
+**Analogia:** você usa correio seguro *(assimétrico)* para combinar um código secreto com alguém. Uma vez que ambos têm o código, vocês se comunicam por rádio usando esse código *(simétrico)* — muito mais rápido.
+
+| | **Assimétrico** | **Simétrico** |
 |---|---|---|
-| When | Key exchange (handshake) | Data encryption (session) |
-| How | Public/private key pair | One shared key |
-| Why | Secure for exchanging secrets | Much faster |
+| Quando | Troca de chave (handshake) | Criptografia de dados (sessão) |
+| Como | Par de chaves pública/privada | Uma chave compartilhada |
+| Por quê | Seguro para trocar segredos | Muito mais rápido |
 
-> Asymmetric solves the **key agreement problem** safely.
-> Symmetric solves the **performance problem** during data exchange.
-> TLS uses asymmetric to bootstrap, symmetric to run.
+> Assimétrico resolve o **problema de acordo de chave** com segurança.
+> Simétrico resolve o **problema de performance** durante a troca de dados.
+> TLS usa assimétrico para inicializar, simétrico para rodar.
 
 ---
 
-## The Full Handshake Flow
+## O Fluxo Completo do Handshake
 
 ```
 [TCP connection already open]
 
-You        →   ClientHello (algorithms, random number)
-           ←   ServerHello + Certificate + random number
-Verify certificate ✓
-           →   Key exchange (Diffie-Hellman)
-           ←   Key exchange (Diffie-Hellman)
-Both derive the same secret key independently
-           →   Finished (encrypted)
-           ←   Finished (encrypted)
+Você        →   ClientHello (algorithms, random number)
+            ←   ServerHello + Certificate + random number
+Verifica certificado ✓
+            →   Key exchange (Diffie-Hellman)
+            ←   Key exchange (Diffie-Hellman)
+Ambos derivam a mesma chave secreta independentemente
+            →   Finished (encrypted)
+            ←   Finished (encrypted)
 
 [Encrypted tunnel established — HTTP starts flowing]
 ```
@@ -167,65 +167,65 @@ Both derive the same secret key independently
 
 ## HTTPS = HTTP + TLS
 
-When you access `https://`, that is exactly it — HTTP running inside a TLS tunnel.
+Quando você acessa `https://`, é exatamente isso — HTTP rodando dentro de um túnel TLS.
 
 ```
-Layers:
+Camadas:
 ┌─────────────┐
-│    HTTP     │  ← your request
+│    HTTP     │  ← sua requisição
 ├─────────────┤
-│    TLS      │  ← encryption
+│    TLS      │  ← criptografia
 ├─────────────┤
-│    TCP      │  ← moves bytes, does not know what they are
+│    TCP      │  ← move bytes, não sabe o que são
 ├─────────────┤
-│     IP      │  ← routing
+│     IP      │  ← roteamento
 └─────────────┘
 ```
 
-TCP does not know it is carrying TLS — to TCP it is just bytes.
+TCP não sabe que está carregando TLS — para o TCP são apenas bytes.
 
 ---
 
-## The Cost in RTTs
+## O Custo em RTTs
 
-RTT (Round Trip Time) = time to send something and receive a response.
+RTT (Round Trip Time) = tempo para enviar algo e receber uma resposta.
 
 ```
-TCP handshake:   1 RTT   ← connection opens
-TLS handshake:   1 RTT   ← tunnel established  (TLS 1.3)
-First HTTP data: 1 RTT   ← your request + response
+TCP handshake:   1 RTT   ← conexão abre
+TLS handshake:   1 RTT   ← túnel estabelecido  (TLS 1.3)
+Primeiros dados HTTP: 1 RTT   ← sua requisição + resposta
 ```
 
-TLS 1.3 (current version) reduced the handshake to **1 RTT**.
-It also has a **0-RTT** mode for clients that have connected before — the tunnel is established with the first data packet.
+TLS 1.3 (versão atual) reduziu o handshake para **1 RTT**.
+Também tem um modo **0-RTT** para clientes que já se conectaram antes — o túnel é estabelecido com o primeiro pacote de dados.
 
 ---
 
 ## Certificate Authorities (CA)
 
-The certificate is only trustworthy because it was signed by a CA that your browser already trusts.
+O certificado só é confiável porque foi assinado por uma CA em que seu browser já confia.
 
-| CA | Notes |
+| CA | Notas |
 |---|---|
-| **Let's Encrypt** | Free, automated, widely used for web apps |
-| **DigiCert** | Paid, used by large enterprises |
-| **Sectigo** | Paid, common for commercial sites |
-| **AWS Certificate Manager** | Free for AWS services, managed automatically |
-| **Google Trust Services** | Used internally by Google products |
-| **Cloudflare** | Issues certs automatically for proxied sites |
+| **Let's Encrypt** | Gratuito, automatizado, amplamente usado para aplicações web |
+| **DigiCert** | Pago, usado por grandes empresas |
+| **Sectigo** | Pago, comum em sites comerciais |
+| **AWS Certificate Manager** | Gratuito para serviços AWS, gerenciado automaticamente |
+| **Google Trust Services** | Usado internamente pelos produtos Google |
+| **Cloudflare** | Emite certificados automaticamente para sites proxiados |
 
 ---
 
-## Design Notes
+## Notas de Design
 
-- TLS 1.0 and 1.1 are deprecated — use TLS 1.2 minimum, 1.3 preferred
-- A certificate has an expiration date — expired cert = browser warning
-- Let's Encrypt certificates expire every 90 days but auto-renew
-- mTLS (mutual TLS) = both sides present certificates, not just the server
+- TLS 1.0 e 1.1 estão obsoletos — use TLS 1.2 no mínimo, 1.3 preferencialmente
+- Um certificado tem data de validade — certificado expirado = aviso no browser
+- Certificados Let's Encrypt expiram em 90 dias mas são renovados automaticamente
+- mTLS (mutual TLS) = ambos os lados apresentam certificados, não apenas o servidor
 
 ---
 
-## Related Notes
+## Notas Relacionadas
 
 - [[SecurityAuth]]
 - [[TCP]]

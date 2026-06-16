@@ -1,12 +1,12 @@
 # Git Avançado
 
-Beyond add-commit-push — understanding Git internals and advanced workflows.
+Além do add-commit-push — entendendo os internos do Git e workflows avançados.
 
 ---
 
-## Git Object Model
+## Modelo de Objetos do Git
 
-Everything in Git is stored as objects in `.git/objects/`:
+Tudo no Git é armazenado como objetos em `.git/objects/`:
 
 ```
 blob    → file content (no filename, just data)
@@ -24,13 +24,13 @@ git cat-file -p <hash>    # content
 git log --oneline --graph --all
 ```
 
-A commit doesn't store diffs — it stores a full snapshot (tree). Git computes diffs on the fly.
+Um commit não armazena diffs — ele armazena um snapshot completo (tree). O Git calcula diffs sob demanda.
 
-## Refs and HEAD
+## Refs e HEAD
 
-- **Refs**: human-readable pointers to commits (branches, tags)
-- **HEAD**: pointer to the current branch (or commit in detached state)
-- Stored as files in `.git/refs/`
+- **Refs**: ponteiros legíveis por humanos para commits (branches, tags)
+- **HEAD**: ponteiro para o branch atual (ou para um commit em estado detached)
+- Armazenados como arquivos em `.git/refs/`
 
 ```bash
 cat .git/HEAD                      # ref: refs/heads/main
@@ -67,7 +67,7 @@ git rebase --abort
 
 ## Cherry-pick
 
-Apply a specific commit to another branch:
+Aplicar um commit específico em outro branch:
 
 ```bash
 git cherry-pick <commit-hash>
@@ -99,7 +99,7 @@ git stash drop stash@{0}      # delete a stash
 
 ## Worktrees
 
-Multiple working directories from one repo:
+Múltiplos diretórios de trabalho a partir de um único repositório:
 
 ```bash
 git worktree add ../hotfix hotfix-branch
@@ -110,7 +110,7 @@ git worktree remove ../hotfix
 
 ## Bisect
 
-Binary search for the commit that introduced a bug:
+Busca binária pelo commit que introduziu um bug:
 
 ```bash
 git bisect start
@@ -124,7 +124,7 @@ git bisect reset
 
 ## Hooks
 
-Scripts that run on Git events (`.git/hooks/`):
+Scripts que executam em eventos do Git (`.git/hooks/`):
 
 ```bash
 pre-commit      # lint, format, run tests before commit
@@ -133,7 +133,7 @@ pre-push        # run tests before push
 post-merge      # install deps after pull
 ```
 
-## Advanced Config
+## Configurações Avançadas
 
 ```bash
 # Sign commits with GPG
@@ -154,10 +154,10 @@ git config --global diff.algorithm histogram
 - [[DevOps/CICD/GitHubActions]]
 - [[DevOps/CICD/CICD]]
 
-## Resources
+## Recursos
 
-- https://git-scm.com/book/en/v2 (Pro Git — free)
-- https://learngitbranching.js.org (interactive)
+- https://git-scm.com/book/en/v2 (Pro Git — gratuito)
+- https://learngitbranching.js.org (interativo)
 
-#### My commentaries
+#### Meus comentários
 - 

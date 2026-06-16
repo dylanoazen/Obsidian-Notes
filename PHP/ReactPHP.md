@@ -6,11 +6,68 @@ Related: [[PHP/EventLoop]], [[PHP/Concurrency]]
 
 ---
 
+## O que é ReactPHP
+
+ReactPHP é uma biblioteca de **I/O assíncrono e não-bloqueante** para PHP, construída em torno de um **event loop**. Ela permite escrever servidores de longa duração — processos que ficam vivos indefinidamente, processando múltiplas conexões sem criar um processo novo por request.
+
+### Instalação
+
+```bash
+composer require react/http
+```
+
+O pacote `react/http` já puxa `react/socket` e `react/event-loop` como dependências.
+
+### Filosofia
+
+O PHP clássico (FPM/Apache) segue o modelo **shared-nothing**: cada request inicia e termina um processo isolado, sem estado compartilhado. Simples e previsível, mas incapaz de manter estado em memória entre requests.
+
+ReactPHP inverte isso:
+
+```
+PHP-FPM (clássico)          ReactPHP (long-running)
+──────────────────          ───────────────────────
+request → nasce             processo sobe uma vez
+processa                    event loop roda para sempre
+responde                    request 1 → callback → responde
+MORRE                       request 2 → callback → responde
+                            request N → callback → responde
+```
+
+Isso possibilita:
+- **Estado em memória** entre requests — arrays, objetos, caches locais
+- **Concorrência sem threads** — um processo, I/O não-bloqueante via event loop
+- **Alta performance** — sem overhead de boot do PHP por request
+
+### Quando usar
+
+| Cenário | ReactPHP faz sentido? |
+|---|---|
+| Estado em memória sem banco | ✅ sim — principal caso de uso |
+| Alta concorrência I/O-bound | ✅ sim — event loop não bloqueia |
+| WebSockets / conexões longas | ✅ sim — nativo |
+| CRUD simples com banco | ⚠️ Laravel/Symfony é mais produtivo |
+| CPU-bound pesado (ML, encoding) | ❌ não — bloqueia o event loop |
+
+### Componentes da lib
+
+```
+react/event-loop   → o motor central (Loop::run())
+react/socket       → camada TCP — abre e gerencia conexões
+react/http         → camada HTTP — parseia requests e serializa responses
+react/promise      → promises para operações assíncronas
+react/stream       → streams de dados (leitura/escrita assíncrona)
+```
+
+Para um servidor HTTP simples, só `react/http` é necessário — os outros são puxados como dependência.
+
+---
+
 ## Os 3 Componentes
 
 ```
 EventLoop     → o motor. Fica rodando indefinidamente.
-HttpServer    → parseia HTTP e chama seu callback para cada request.
+HttpServer    → parseia HTTP e chama o callback para cada request.
 SocketServer  → abre a porta TCP no sistema operacional.
 ```
 
@@ -191,7 +248,7 @@ O `server.php` conhece tudo e injeta via `use`. O controller não sabe do ReactP
 
 - [[PHP/EventLoop]]
 - [[PHP/Concurrency]]
-- [[PHP/Testing]]
+- [[SoftwareEngineering/Testing]]
 
 ## Resources
 

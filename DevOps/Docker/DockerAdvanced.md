@@ -1,14 +1,14 @@
 # Docker Avançado
 
-Beyond `docker run` — internals, optimization, security, and production patterns.
+Além do `docker run` — internals, otimização, segurança e padrões para produção.
 
 Related: [[DevOps/Docker/Docker]], [[Linux/ProcessManagement]]
 
 ---
 
-## How Docker Works Under the Hood
+## Como o Docker Funciona por Dentro
 
-Docker is NOT a VM. A container is a regular Linux process with isolation:
+Docker NÃO é uma VM. Um container é um processo Linux comum com isolamento:
 
 ```
 ┌─────────────────────────────────────────────┐
@@ -19,11 +19,11 @@ Docker is NOT a VM. A container is a regular Linux process with isolation:
 └──────────┴──────────┴──────────┴────────────┘
 ```
 
-- **Namespaces**: isolate PID, network, mount, user, IPC
-- **cgroups**: limit CPU, memory, I/O
-- **Union filesystem** (OverlayFS): layered image storage
+- **Namespaces**: isolam PID, rede, mount, usuário, IPC
+- **cgroups**: limitam CPU, memória, I/O
+- **Union filesystem** (OverlayFS): armazenamento de imagem em camadas
 
-## Image Layers
+## Camadas de Imagem
 
 ```dockerfile
 FROM ubuntu:22.04          # Layer 1: base image
@@ -33,11 +33,11 @@ COPY app /app              # Layer 4: your code
 CMD ["/app/run"]           # Metadata, no layer
 ```
 
-Each instruction creates a read-only layer. The container adds a thin writable layer on top. Layers are cached — order matters for build speed.
+Cada instrução cria uma camada somente-leitura. O container adiciona uma camada gravável fina no topo. As camadas são cacheadas — a ordem importa para a velocidade de build.
 
 ## Multi-stage Builds
 
-Keep final image small by separating build and runtime:
+Mantenha a imagem final pequena separando build e runtime:
 
 ```dockerfile
 # Stage 1: Build
@@ -52,9 +52,9 @@ COPY --from=builder /app /app
 CMD ["/app"]
 ```
 
-Result: image goes from ~1GB (Go SDK) to ~15MB (Alpine + binary).
+Resultado: a imagem vai de ~1GB (Go SDK) para ~15MB (Alpine + binário).
 
-## Dockerfile Best Practices
+## Boas Práticas de Dockerfile
 
 ```dockerfile
 # Pin versions (reproducible builds)
@@ -95,7 +95,7 @@ docker run --network host myapp
 docker run --network none myapp
 ```
 
-## Volumes and Storage
+## Volumes e Storage
 
 ```bash
 # Named volume (managed by Docker, persists)
@@ -109,7 +109,7 @@ docker run -v $(pwd)/config:/app/config:ro myapp
 docker run --tmpfs /tmp:rw,size=100m myapp
 ```
 
-## Security
+## Segurança
 
 ```bash
 # Run as non-root
@@ -131,7 +131,7 @@ docker run --security-opt seccomp=profile.json myapp
 docker scout cves myimage:latest
 ```
 
-## Docker Compose Advanced
+## Docker Compose Avançado
 
 ```yaml
 services:
@@ -176,7 +176,7 @@ docker inspect <container>
 docker history myimage:latest
 ```
 
-## Related
+## Relacionados
 
 - [[DevOps/CICD/CICD]]
 - [[DevOps/CICD/GitHubActions]]
@@ -188,5 +188,5 @@ docker history myimage:latest
 - https://docs.docker.com/build/building/best-practices/
 - https://cheatsheetseries.owasp.org/cheatsheets/Docker_Security_Cheat_Sheet.html
 
-#### My commentaries
+#### Meus comentários
 - 

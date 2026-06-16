@@ -1,91 +1,91 @@
  
-The TCP protocol allows two processes to exchange bytes over the network.
+O protocolo TCP permite que dois processos troquem bytes pela rede.
 
-TCP is NOT like:
+TCP NÃO é como:
 - REST APIs
 - JSON
-- request/response abstractions
+- abstrações de request/response
 
-TCP only understands:
+TCP só entende:
 # byte streams.
 
-Everything sent through TCP eventually becomes bytes, including:
+Tudo que é enviado pelo TCP eventualmente se torna bytes, incluindo:
 - strings
 - JSON
 - structs
 - files
 
-The server that receives the bytes must interpret and parse the data correctly.
+O servidor que recebe os bytes deve interpretar e fazer o parse dos dados corretamente.
 
 ---
 
 # Listener
 
-A listener is the open port where the server waits for incoming TCP connections.
+Um listener é a porta aberta onde o servidor aguarda conexões TCP de entrada.
 
-Example:
+Exemplo:
 
 ```text
 localhost:8080
 ```
 
-The server keeps listening for clients trying to connect.
+O servidor fica escutando por clients que tentam se conectar.
 
 ---
 
 # Connection (`conn`)
 
-Example client connection:
+Exemplo de conexão de cliente:
 
 ```bash
 nc localhost 8080
 ```
 
-When a client connects, the server receives a TCP connection object (`conn`).
+Quando um client conecta, o servidor recebe um objeto de conexão TCP (`conn`).
 
-This connection represents a communication channel between:
+Essa conexão representa um canal de comunicação entre:
 - client
-- server
+- servidor
 
 ---
 
 # Stream
 
-A TCP connection is a continuous stream of bytes.
+Uma conexão TCP é um fluxo contínuo de bytes.
 
-TCP does NOT know:
-- messages
-- commands
-- JSON structures
-- request boundaries
+TCP NÃO conhece:
+- mensagens
+- comandos
+- estruturas JSON
+- limites de requisição
 
-Because of that, the application itself must define:
-# how messages are separated and interpreted.
+Por causa disso, a própria aplicação deve definir:
+# como as mensagens são separadas e interpretadas.
 
-Example:
+Exemplo:
 
 ```text
 SET name Dylan\n
 ```
 
-The application may decide that:
-- each line
-- or each delimiter
+A aplicação pode decidir que:
+- cada linha
+- ou cada delimitador
 
-represents a complete command.
+representa um comando completo.
 
 ---
 
 # Framing
 
-Because TCP is a byte stream with no message boundaries, the application must define how to separate messages. This is called framing.
+Como o TCP é um byte stream sem limites de mensagem, a aplicação deve definir como separar as mensagens. Isso se chama framing.
 
-See [[Framing]] for the full breakdown of framing types and how to implement them.
+Veja [[Framing]] para o detalhamento completo dos tipos de framing e como implementá-los.
 
 ---
 
-# My Comments:
+# Meus Comentários:
 
-TCP provides a reliable, ordered byte stream. A connection is established with a three‑way handshake: the client sends SYN, the server replies with SYN‑ACK, and the client sends ACK (which may include data). After that, both sides exchange bytes in order; TCP does not preserve message boundaries. 
-The byte stream is the way that the macinhes send and recive data it works this way:
-TCP does **not** first send the total length of the stream. Instead, it splits data into segments, each with a **sequence number**. The receiver acknowledges the highest contiguous sequence number received (ACK). Lost segments are retransmitted. This is how TCP ensures reliable, ordered delivery over an unreliable network.
+TCP fornece um byte stream confiável e ordenado. Uma conexão é estabelecida com um three-way handshake: o client envia SYN, o servidor responde com SYN-ACK, e o client envia ACK (que pode incluir dados). Depois disso, os dois lados trocam bytes em ordem; o TCP não preserva limites de mensagem. 
+O byte stream é a forma como as máquinas enviam e recebem dados e funciona assim:
+TCP **não** envia primeiro o comprimento total do stream. Em vez disso, divide os dados em segmentos, cada um com um **número de sequência**. O receptor confirma o maior número de sequência contínuo recebido (ACK). Segmentos perdidos são retransmitidos. É assim que o TCP garante entrega confiável e ordenada sobre uma rede não confiável.

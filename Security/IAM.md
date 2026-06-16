@@ -1,29 +1,29 @@
 # IAM / OIDC / OAuth
 
-Identity and Access Management — how systems verify who you are and what you can do.
+Identity and Access Management — como sistemas verificam quem você é e o que você pode fazer.
 
 ---
 
-## Core Concepts
+## Conceitos Principais
 
-- **Authentication (AuthN)**: proving who you are ("I am Dylan")
-- **Authorization (AuthZ)**: proving what you can do ("Dylan can read repo X")
-- **Identity Provider (IdP)**: system that manages identities (Google, Okta, Auth0, Keycloak)
+- **Authentication (AuthN)**: provar quem você é ("Eu sou Dylan")
+- **Authorization (AuthZ)**: provar o que você pode fazer ("Dylan pode ler o repositório X")
+- **Identity Provider (IdP)**: sistema que gerencia identidades (Google, Okta, Auth0, Keycloak)
 
 ## OAuth 2.0
 
-OAuth is an **authorization** framework — it lets a third-party app access resources on behalf of a user without sharing passwords.
+OAuth é um framework de **autorização** — ele permite que um app de terceiros acesse recursos em nome de um usuário sem compartilhar senhas.
 
-### Roles
+### Papéis
 
 ```
-Resource Owner    = the user (you)
-Client            = the app requesting access (e.g., a web app)
-Authorization Server = issues tokens (Google, Auth0)
-Resource Server   = API that holds the data (e.g., GitHub API)
+Resource Owner    = o usuário (você)
+Client            = o app solicitando acesso (ex: um web app)
+Authorization Server = emite tokens (Google, Auth0)
+Resource Server   = API que guarda os dados (ex: GitHub API)
 ```
 
-### Authorization Code Flow (most common for web apps)
+### Authorization Code Flow (mais comum para web apps)
 
 ```
 User ──► Client ──► Auth Server (/authorize)
@@ -44,30 +44,30 @@ Client ──► Resource Server with Access Token
                     Protected data
 ```
 
-### Other Flows
+### Outros Flows
 
-- **Client Credentials**: machine-to-machine, no user involved
-- **PKCE** (Proof Key for Code Exchange): for mobile/SPA apps (no client_secret)
-- **Device Flow**: for devices with no browser (TVs, CLIs)
-- **Implicit** (deprecated): token returned directly in redirect — insecure
+- **Client Credentials**: machine-to-machine, sem usuário envolvido
+- **PKCE** (Proof Key for Code Exchange): para apps mobile/SPA (sem client_secret)
+- **Device Flow**: para dispositivos sem browser (TVs, CLIs)
+- **Implicit** (descontinuado): token retornado diretamente no redirect — inseguro
 
 ### Tokens
 
-- **Access Token**: short-lived (minutes), sent with API requests
-- **Refresh Token**: long-lived, used to get new access tokens
-- **Scope**: limits what the token can do (`read:repos`, `user:email`)
+- **Access Token**: vida curta (minutos), enviado com requisições de API
+- **Refresh Token**: vida longa, usado para obter novos access tokens
+- **Scope**: limita o que o token pode fazer (`read:repos`, `user:email`)
 
 ## OpenID Connect (OIDC)
 
-OIDC is an **authentication** layer on top of OAuth 2.0. Adds:
+OIDC é uma camada de **autenticação** sobre o OAuth 2.0. Adiciona:
 
-- **ID Token**: JWT that contains user identity info
-- **UserInfo endpoint**: API to get user profile
-- **Standard scopes**: `openid`, `profile`, `email`
+- **ID Token**: JWT que contém informações de identidade do usuário
+- **UserInfo endpoint**: API para obter o perfil do usuário
+- **Scopes padrão**: `openid`, `profile`, `email`
 
 ```
-OAuth 2.0  = "this app can access your repos" (authorization)
-OIDC       = "this user is dylan@email.com" (authentication)
+OAuth 2.0  = "este app pode acessar seus repositórios" (autorização)
+OIDC       = "este usuário é dylan@email.com" (autenticação)
 ```
 
 ### ID Token (JWT)
@@ -83,7 +83,7 @@ OIDC       = "this user is dylan@email.com" (authentication)
 }
 ```
 
-Always validate: `iss`, `aud`, `exp`, and signature.
+Sempre valide: `iss`, `aud`, `exp` e a assinatura.
 
 ## JWT (JSON Web Tokens)
 
@@ -101,9 +101,9 @@ echo "eyJhbG..." | base64 -d
 # or use https://jwt.io
 ```
 
-JWTs are **signed, not encrypted** — anyone can read the payload. Don't put secrets in them.
+JWTs são **assinados, não criptografados** — qualquer um pode ler o payload. Não coloque secrets neles.
 
-## IAM in Cloud (AWS)
+## IAM na Cloud (AWS)
 
 ```
 User / Role / Service
@@ -126,15 +126,15 @@ User / Role / Service
 }
 ```
 
-Principles:
-- **Least privilege**: only grant what's needed
-- **Roles over users**: prefer IAM roles (temporary credentials) over IAM users (permanent keys)
-- **MFA**: require for sensitive operations
-- **Conditions**: restrict by IP, time, MFA status, tags
+Princípios:
+- **Least privilege**: conceda apenas o necessário
+- **Roles em vez de users**: prefira IAM roles (credenciais temporárias) a IAM users (chaves permanentes)
+- **MFA**: exija para operações sensíveis
+- **Conditions**: restrinja por IP, horário, status de MFA, tags
 
 ## OIDC Federation (GitHub Actions → AWS)
 
-No more storing AWS keys in GitHub secrets:
+Sem mais armazenar chaves AWS em secrets do GitHub:
 
 ```yaml
 permissions:
@@ -147,9 +147,9 @@ steps:
       aws-region: us-east-1
 ```
 
-GitHub generates an OIDC token → AWS trusts GitHub as IdP → temporary credentials issued.
+O GitHub gera um token OIDC → a AWS confia no GitHub como IdP → credenciais temporárias são emitidas.
 
-## Related
+## Relacionados
 
 - [[Security/CloudSecurity]]
 - [[Security/SupplyChainSecurity]]
@@ -162,5 +162,5 @@ GitHub generates an OIDC token → AWS trusts GitHub as IdP → temporary creden
 - https://openid.net/developers/how-connect-works/
 - https://jwt.io
 
-#### My commentaries
+#### Meus comentários
 - 

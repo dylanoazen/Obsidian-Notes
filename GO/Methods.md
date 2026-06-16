@@ -1,112 +1,112 @@
 # Methods
 
-A method is a function associated with a type.
+Um method é uma função associada a um tipo.
 
 ## Receiver
 
-A receiver is the value that a method operates on in Go.
+Um receiver é o valor sobre o qual um method opera em Go.
 
-A receiver can be passed by value or by pointer.
+Um receiver pode ser passado por valor ou por ponteiro.
 
-The main difference is:
+A principal diferença é:
 
 - Value receiver:
-  receives a copy of the original value.
+  recebe uma cópia do valor original.
 
 - Pointer receiver:
-  receives a reference to the original value in memory.
+  recebe uma referência ao valor original na memória.
 
-Pointer receivers are usually used when the method needs to modify the struct state or avoid unnecessary copies.
+Pointer receivers são geralmente usados quando o method precisa modificar o estado da struct ou evitar cópias desnecessárias.
 
 ## Pointers vs Value Receivers
 
-The main question is not:
+A principal questão não é:
 
 ```text
 "Am I copying or reading?"
 ```
 
-The real question is:
+A questão real é:
 
 ```text
 "Should this method operate on the original object?"
 ```
 
-## Examples
+## Exemplos
 
 ### Set
 
-Set modifies the original cache state.
+Set modifica o estado original do cache.
 
-Because of that, it should use a pointer receiver:
+Por isso, deve usar um pointer receiver:
 
 ```go
 func (c *Cache) Set()
 ```
 
-The method needs to operate on the real object stored in memory.
+O method precisa operar no objeto real armazenado na memória.
 
 ---
 
 ### Delete
 
-Delete also modifies the original state.
+Delete também modifica o estado original.
 
-So it should also use a pointer receiver.
+Portanto, também deve usar um pointer receiver.
 
 ---
 
 ### Get
 
-Technically, Get could use a value receiver because it only reads data.
+Tecnicamente, Get poderia usar um value receiver porque apenas lê dados.
 
-However, in Go it is common to keep consistency across methods of the same struct.
+No entanto, em Go é comum manter consistência entre os methods da mesma struct.
 
-So if Set and Delete use pointer receivers, Get will usually also use a pointer receiver.
+Portanto, se Set e Delete usam pointer receivers, Get geralmente também usará um pointer receiver.
 
-This keeps the API behavior more predictable and consistent.
+Isso mantém o comportamento da API mais previsível e consistente.
 
 ---
 
-## Temporary Modifications vs Original State
+## Modificações Temporárias vs Estado Original
 
-Sometimes you want to modify data temporarily without changing the original object.
+Às vezes você quer modificar dados temporariamente sem alterar o objeto original.
 
-Example:
+Exemplo:
 
 ```text
 Original product price = 100
 ```
 
-During a sale, you may want to:
+Durante uma promoção, você pode querer:
 
-- apply discounts
-- calculate taxes
-- create promotional prices
+- aplicar descontos
+- calcular impostos
+- criar preços promocionais
 
-without modifying the original product stored in memory.
+sem modificar o produto original armazenado na memória.
 
-In this case, value semantics can make more sense.
+Nesse caso, value semantics pode fazer mais sentido.
 
-Example:
+Exemplo:
 
 ```go
 func (p Product) ApplyDiscount(percent float64) Product
 ```
 
-This suggests:
+Isso sugere:
 
 ```text
 "Create a modified copy for temporary use"
 ```
 
-instead of:
+em vez de:
 
 ```text
 "Modify the original object"
 ```
 
-This reduces side effects and makes behavior more predictable.
+Isso reduz efeitos colaterais e torna o comportamento mais previsível.
 
 ---
 
@@ -114,113 +114,113 @@ This reduces side effects and makes behavior more predictable.
 
 ### Read
 
-Part of the `io.Reader` interface. Reads data from the connection into a byte slice.
+Parte da interface `io.Reader`. Lê dados da conexão em um byte slice.
 
 **Syntax:**
 ```go
 Read(b []byte) (n int, err error)
 ```
 
-#### My Comments
-Used when you want to receive data that arrived through the connection. In practice, it's the method you call on a server to read what the client sent. It waits until data arrives and fills the buffer with it.
+#### Meus Comentários
+Usado quando você quer receber dados que chegaram pela conexão. Na prática, é o method que você chama em um servidor para ler o que o cliente enviou. Ele aguarda até que os dados cheguem e preenche o buffer com eles.
 
 ---
 
 ### Write
 
-Part of the `io.Writer` interface. Writes data from a byte slice into the connection.
+Parte da interface `io.Writer`. Escreve dados de um byte slice na conexão.
 
 **Syntax:**
 ```go
 Write(b []byte) (n int, err error)
 ```
 
-#### My Comments
-The opposite of Read — used to send data through the connection to the other side.
+#### Meus Comentários
+O oposto de Read — usado para enviar dados pela conexão para o outro lado.
 
 ---
 
 ### Close
 
-Part of the `io.Closer` interface. Closes the connection and releases any associated resources.
+Parte da interface `io.Closer`. Fecha a conexão e libera quaisquer recursos associados.
 
 **Syntax:**
 ```go
 Close() error
 ```
 
-#### My Comments
-Terminates the connection and frees its resources. Should always be called when you're done using the connection — usually with `defer` to guarantee it runs even if an error occurs.
+#### Meus Comentários
+Encerra a conexão e libera seus recursos. Deve sempre ser chamado quando você terminar de usar a conexão — geralmente com `defer` para garantir que rode mesmo se ocorrer um erro.
 
 ---
 
 ### LocalAddr
 
-Returns the local network address of the connection (your side).
+Retorna o endereço de rede local da conexão (seu lado).
 
 **Syntax:**
 ```go
 LocalAddr() Addr
 ```
 
-#### My Comments
-Returns your own address in the connection. Useful for debugging or when your server is running on multiple network interfaces and you want to know which one is being used.
+#### Meus Comentários
+Retorna seu próprio endereço na conexão. Útil para debug ou quando seu servidor está rodando em múltiplas interfaces de rede e você quer saber qual está sendo usada.
 
 ---
 
 ### RemoteAddr
 
-Returns the remote network address of the connection (the other side).
+Retorna o endereço de rede remoto da conexão (o outro lado).
 
 **Syntax:**
 ```go
 RemoteAddr() Addr
 ```
 
-#### My Comments
-Returns the address of whoever is connected to you. Commonly used in servers to log or identify which client is talking.
+#### Meus Comentários
+Retorna o endereço de quem está conectado a você. Comumente usado em servidores para registrar em log ou identificar qual cliente está se comunicando.
 
 ---
 
 ### SetDeadline
 
-Sets a deadline for both read and write operations. After the deadline, any operation will return an error.
+Define um deadline para operações de leitura e escrita. Após o deadline, qualquer operação retornará um erro.
 
 **Syntax:**
 ```go
 SetDeadline(t time.Time) error
 ```
 
-#### My Comments
-Sets a time limit for everything — if the operation doesn't finish in time, it returns an error. Prevents your application from hanging forever waiting for data that may never arrive.
+#### Meus Comentários
+Define um limite de tempo para tudo — se a operação não terminar a tempo, retorna um erro. Evita que sua aplicação fique travada para sempre aguardando dados que talvez nunca cheguem.
 
 ---
 
 ### SetReadDeadline
 
-Sets a deadline only for read operations.
+Define um deadline apenas para operações de leitura.
 
 **Syntax:**
 ```go
 SetReadDeadline(t time.Time) error
 ```
 
-#### My Comments
-Same as SetDeadline but only for reads. Useful when you want to give more time for sending but less time for waiting on a response.
+#### Meus Comentários
+Igual a SetDeadline mas apenas para leituras. Útil quando você quer dar mais tempo para enviar, mas menos tempo para aguardar uma resposta.
 
 ---
 
 ### SetWriteDeadline
 
-Sets a deadline only for write operations.
+Define um deadline apenas para operações de escrita.
 
 **Syntax:**
 ```go
 SetWriteDeadline(t time.Time) error
 ```
 
-#### My Comments
-Same as SetDeadline but only for writes. Useful to ensure that sending doesn't hang if the network is slow.
+#### Meus Comentários
+Igual a SetDeadline mas apenas para escritas. Útil para garantir que o envio não trave se a rede estiver lenta.
 
 ---
 
@@ -228,106 +228,105 @@ Same as SetDeadline but only for writes. Useful to ensure that sending doesn't h
 
 ### Accept
 
-Part of the `net.Listener` interface. Waits for and returns the next incoming connection.
+Parte da interface `net.Listener`. Aguarda e retorna a próxima conexão de entrada.
 
 **Syntax:**
 ```go
 Accept() (Conn, error)
 ```
 
-#### My Comments
-The method that blocks — meaning the program stops on this line and waits — until a new client connects. Once a client connects, it returns a Conn so you can handle it in a goroutine in parallel, keeping the server free to accept more connections.
+#### Meus Comentários
+O method que bloqueia — ou seja, o programa para nessa linha e aguarda — até que um novo cliente se conecte. Quando um cliente se conecta, retorna um Conn para que você possa tratá-lo em uma goroutine em paralelo, mantendo o servidor livre para aceitar mais conexões.
 
 ---
 
 ### Close
 
-Part of the `net.Listener` interface. Stops the listener from accepting new connections.
+Parte da interface `net.Listener`. Para o listener de aceitar novas conexões.
 
 **Syntax:**
 ```go
 Close() error
 ```
 
-#### My Comments
-Used to shut down the server entirely. But the function doesn't close already accepted connections — those should be closed individually.
+#### Meus Comentários
+Usado para desligar o servidor completamente. Mas a função não fecha conexões já aceitas — essas devem ser fechadas individualmente.
 
 ---
 
 ### Addr
 
-Part of the `net.Listener` interface. Returns the address the listener is bound to.
+Parte da interface `net.Listener`. Retorna o endereço ao qual o listener está vinculado.
 
 **Syntax:**
 ```go
 Addr() Addr
 ```
 
-#### My Comments
-Useful for debugging or when you need to know which port the OS picked, especially when starting the listener on port `:0`.
+#### Meus Comentários
+Útil para debug ou quando você precisa saber qual porta o OS escolheu, especialmente ao iniciar o listener na porta `:0`.
 
 ## net.PacketConn
 
 ### ReadFrom
 
-Reads a packet from the connection and returns the data and the sender's address.
+Lê um pacote da conexão e retorna os dados e o endereço do remetente.
 
 **Syntax:**
 ```go
 ReadFrom(b []byte) (n int, addr Addr, err error)
 ```
 
-#### My Comments
+#### Meus Comentários
 
 ---
 
 ### WriteTo
 
-Sends a packet to a specific address. The destination is chosen on every send.
+Envia um pacote para um endereço específico. O destino é escolhido a cada envio.
 
 **Syntax:**
 ```go
 WriteTo(b []byte, addr Addr) (n int, err error)
 ```
 
-#### My Comments
+#### Meus Comentários
 
 ---
 
 ### Close
 
-Closes the PacketConn and releases any associated resources.
+Fecha o PacketConn e libera quaisquer recursos associados.
 
 **Syntax:**
 ```go
 Close() error
 ```
 
-#### My Comments
+#### Meus Comentários
 
 ---
 
 ### LocalAddr
 
-Returns the local network address of the PacketConn.
+Retorna o endereço de rede local do PacketConn.
 
 **Syntax:**
 ```go
 LocalAddr() Addr
 ```
 
-#### My Comments
+#### Meus Comentários
 
 ---
 
 ### SetDeadline
 
-Sets a deadline for both read and write operations. After the deadline, any operation will return an error.
+Define um deadline para operações de leitura e escrita. Após o deadline, qualquer operação retornará um erro.
 
 **Syntax:**
 ```go
 SetDeadline(t time.Time) error
 ```
 
-#### My Comments
-
+#### Meus Comentários

@@ -1,14 +1,14 @@
-bufio is a package that creates a buffer on top of a connection and wraps it with extra features (like `ReadString`). This makes reading much easier.
+bufio é um package que cria um buffer por cima de uma conexão e a envolve com funcionalidades extras (como `ReadString`). Isso torna a leitura muito mais fácil.
 
-When use on the [[Net]]
-- Protocols with delimiter characters
-- When you need to read the byte stream step by step## Read
+Quando usar com o [[Net]]
+- Protocolos com caracteres delimitadores
+- Quando você precisa ler o byte stream passo a passo## Read
 
 **Syntax:**
 ```go
 Read([]byte)
 ```
-Reads bytes from the buffer/byte stream.
+Lê bytes do buffer/byte stream.
 
 ## ReadString
 
@@ -16,7 +16,7 @@ Reads bytes from the buffer/byte stream.
 ```go
 ReadString(delim byte)
 ```
-Reads until it finds the delimiter character (e.g. `\n`).
+Lê até encontrar o caractere delimitador (ex.: `\n`).
 
 ## ReadBytes
 
@@ -24,7 +24,7 @@ Reads until it finds the delimiter character (e.g. `\n`).
 ```go
 ReadBytes(delim byte)
 ```
-Same as `ReadString`, but returns `[]byte`.
+Igual a `ReadString`, mas retorna `[]byte`.
 
 ## ReadLine
 
@@ -32,7 +32,7 @@ Same as `ReadString`, but returns `[]byte`.
 ```go
 ReadLine()
 ```
-Reads one "raw" line (it can return a fragmented line).
+Lê uma linha "crua" (pode retornar uma linha fragmentada).
 
 ## Peek
 
@@ -40,7 +40,7 @@ Reads one "raw" line (it can return a fragmented line).
 ```go
 Peek(n int)
 ```
-Peeks `n` bytes without consuming them.
+Espia `n` bytes sem consumi-los.
 
 ## Discard
 
@@ -48,7 +48,7 @@ Peeks `n` bytes without consuming them.
 ```go
 Discard(n int)
 ```
-Discards `n` bytes from the buffer.
+Descarta `n` bytes do buffer.
 
 ## Buffered
 
@@ -56,7 +56,7 @@ Discards `n` bytes from the buffer.
 ```go
 Buffered()
 ```
-Shows how many bytes are currently in the buffer.
+Mostra quantos bytes estão atualmente no buffer.
 
 ## Reset
 
@@ -64,4 +64,4 @@ Shows how many bytes are currently in the buffer.
 ```go
 Reset(r io.Reader)
 ```
-Reuses the reader with another source.
+Reutiliza o reader com outra fonte.

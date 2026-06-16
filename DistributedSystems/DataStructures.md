@@ -1,12 +1,12 @@
 # Data Structures
 
-A data structure is a way of organizing and storing data so it can be accessed and modified efficiently. The choice of structure directly impacts performance — the wrong one can turn an O(1) operation into O(n).
+Uma estrutura de dados é uma forma de organizar e armazenar dados para que possam ser acessados e modificados de forma eficiente. A escolha da estrutura impacta diretamente a performance — a errada pode transformar uma operação O(1) em O(n).
 
 ---
 
-## Redis Data Structures — When and Why
+## Redis Data Structures — Quando e Por quê
 
-Each structure exists to solve a specific problem. Choosing the wrong one means more código, mais lentidão, e soluções gambiarra.
+Cada estrutura existe para resolver um problema específico. Escolher a errada significa mais código, mais lentidão, e soluções gambiarra.
 
 ### String
 
@@ -168,49 +168,49 @@ XREAD COUNT 10 STREAMS eventos:pagamentos 0
 
 ---
 
-## Study Order
+## Ordem de Estudo
 
-1. **String** — simple key/value
-2. **TTL** — expiration
-3. **Hash** — multiple fields per key
-4. **List** — ordered sequences
-5. **Set** — unique items
-6. **Sorted Set** — ranking with scores
+1. **String** — key/value simples
+2. **TTL** — expiração
+3. **Hash** — múltiplos campos por chave
+4. **List** — sequências ordenadas
+5. **Set** — itens únicos
+6. **Sorted Set** — ranking com scores
 
 ---
 
 ## String
 
-The simplest structure — a key maps directly to a value.
+A estrutura mais simples — uma chave mapeia diretamente para um valor.
 
-**Go implementation:**
+**Implementação em Go:**
 ```go
 map[string]string
 ```
 
-**Example:**
+**Exemplo:**
 ```go
 store := map[string]string{}
 store["name"] = "Dylan"
 fmt.Println(store["name"]) // → "Dylan"
 ```
 
-**Cost:** O(1) for get and set.
+**Custo:** O(1) para get e set.
 
-**Use when:** storing simple values — user sessions, config flags, counters.
+**Use quando:** armazenar valores simples — sessões de usuário, flags de configuração, contadores.
 
 ---
 
 ## Hash
 
-A map inside a map. Each key holds multiple fields instead of a single value.
+Um mapa dentro de um mapa. Cada chave guarda múltiplos campos em vez de um único valor.
 
-**Go implementation:**
+**Implementação em Go:**
 ```go
 map[string]map[string]string
 ```
 
-**Example:**
+**Exemplo:**
 ```go
 store := map[string]map[string]string{}
 store["user:1"] = map[string]string{
@@ -220,22 +220,22 @@ store["user:1"] = map[string]string{
 fmt.Println(store["user:1"]["name"]) // → "Dylan"
 ```
 
-**Cost:** O(1) for get and set.
+**Custo:** O(1) para get e set.
 
-**Use when:** storing objects with multiple fields — user profiles, product data, session info.
+**Use quando:** armazenar objetos com múltiplos campos — perfis de usuário, dados de produto, informações de sessão.
 
 ---
 
 ## List
 
-An ordered sequence where insertion order is preserved. Supports efficient operations at both ends.
+Uma sequência ordenada onde a ordem de inserção é preservada. Suporta operações eficientes em ambas as extremidades.
 
-**Go implementation:**
+**Implementação em Go:**
 ```go
 []string
 ```
 
-**Example:**
+**Exemplo:**
 ```go
 list := []string{}
 
@@ -254,24 +254,24 @@ last := list[len(list)-1]
 list = list[:len(list)-1]
 ```
 
-**Cost:** O(1) at the ends, O(n) in the middle.
+**Custo:** O(1) nas extremidades, O(n) no meio.
 
-**Use when:** queues, stacks, history logs, activity feeds.
+**Use quando:** filas, pilhas, logs de histórico, feeds de atividade.
 
 ---
 
 ## Set
 
-A collection of unique items — duplicates are ignored.
+Uma coleção de itens únicos — duplicatas são ignoradas.
 
-**Go implementation:**
+**Implementação em Go:**
 ```go
 map[string]struct{}
 ```
 
-> `struct{}` takes zero bytes — it's the idiomatic way to implement a set in Go.
+> `struct{}` ocupa zero bytes — é a forma idiomática de implementar um set em Go.
 
-**Example:**
+**Exemplo:**
 ```go
 set := map[string]struct{}{}
 
@@ -286,18 +286,18 @@ _, exists := set["go"] // → true
 delete(set, "go")
 ```
 
-**Cost:** O(1) for add, remove and lookup.
+**Custo:** O(1) para adicionar, remover e buscar.
 
-**Use when:** unique visitors, tags, permissions, friend lists.
+**Use quando:** visitantes únicos, tags, permissões, listas de amigos.
 
 ---
 
 ## Sorted Set
 
-Like a Set, but each item has a **score** that determines its position. Items are always kept in order by score.
+Como um Set, mas cada item tem um **score** que determina sua posição. Itens são sempre mantidos em ordem por score.
 
-**Go implementation:**
-Two structures working together:
+**Implementação em Go:**
+Duas estruturas trabalhando juntas:
 ```go
 type SortedSet struct {
     scores  map[string]float64 // member → score (O(1) lookup)
@@ -305,9 +305,9 @@ type SortedSet struct {
 }
 ```
 
-> A **skip list** or **heap** can be used internally for O(log n) inserts and lookups.
+> Uma **skip list** ou **heap** pode ser usada internamente para inserções e buscas O(log n).
 
-**Example:**
+**Exemplo:**
 ```go
 ss := SortedSet{
     scores:  map[string]float64{},
@@ -320,24 +320,24 @@ ss.scores["Alice"] = 250
 // members slice must be kept sorted after each insert
 ```
 
-**Cost:** O(log n) for insert and lookup.
+**Custo:** O(log n) para inserção e busca.
 
-**Use when:** leaderboards, rankings, rate limiting, time-series data.
+**Use quando:** leaderboards, rankings, rate limiting, dados de séries temporais.
 
 ---
 
 ## TTL / Expiration
 
-A way to attach a time limit to any stored value — it automatically becomes invalid after the duration.
+Uma forma de anexar um limite de tempo a qualquer valor armazenado — ele se torna automaticamente inválido após o período.
 
-**Go implementation:**
-Two maps working together:
+**Implementação em Go:**
+Dois mapas trabalhando juntos:
 ```go
 data       map[string]string    // main store
 expiration map[string]time.Time // key → expiry time
 ```
 
-**Example:**
+**Exemplo:**
 ```go
 data := map[string]string{}
 expiration := map[string]time.Time{}
@@ -360,19 +360,19 @@ func get(key string) (string, bool) {
 }
 ```
 
-**Cost:** O(1) per access + periodic cleanup for expired keys.
+**Custo:** O(1) por acesso + limpeza periódica de chaves expiradas.
 
-**Use when:** sessions, caches, rate limiters, temporary tokens.
+**Use quando:** sessões, caches, rate limiters, tokens temporários.
 
 ---
 
-## Complexity Summary
+## Resumo de Complexidade
 
-| Structure | Get | Insert | Delete | Use case |
+| Estrutura | Get | Insert | Delete | Caso de uso |
 |-----------|-----|--------|--------|----------|
-| String | O(1) | O(1) | O(1) | Simple values |
-| Hash | O(1) | O(1) | O(1) | Objects with fields |
-| List | O(n) | O(1) ends | O(1) ends | Queues, stacks |
-| Set | O(1) | O(1) | O(1) | Unique items |
+| String | O(1) | O(1) | O(1) | Valores simples |
+| Hash | O(1) | O(1) | O(1) | Objetos com campos |
+| List | O(n) | O(1) extremidades | O(1) extremidades | Filas, pilhas |
+| Set | O(1) | O(1) | O(1) | Itens únicos |
 | Sorted Set | O(log n) | O(log n) | O(log n) | Rankings |
-| TTL | O(1) | O(1) | O(1) | Expiring keys |
+| TTL | O(1) | O(1) | O(1) | Chaves com expiração |

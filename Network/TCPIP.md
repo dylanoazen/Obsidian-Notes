@@ -1,12 +1,12 @@
 # TCP/IP Deep Dive
 
-A deeper look into the TCP/IP model — how data actually flows from application to wire.
+Uma análise mais aprofundada do modelo TCP/IP — como os dados fluem da aplicação até o fio.
 
 Related: [[Network/TCP]], [[Network/Protocols]], [[Network/UDP]]
 
 ---
 
-## The TCP/IP Model
+## O Modelo TCP/IP
 
 ```
 Application    HTTP, DNS, SSH, SMTP, FTP
@@ -20,7 +20,7 @@ Link           Ethernet, Wi-Fi, ARP
 Physical       Cables, radio waves, signals
 ```
 
-vs OSI (7 layers): TCP/IP merges Presentation + Session into Application, and Data Link + Physical into Link.
+vs OSI (7 camadas): o TCP/IP mescla Presentation + Session em Application, e Data Link + Physical em Link.
 
 ## IP — Internet Protocol
 
@@ -33,31 +33,31 @@ TTL:    64
 Proto:  6 (TCP)
 ```
 
-- 32-bit addresses (4.3 billion — not enough, hence NAT and IPv6)
-- Header: 20 bytes minimum
-- **TTL**: decremented at each hop, prevents infinite routing loops
-- **Fragmentation**: routers can split large packets (MTU typically 1500 bytes)
+- Endereços de 32 bits (4,3 bilhões — insuficiente, daí o NAT e o IPv6)
+- Header: mínimo 20 bytes
+- **TTL**: decrementado em cada hop, evita loops de roteamento infinitos
+- **Fragmentation**: roteadores podem dividir pacotes grandes (MTU tipicamente 1500 bytes)
 
 ### IPv6
 
-- 128-bit addresses: `2001:0db8:85a3::8a2e:0370:7334`
-- No NAT needed — every device gets a global address
-- No fragmentation by routers (source handles it)
-- Built-in IPsec support
+- Endereços de 128 bits: `2001:0db8:85a3::8a2e:0370:7334`
+- Sem necessidade de NAT — cada dispositivo recebe um endereço global
+- Sem fragmentação por roteadores (a origem lida com isso)
+- Suporte a IPsec nativo
 
 ### Subnetting
 
 ```
 192.168.1.0/24
-│           │ └── 24 bits for network, 8 bits for hosts (254 usable)
-│           └──── network address
-└──────────────── first octet
+│           │ └── 24 bits para rede, 8 bits para hosts (254 utilizáveis)
+│           └──── endereço de rede
+└──────────────── primeiro octeto
 
-CIDR notation:
+Notação CIDR:
 /8  = 255.0.0.0       = 16M hosts
 /16 = 255.255.0.0     = 65K hosts
 /24 = 255.255.255.0   = 254 hosts
-/32 = single host
+/32 = host único
 ```
 
 ## TCP Deep Dive
@@ -83,24 +83,24 @@ Client              Server
   │── ACK ──────────►│    "Bye"
 ```
 
-### Flow Control — Sliding Window
+### Controle de Fluxo — Sliding Window
 
-- Receiver advertises **window size**: how much data it can buffer
-- Sender sends up to window size without waiting for ACKs
-- Window shrinks as data fills buffer, grows as app reads data
-- Prevents sender from overwhelming a slow receiver
+- O receptor anuncia o **window size**: quantidade de dados que consegue armazenar em buffer
+- O remetente envia até o window size sem esperar pelos ACKs
+- A janela diminui conforme os dados preenchem o buffer, e cresce conforme o app lê os dados
+- Impede que o remetente sobrecarregue um receptor lento
 
-### Congestion Control
+### Controle de Congestionamento
 
 ```
-Slow Start → Exponential growth until threshold
+Slow Start → Crescimento exponencial até o threshold
      │
-Congestion Avoidance → Linear growth
+Congestion Avoidance → Crescimento linear
      │
-Packet Loss Detected → Cut window, restart
+Perda de Pacote Detectada → Reduz janela, reinicia
 ```
 
-Algorithms: Reno, Cubic (Linux default), BBR (Google)
+Algoritmos: Reno, Cubic (padrão no Linux), BBR (Google)
 
 ```bash
 # Check current congestion algorithm
@@ -132,9 +132,9 @@ dig +trace example.com   # show entire resolution chain
 nslookup example.com
 ```
 
-## Common Port Numbers
+## Portas Comuns
 
-| Port | Protocol | Service |
+| Porta | Protocolo | Serviço |
 |------|----------|---------|
 | 22 | TCP | SSH |
 | 53 | TCP/UDP | DNS |
@@ -144,7 +144,7 @@ nslookup example.com
 | 6379 | TCP | Redis |
 | 8080 | TCP | HTTP alt |
 
-## Diagnostic Tools
+## Ferramentas de Diagnóstico
 
 ```bash
 # Trace route
@@ -164,7 +164,7 @@ ss -tlnp                     # listening TCP
 netstat -i                   # interface stats
 ```
 
-## Related
+## Relacionados
 
 - [[Network/TCP]]
 - [[Network/UDP]]
@@ -174,7 +174,7 @@ netstat -i                   # interface stats
 ## Resources
 
 - https://www.cloudflare.com/learning/ddos/glossary/tcp-ip/
-- TCP/IP Illustrated — W. Richard Stevens (book)
+- TCP/IP Illustrated — W. Richard Stevens (livro)
 
-#### My commentaries
+#### Meus comentários
 - 
