@@ -56,3 +56,4 @@
 - [ ] ☁️ [[Security/CloudSecurity|Cloud Security (AWS)]]
 - [ ] 🎯 [[Security/ThreatModeling|Threat Modeling]]
 - [ ] 🤖 [[Security/AIAgentSecurity|AI Agent Security]]
+- [ ] 💉 [[Security/QueryBypass|Query Bypass]]
