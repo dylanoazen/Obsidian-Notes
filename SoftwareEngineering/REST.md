@@ -63,7 +63,7 @@ REST (Representational State Transfer) não é só "usar JSON e HTTP". É um con
 
 ## Convenção sobre Configuração
 
-Princípio que EBANX valoriza: seguir padrões previsíveis em vez de inventar.
+Seguir padrões previsíveis em vez de inventar.
 
 ```
 ✅ Convenção:

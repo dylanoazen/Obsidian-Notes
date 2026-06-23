@@ -140,7 +140,7 @@ event loop executa um callback por vez
 → impossível ter dois saques simultâneos no mesmo processo
 ```
 
-É o que garante atomicidade no projeto EBANX sem precisar de lock explícito.
+É o que garante atomicidade em sistemas single-threaded sem precisar de lock explícito.
 
 ---
 

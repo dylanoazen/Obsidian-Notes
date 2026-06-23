@@ -121,7 +121,7 @@ Se o passo 3 falhar, executa as compensações em ordem inversa — estado volta
 | Tudo no mesmo banco | Transação SQL |
 | Dois serviços, pode ser eventual | Eventos de domínio |
 | Múltiplos serviços, fluxo longo | Saga Pattern |
-| Projeto EBANX (single-thread) | Nenhum — event loop garante |
+| Single-thread (ReactPHP, Node.js) | Nenhum — event loop garante |
 
 ### Idempotência
 Cliente reenvia o mesmo pagamento por timeout. O sistema precisa detectar e não processar duas vezes.
@@ -241,22 +241,9 @@ Em sistemas distribuídos, a réplica pode ter saldo desatualizado por milissegu
 | Linguagem | COBOL | Java, Go, Kotlin |
 | Deploy | Semanal/mensal | Contínuo |
 | Disponibilidade | Janela de manutenção | 99.99% uptime |
-| Exemplos | Banco do Brasil, Itaú antigo | Nubank, EBANX, Revolut |
+| Exemplos | Banco do Brasil, Itaú antigo | Nubank, Revolut, Stripe |
 
 Nubank famosamente reescreveu o core banking em Clojure + Datomic, rodando na AWS — saindo do modelo mainframe.
-
----
-
-## No Contexto do EBANX
-
-O EBANX processa pagamentos em mercados emergentes (Brasil, México, Argentina...). O core banking deles lida com:
-
-- Múltiplas moedas e conversão
-- Integração com métodos locais (PIX, boleto, OXXO)
-- Regulação de cada país
-- Reconciliação com adquirentes e bancos locais
-
-→ [[Finance/MeiosDePagamento]]
 
 ---
 

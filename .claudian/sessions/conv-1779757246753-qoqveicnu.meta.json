@@ -4,8 +4,8 @@
   "title": "Clarify inheritance concept",
   "titleGenerationStatus": "success",
   "createdAt": 1779757246756,
-  "updatedAt": 1781639911204,
-  "lastResponseAt": 1781639911204,
+  "updatedAt": 1781827520020,
+  "lastResponseAt": 1781827520020,
   "sessionId": "32362a85-55d9-46bf-b896-c0a9a2e42b47",
   "providerState": {
     "providerSessionId": "32362a85-55d9-46bf-b896-c0a9a2e42b47",
@@ -1994,12 +1994,12 @@
   },
   "usage": {
     "model": "sonnet",
-    "inputTokens": 3,
-    "cacheCreationInputTokens": 55,
-    "cacheReadInputTokens": 67638,
+    "inputTokens": 1,
+    "cacheCreationInputTokens": 141,
+    "cacheReadInputTokens": 87160,
     "contextWindow": 200000,
-    "contextTokens": 67696,
-    "percentage": 34,
+    "contextTokens": 87302,
+    "percentage": 44,
     "contextWindowIsAuthoritative": true
   }
 }

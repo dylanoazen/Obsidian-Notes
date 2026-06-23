@@ -23,7 +23,7 @@
 - [ ] ⚡ [[DistributedSystems/DistributedSystems|Distributed Systems]]
 - [ ] 📦 [[Git/Git|Git Avançado]]
 
-## PHP — Entrevista EBANX
+## PHP
 
 - [ ] ⚡ [[PHP/EventLoop|Event Loop e ReactPHP]]
 - [ ] 🏗️ [[SoftwareEngineering/SOLID|SOLID e Injeção de Dependência]]

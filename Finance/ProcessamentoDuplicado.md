@@ -127,18 +127,6 @@ Solução: consumidor idempotente — verifica se já processou aquele `message_
 
 ---
 
-## No Projeto EBANX
-
-O take-home não exigia idempotência — operações chegam uma vez e são processadas. Em produção, o EBANX trata isso em toda operação financeira:
-
-- Depósito duplicado → saldo errado
-- Transferência duplicada → cliente perde dinheiro
-- Saque duplicado → conta fica negativa
-
-É um dos tópicos mais cobrados em entrevistas de fintech justamente porque o impacto é direto e financeiro.
-
----
-
 ## Related
 
 - [[DistributedSystems/Idempotency]]

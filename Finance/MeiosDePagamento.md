@@ -59,44 +59,6 @@ Transferências bancárias tradicionais. TED é o mesmo dia (até 17h), DOC é D
 
 ---
 
-## EBANX — O que Fazem
-
-O EBANX é um **payment processor** focado em mercados emergentes da América Latina e outros países. Eles atuam como intermediários entre empresas globais (Netflix, Spotify, Shopify) e os métodos de pagamento locais.
-
-```
-Netflix (EUA)
-    │
-    ▼
-EBANX ← integra com PIX, boleto, cartões locais, carteiras digitais
-    │
-    ▼
-Usuário no Brasil paga em reais com método local
-    │
-    ▼
-Netflix recebe em dólares
-```
-
-### Produtos EBANX
-
-**EBANX Pay** — checkout que aceita métodos locais de múltiplos países
-**EBANX Account** — conta digital para usuários finais
-**EBANX for Business** — APIs para empresas integrarem pagamentos
-**EBANX Payout** — pagamentos em massa (desembolsos)
-
-### Países de operação
-Brasil, México, Argentina, Colômbia, Chile, Peru, Equador, Bolívia, e outros.
-
-### Desafio técnico do EBANX
-Cada país tem regulação diferente, moeda diferente, métodos diferentes. O sistema precisa abstrair tudo isso para o cliente global.
-
-```
-México: OXXO (pagamento em conveniência), SPEI (transferência)
-Argentina: Rapipago, PagoFácil
-Brasil: PIX, boleto, TED
-```
-
----
-
 ## Carteiras Digitais
 
 Intermediários que guardam saldo e processam pagamentos:
