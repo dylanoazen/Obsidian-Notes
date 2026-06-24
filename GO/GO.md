@@ -39,6 +39,7 @@ Inside a module, the code is organized into packages.
 - [[GO/MemoryManagement]]
 - [[GO/Mutex]]
 - [[GO/GarbageCollector]]
+- [[GO/EstruturaDeProjetoGo]]
 
 #### My commentaries
 - The main reason for doing this is, for example, to avoid breaking an older version of a project using the Go project due to incompatibility of the new version
