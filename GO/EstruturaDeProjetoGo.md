@@ -51,4 +51,4 @@ projeto/
 - O que pode (e não pode) morar em `cmd/`? → só ligação; nada de regra de negócio.
 
 ---
-Relacionado: [[GO/GO]] · [[GO/Packages]] · [[GO/GO]] · [[Arquitetura Hexagonal]] · [[Ports e Adapters]]
+Relacionado: [[GO/GO]] · [[GO/Packages]] · [[GO/GO]] · [[Architecture/HexagonalArchitecture|Arquitetura Hexagonal]] · [[Architecture/HexagonalArchitecture|Ports e Adapters]]
