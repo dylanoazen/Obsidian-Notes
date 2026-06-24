@@ -2,6 +2,10 @@
 
 > Índice do vault — atualizado pelo Study Inbox
 
+## Arquitetura
+
+- [ ] 🔷 [[Architecture/HexagonalArchitecture|Arquitetura Hexagonal]]
+
 ## DevOps
 
 - [ ] 🔄 [[DevOps/CICD/CICD|CI/CD]]
