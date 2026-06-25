@@ -34,6 +34,55 @@ Send(ctx, ...) ───────────► só OBSERVA se desligou
 
 Quando `cancel()` é chamado lá em cima, **TODOS** os que receberam esse `ctx` ficam sabendo. É como desligar o disjuntor geral — toda a casa apaga.
 
+## Mas Quem Detecta o Cancelamento?
+
+Você nunca faz polling manual. Sempre tem algo por baixo que detecta o evento e chama `cancel()` por você.
+
+### Browser fechou (HTTP request)
+
+O servidor Go (`net/http`) mantém uma conexão TCP com o browser. Quando o browser fecha, o TCP manda um FIN. O servidor detecta que a conexão morreu e **automaticamente cancela o `ctx` daquele request**.
+
+```go
+func handler(w http.ResponseWriter, r *http.Request) {
+    ctx := r.Context() // ← já vem com cancel automático!
+    
+    // Se o browser fechar, ctx cancela sozinho
+    // Você não precisa fazer nada — o net/http cuida
+    result, err := s.DoWork(ctx)
+}
+```
+
+Você não monitora nada — o `r.Context()` que vem no request já tá plugado na conexão TCP. A stack de rede do Go faz o trabalho sujo.
+
+### Ctrl+C no terminal
+
+O sistema operacional manda um sinal (SIGINT). O Go escuta e chama `cancel()`:
+
+```go
+ctx, cancel := signal.NotifyContext(ctx, syscall.SIGINT)
+// OS manda SIGINT → Go detecta → cancel() é chamado
+```
+
+### Timeout estourou
+
+O runtime do Go tem um timer interno. Passou o tempo? Chama `cancel()` sozinho:
+
+```go
+ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+// Timer interno do Go → estoura → cancel() é chamado
+```
+
+### Resumo: quem aperta o interruptor?
+
+| Cenário | Quem detecta | Quem chama cancel() |
+|---------|-------------|-------------------|
+| Browser fechou | Stack TCP do Go (net/http) | Automático via `r.Context()` |
+| Ctrl+C | OS envia SIGINT | `signal.NotifyContext` |
+| Timeout | Timer do runtime | `context.WithTimeout` |
+| Manual | Sua lógica decide | Você chama `cancel()` |
+
+Seu código nunca precisa ficar "vigiando" — só precisa checar `ctx.Err()` ou escutar `<-ctx.Done()`.
+
 ## Os 3 Tipos de Context
 
 ### 1. `context.Background()` — o ponto zero
