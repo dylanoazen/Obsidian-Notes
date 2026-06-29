@@ -194,7 +194,7 @@
             }
           }
         ],
-        "currentTab": 5
+        "currentTab": 6
       }
     ],
     "direction": "horizontal",
@@ -213,8 +213,13 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "18cd20509e034023",
+  "active": "284009537db8911d",
   "lastOpenFiles": [
+    "Security/QueryBypass.md",
+    "GO/EstruturaDeProjetoGo.md",
+    "Architecture/HexagonalArchitecture.md",
+    "Architecture",
+    "GO/Context_local_backup.md",
     "_Temas para Estudar.md",
     "GO/TrayGo.md",
     "GO/Database.md",
@@ -238,10 +243,6 @@
     "Finance/MeiosDePagamento.md",
     "Finance/FinanceEng.md",
     "Finance/Finance.md",
-    "Finance/CoreBanking.md",
-    "Finance/RaceCondition.md",
-    "Finance/EBANX.md",
-    "PHP/Idempotency.md",
     "Finance",
     "PHP",
     "Security",
@@ -250,7 +251,6 @@
     "study-inbox.html",
     "DevOps/Heroku",
     "DevOps/Docker",
-    "DevOps/CICD",
     "Sem título.canvas",
     "Pasted image 20260520113020.png"
   ]
