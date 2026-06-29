@@ -41,6 +41,13 @@ Dentro de um módulo, o código é organizado em packages.
 - [[GO/GarbageCollector]]
 - [[GO/Context]]
 - [[GO/EstruturaDeProjetoGo]]
+- [[GO/Goroutines]]
+- [[GO/Interfaces]]
+- [[GO/Database]]
+
+## Projetos
+
+- [[GO/TrayGo]]
 
 #### Meus comentários
 - O principal motivo para isso é, por exemplo, evitar quebrar uma versão mais antiga de um projeto que usa o projeto Go por causa de incompatibilidade da nova versão

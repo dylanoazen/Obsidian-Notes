@@ -4,17 +4,17 @@
     "type": "split",
     "children": [
       {
-        "id": "cc4fae66466a461a",
+        "id": "35e448f5d70e63a4",
         "type": "tabs",
         "children": [
           {
-            "id": "07cd08da68f41b06",
+            "id": "18cd20509e034023",
             "type": "leaf",
             "state": {
-              "type": "graph",
+              "type": "empty",
               "state": {},
-              "icon": "lucide-git-fork",
-              "title": "Visualização em gráfico"
+              "icon": "lucide-file",
+              "title": "Nova aba"
             }
           }
         ]
@@ -194,7 +194,7 @@
             }
           }
         ],
-        "currentTab": 6
+        "currentTab": 5
       }
     ],
     "direction": "horizontal",
@@ -213,14 +213,19 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "284009537db8911d",
+  "active": "18cd20509e034023",
   "lastOpenFiles": [
+    "_Temas para Estudar.md",
+    "GO/TrayGo.md",
+    "GO/Database.md",
+    "GO/Interfaces.md",
+    "GO/Context.md",
+    "GO/Goroutines.md",
     "DistributedSystems/Persistence.md",
     "Finance/EntrevistaFelipe.md",
     "PHP/ReactPHP-Entrevista.md",
     "Finance/EntrevistaFintech.md",
     "DistributedSystems/DataStructures.md",
-    "_Temas para Estudar.md",
     "PHP/EBANX-Entrevista.md",
     "Finance/Observabilidade.md",
     "DistributedSystems/RaceCondition.md",
@@ -237,12 +242,7 @@
     "Finance/RaceCondition.md",
     "Finance/EBANX.md",
     "PHP/Idempotency.md",
-    "Notas.md",
-    "DistributedSystems/Concurrency.md",
-    "Finance/ProcessamentoDuplicado.md",
     "Finance",
-    "PHP/EBANX.md",
-    "PHP/ReactPHP.md",
     "PHP",
     "Security",
     "Git",
