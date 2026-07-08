@@ -6,6 +6,36 @@
 
 - [ ] 🔷 [[Architecture/HexagonalArchitecture|Arquitetura Hexagonal]]
 
+## Docplanner — Entrevista Barcelona
+
+### Symfony
+- [ ] 🔄 [[Docplanner/SymfonyVsLaravel|Symfony vs Laravel]]
+- [ ] 📦 [[Docplanner/SymfonyServiceContainer|Service Container]]
+- [ ] 🗄️ [[Docplanner/DoctrineORM|Doctrine ORM]]
+- [ ] 🔌 [[Docplanner/APIPlatform|API Platform]]
+- [ ] 📬 [[Docplanner/SymfonyMessenger|Symfony Messenger]]
+
+### DDD & Arquitetura
+- [ ] 🏛️ [[Docplanner/DDDFundamentos|DDD Fundamentos]]
+- [ ] 🔷 [[Docplanner/PortsAndAdaptersPHP|Ports & Adapters PHP]]
+- [ ] 📡 [[Docplanner/DomainEvents|Domain Events]]
+
+### Testing
+- [ ] 🧪 [[Docplanner/TDDPHP|TDD em PHP]]
+- [ ] 📊 [[Docplanner/TestingEstrategia|Estratégia de Testes]]
+
+### Infraestrutura
+- [ ] 🐰 [[Docplanner/RabbitMQ|RabbitMQ]]
+- [ ] 🟥 [[Docplanner/RedisPatterns|Redis Patterns]]
+- [ ] 🔍 [[Docplanner/ElasticSearch|ElasticSearch]]
+- [ ] ☸️ [[Docplanner/KubernetesEssencial|Kubernetes]]
+- [ ] 🎬 [[Docplanner/GitHubActionsCI|GitHub Actions CI]]
+
+### Conceitos
+- [ ] 🏗️ [[Docplanner/SOLIDExemplos|SOLID Exemplos]]
+- [ ] 🧩 [[Docplanner/DesignPatterns|Design Patterns]]
+- [ ] 🎯 [[Docplanner/PerguntasEntrevista|Top 20 Perguntas]]
+
 ## DevOps
 
 - [ ] 🔄 [[DevOps/CICD/CICD|CI/CD]]
