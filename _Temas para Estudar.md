@@ -5,36 +5,10 @@
 ## Arquitetura
 
 - [ ] 🔷 [[Architecture/HexagonalArchitecture|Arquitetura Hexagonal]]
-
-## Docplanner — Entrevista Barcelona
-
-### Symfony
-- [ ] 🔄 [[Docplanner/SymfonyVsLaravel|Symfony vs Laravel]]
-- [ ] 📦 [[Docplanner/SymfonyServiceContainer|Service Container]]
-- [ ] 🗄️ [[Docplanner/DoctrineORM|Doctrine ORM]]
-- [ ] 🔌 [[Docplanner/APIPlatform|API Platform]]
-- [ ] 📬 [[Docplanner/SymfonyMessenger|Symfony Messenger]]
-
-### DDD & Arquitetura
-- [ ] 🏛️ [[Docplanner/DDDFundamentos|DDD Fundamentos]]
-- [ ] 🔷 [[Docplanner/PortsAndAdaptersPHP|Ports & Adapters PHP]]
-- [ ] 📡 [[Docplanner/DomainEvents|Domain Events]]
-
-### Testing
-- [ ] 🧪 [[Docplanner/TDDPHP|TDD em PHP]]
-- [ ] 📊 [[Docplanner/TestingEstrategia|Estratégia de Testes]]
-
-### Infraestrutura
-- [ ] 🐰 [[Docplanner/RabbitMQ|RabbitMQ]]
-- [ ] 🟥 [[Docplanner/RedisPatterns|Redis Patterns]]
-- [ ] 🔍 [[Docplanner/ElasticSearch|ElasticSearch]]
-- [ ] ☸️ [[Docplanner/KubernetesEssencial|Kubernetes]]
-- [ ] 🎬 [[Docplanner/GitHubActionsCI|GitHub Actions CI]]
-
-### Conceitos
-- [ ] 🏗️ [[Docplanner/SOLIDExemplos|SOLID Exemplos]]
-- [ ] 🧩 [[Docplanner/DesignPatterns|Design Patterns]]
-- [ ] 🎯 [[Docplanner/PerguntasEntrevista|Top 20 Perguntas]]
+- [ ] 🏛️ [[Architecture/DDD|DDD Fundamentos]]
+- [ ] 🔌 [[Architecture/PortsAndAdaptersPHP|Ports & Adapters (PHP)]]
+- [ ] 📡 [[Architecture/DomainEvents|Domain Events]]
+- [ ] 🧩 [[Architecture/DesignPatterns|Design Patterns]]
 
 ## DevOps
 
@@ -44,25 +18,40 @@
 - [ ] 🐳 [[DevOps/Docker/DockerAdvanced|Docker Avançado]]
 - [ ] ☁️ [[DevOps/Heroku/Heroku|Heroku]]
 
-## Backend
+## PHP
+
+- [ ] 🐘 [[PHP/PHP|PHP 8.1+ Libs Essenciais]]
+- [ ] 🔄 [[PHP/SymfonyVsLaravel|Symfony vs Laravel]]
+- [ ] 📦 [[PHP/SymfonyServiceContainer|Service Container]]
+- [ ] 🗄️ [[PHP/DoctrineORM|Doctrine ORM]]
+- [ ] 🔌 [[PHP/APIPlatform|API Platform]]
+- [ ] 📬 [[PHP/SymfonyMessenger|Symfony Messenger]]
+- [ ] ⚡ [[PHP/EventLoop|Event Loop / ReactPHP]]
+- [ ] 🏗️ [[PHP/SOLID|SOLID e DI]]
+- [ ] 🏗️ [[PHP/SOLIDExemplos|SOLID Exemplos]]
+- [ ] 🧪 [[PHP/TDD|TDD]]
+- [ ] 🧪 [[PHP/Testing|Testing]]
+- [ ] 📊 [[PHP/TestingEstrategia|Estratégia de Testes]]
+- [ ] 🔒 [[PHP/Concurrency|Concorrência]]
+- [ ] 🌐 [[PHP/REST|REST Semantics]]
+- [ ] 🔑 [[PHP/Idempotency|Idempotência]]
+- [ ] 💰 [[PHP/MoneyPattern|Money Pattern]]
+- [ ] 💾 [[PHP/Persistence|Persistência]]
+
+## Go
 
 - [ ] 🔵 [[GO/GO|Go (Golang)]]
 - [ ] ♻️ [[GO/GarbageCollector|Garbage Collector]]
-- [ ] 🐘 [[PHP/PHP|PHP 8.1+ Libs Essenciais]]
+- [ ] 🔄 [[GO/Context|Context]]
+- [ ] 📁 [[GO/EstruturaDeProjetoGo|Estrutura de Projeto]]
+
+## Distributed Systems
+
 - [ ] 🟥 [[DistributedSystems/Redis|Redis]]
+- [ ] 🟥 [[DistributedSystems/RedisPatterns|Redis Patterns]]
+- [ ] 🐰 [[DistributedSystems/RabbitMQ|RabbitMQ]]
+- [ ] 🔍 [[DistributedSystems/ElasticSearch|ElasticSearch]]
 - [ ] ⚡ [[DistributedSystems/DistributedSystems|Distributed Systems]]
-- [ ] 📦 [[Git/Git|Git Avançado]]
-
-## PHP
-
-- [ ] ⚡ [[PHP/EventLoop|Event Loop e ReactPHP]]
-- [ ] 🏗️ [[SoftwareEngineering/SOLID|SOLID e Injeção de Dependência]]
-- [ ] 🔒 [[PHP/Concurrency|Concorrência e Atomicidade]]
-- [ ] 🧪 [[SoftwareEngineering/Testing|Testing]]
-- [ ] 🌐 [[SoftwareEngineering/REST|REST e HTTP Semantics]]
-- [ ] 🔑 [[DistributedSystems/Idempotency|Idempotência]]
-- [ ] 💰 [[SoftwareEngineering/MoneyPattern|Representação de Dinheiro]]
-- [ ] 💾 [[PHP/Persistence|Persistência e Durabilidade]]
 
 ## Sistemas Operacionais
 
@@ -91,3 +80,7 @@
 - [ ] 🎯 [[Security/ThreatModeling|Threat Modeling]]
 - [ ] 🤖 [[Security/AIAgentSecurity|AI Agent Security]]
 - [ ] 💉 [[Security/QueryBypass|Query Bypass]]
+
+## Git
+
+- [ ] 📦 [[Git/Git|Git Avançado]]
