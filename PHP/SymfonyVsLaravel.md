@@ -5,8 +5,8 @@ status: draft
 
 # Symfony vs Laravel — Comparativo Direto
 
-## Por que isso importa
-A Docplanner usa Symfony. Você vem do Laravel. O entrevistador vai querer saber se você entende as diferenças de *filosofia*, não só de syntax. Laravel prioriza velocidade de desenvolvimento (convention over configuration). Symfony prioriza explicitness e controle (configuration over convention).
+## Diferença filosófica
+Laravel prioriza velocidade de desenvolvimento (convention over configuration). Symfony prioriza explicitness e controle (configuration over convention).
 
 ## Tabela Lado a Lado
 
@@ -82,7 +82,7 @@ $user->setName('Dylan');
 $em->flush();  // o EntityManager persiste, não o objeto
 ```
 
-A entity é um POPO (Plain Old PHP Object). Quem sabe do banco é o EntityManager + Repository. **Isso é exatamente o que hexagonal pede** — por isso Docplanner usa Doctrine.
+A entity é um POPO (Plain Old PHP Object). Quem sabe do banco é o EntityManager + Repository. **Isso é exatamente o que hexagonal pede** — por isso sistemas com DDD usam Doctrine.
 
 ## Events
 
@@ -110,9 +110,9 @@ class SendShipmentNotification {
 Mesma ideia, syntax diferente. Symfony usa o EventDispatcher component que Laravel por baixo também usa (Illuminate Events é inspirado nele).
 
 ## Comparação com minha stack
-Laravel = produtividade rápida, muita magia, ótimo pra ERPs e CRUDs. Symfony = controle total, ótimo pra DDD e arquitetura hexagonal. A migração mental é: **parar de depender de facades e começar a pensar em injeção explícita**.
+Laravel = produtividade rápida, muita magia, ótimo pra ERPs e CRUDs. Symfony = controle total, ótimo pra DDD e arquitetura hexagonal. A migração mental é: parar de depender de facades e começar a pensar em injeção explícita.
 
-## Perguntas que podem cair
+## Perguntas comuns em entrevista
 1. "Qual a diferença principal entre Eloquent e Doctrine?" → Active Record vs Data Mapper. Eloquent o model se persiste, Doctrine separa entity de persistência.
 2. "Por que Symfony é melhor pra DDD?" → Doctrine não polui o domínio com lógica de banco. Entities são objetos puros.
 3. "O que são facades no Laravel e por que Symfony não tem?" → Facades são proxies estáticos pro container. Symfony prefere DI explícita no construtor.

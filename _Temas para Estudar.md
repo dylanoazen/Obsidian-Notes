@@ -1,60 +1,74 @@
-# 📚 Temas para Estudar
+# 🗺️ Roadmap — Sênior
 
-> Índice do vault — atualizado pelo Study Inbox
+> Caminho estruturado do nível atual até sênior. Organizado por fase — não pule fases, cada uma suporta a próxima.
 
-## Arquitetura
+---
 
-- [ ] 🔷 [[Architecture/HexagonalArchitecture|Arquitetura Hexagonal]]
-- [ ] 🏛️ [[Architecture/DDD|DDD Fundamentos]]
-- [ ] 🔌 [[Architecture/PortsAndAdaptersPHP|Ports & Adapters (PHP)]]
-- [ ] 📡 [[Architecture/DomainEvents|Domain Events]]
-- [ ] 🧩 [[Architecture/DesignPatterns|Design Patterns]]
+## Fase 1 — Fundamentos Sólidos
+> Sem isso, tudo acima é frágil. Revise até ficar natural.
 
-## DevOps
-
-- [ ] 🔄 [[DevOps/CICD/CICD|CI/CD]]
-- [ ] 🎬 [[DevOps/CICD/GitHubActions|GitHub Actions]]
-- [ ] 🐳 [[DevOps/Docker/Docker|Docker]]
-- [ ] 🐳 [[DevOps/Docker/DockerAdvanced|Docker Avançado]]
-- [ ] ☁️ [[DevOps/Heroku/Heroku|Heroku]]
-
-## PHP
-
-- [ ] 🐘 [[PHP/PHP|PHP 8.1+ Libs Essenciais]]
-- [ ] 🔄 [[PHP/SymfonyVsLaravel|Symfony vs Laravel]]
-- [ ] 📦 [[PHP/SymfonyServiceContainer|Service Container]]
-- [ ] 🗄️ [[PHP/DoctrineORM|Doctrine ORM]]
-- [ ] 🔌 [[PHP/APIPlatform|API Platform]]
-- [ ] 📬 [[PHP/SymfonyMessenger|Symfony Messenger]]
-- [ ] ⚡ [[PHP/EventLoop|Event Loop / ReactPHP]]
-- [ ] 🏗️ [[PHP/SOLID|SOLID e DI]]
-- [ ] 🏗️ [[PHP/SOLIDExemplos|SOLID Exemplos]]
+### Linguagem e OOP
+- [ ] 🐘 [[PHP/PHP|PHP 8.1+ — Recursos modernos]]
+- [ ] 🏗️ [[SoftwareEngineering/SOLID|SOLID — Princípios]]
+- [ ] 🏗️ [[PHP/SOLIDExemplos|SOLID — Exemplos Práticos]]
+- [ ] 🧪 [[SoftwareEngineering/Testing|Testing — Fundamentos]]
 - [ ] 🧪 [[PHP/TDD|TDD]]
-- [ ] 🧪 [[PHP/Testing|Testing]]
+
+### Web e HTTP
+- [ ] 🌐 [[SoftwareEngineering/REST|REST e HTTP Semantics]]
+- [ ] 💰 [[SoftwareEngineering/MoneyPattern|Money Pattern]]
+- [ ] 🔑 [[DistributedSystems/Idempotency|Idempotência]]
+
+---
+
+## Fase 2 — Arquitetura
+> Como organizar o código para que cresça sem virar bagunça.
+
+### Padrões
+- [ ] 🧩 [[Architecture/DesignPatterns|Design Patterns]]
+- [ ] 🔷 [[Architecture/HexagonalArchitecture|Arquitetura Hexagonal]]
+- [ ] 🏛️ [[Architecture/DDD|DDD — Fundamentos]]
+- [ ] 🔌 [[Architecture/PortsAndAdaptersPHP|Ports & Adapters em PHP]]
+- [ ] 📡 [[Architecture/DomainEvents|Domain Events]]
+
+### Persistência
+- [ ] 💾 [[PHP/Persistence|Persistência e Durabilidade]]
+- [ ] 🗄️ [[PHP/DoctrineORM|Doctrine ORM]]
+
+---
+
+## Fase 3 — Stack Atual (PHP + Symfony)
+> Ferramentas do dia a dia no trabalho.
+
+- [ ] 🐘 [[PHP/Laravel|Laravel — Visão Geral]]
+- [ ] ⚖️ [[PHP/SymfonyVsLaravel|Symfony vs Laravel]]
+- [ ] 📦 [[PHP/SymfonyServiceContainer|Service Container]]
+- [ ] 📬 [[PHP/SymfonyMessenger|Symfony Messenger]]
+- [ ] 🔌 [[PHP/APIPlatform|API Platform]]
 - [ ] 📊 [[PHP/TestingEstrategia|Estratégia de Testes]]
-- [ ] 🔒 [[PHP/Concurrency|Concorrência]]
-- [ ] 🌐 [[PHP/REST|REST Semantics]]
-- [ ] 🔑 [[PHP/Idempotency|Idempotência]]
-- [ ] 💰 [[PHP/MoneyPattern|Money Pattern]]
-- [ ] 💾 [[PHP/Persistence|Persistência]]
 
-## Go
+---
 
-- [ ] 🔵 [[GO/GO|Go (Golang)]]
-- [ ] ♻️ [[GO/GarbageCollector|Garbage Collector]]
-- [ ] 🔄 [[GO/Context|Context]]
-- [ ] 📁 [[GO/EstruturaDeProjetoGo|Estrutura de Projeto]]
+## Fase 4 — Sistemas Distribuídos
+> Como sistemas se comunicam, escalam e falham.
 
-## Distributed Systems
-
+### Cache e Mensageria
 - [ ] 🟥 [[DistributedSystems/Redis|Redis]]
 - [ ] 🟥 [[DistributedSystems/RedisPatterns|Redis Patterns]]
 - [ ] 🐰 [[DistributedSystems/RabbitMQ|RabbitMQ]]
 - [ ] 🔍 [[DistributedSystems/ElasticSearch|ElasticSearch]]
+
+### Fundamentos
 - [ ] ⚡ [[DistributedSystems/DistributedSystems|Distributed Systems]]
+- [ ] 🔒 [[PHP/Concurrency|Concorrência e Race Condition]]
+- [ ] ⚡ [[PHP/EventLoop|Event Loop / ReactPHP]]
 
-## Sistemas Operacionais
+---
 
+## Fase 5 — Infraestrutura
+> Onde o código vive e como chega em produção.
+
+### Linux e OS
 - [ ] 🐧 [[Linux/Linux|Linux Internals]]
 - [ ] ⚙️ [[Linux/Kernel|Kernel]]
 - [ ] 🔀 [[Linux/ProcessManagement|Process Management]]
@@ -65,22 +79,47 @@
 - [ ] 🌐 [[Linux/Networking|Linux Networking]]
 - [ ] 🔒 [[Linux/Security|Linux Security]]
 
-## Redes
-
+### Redes
 - [ ] 🌐 [[Network/Protocols|Protocolos]]
-- [ ] 📡 [[Network/TCPIP|TCP/IP Deep Dive]]
+- [ ] 📡 [[Network/TCPIP|TCP/IP]]
 - [ ] 🔗 [[Network/TCP|TCP]]
 - [ ] ⚡ [[Network/UDP|UDP]]
 
-## Segurança
+### DevOps
+- [ ] 🐳 [[DevOps/Docker/Docker|Docker]]
+- [ ] 🐳 [[DevOps/Docker/DockerAdvanced|Docker Avançado]]
+- [ ] 🔄 [[DevOps/CICD/CICD|CI/CD]]
+- [ ] 🎬 [[DevOps/CICD/GitHubActions|GitHub Actions]]
+- [ ] ☁️ [[DevOps/Heroku/Heroku|Heroku]]
+
+---
+
+## Fase 6 — Segurança
+> O que sênior precisa saber para não criar vulnerabilidades.
 
 - [ ] 🔑 [[Security/IAM|IAM / OIDC / OAuth]]
+- [ ] 💉 [[Security/QueryBypass|Query Bypass / SQL Injection]]
 - [ ] 📦 [[Security/SupplyChainSecurity|Supply Chain Security]]
 - [ ] ☁️ [[Security/CloudSecurity|Cloud Security (AWS)]]
 - [ ] 🎯 [[Security/ThreatModeling|Threat Modeling]]
 - [ ] 🤖 [[Security/AIAgentSecurity|AI Agent Security]]
-- [ ] 💉 [[Security/QueryBypass|Query Bypass]]
+
+---
+
+## Trilha Go (paralela)
+> Estudo de Go independente das fases acima.
+
+- [ ] 🔵 [[GO/GO|Go — Fundamentos]]
+- [ ] 📁 [[GO/EstruturaDeProjetoGo|Estrutura de Projeto Go]]
+- [ ] 🔄 [[GO/Context|Context]]
+- [ ] ⚡ [[GO/Goroutines|Goroutines e WaitGroup]]
+- [ ] 🔌 [[GO/Interfaces|Interfaces]]
+- [ ] 🗄️ [[GO/Database|Database / SQL]]
+- [ ] 🔒 [[GO/Mutex|Mutex]]
+- [ ] ♻️ [[GO/GarbageCollector|Garbage Collector]]
+- [ ] 🏗️ [[GO/TrayGo|Projeto TrayGo]]
+
+---
 
 ## Git
-
 - [ ] 📦 [[Git/Git|Git Avançado]]

@@ -6,7 +6,7 @@ status: draft
 # Doctrine ORM
 
 ## Por que isso importa
-Docplanner usa DDD + hexagonal. Doctrine é Data Mapper — a entity não sabe do banco. Isso permite que o domínio seja puro, que é exatamente o que hexagonal exige. Se fosse Eloquent (Active Record), o model estaria acoplado ao banco.
+Doctrine é Data Mapper — a entity não sabe do banco. Isso permite que o domínio seja puro, que é exatamente o que arquitetura hexagonal exige. Se fosse Eloquent (Active Record), o model estaria acoplado ao banco.
 
 ## Data Mapper vs Active Record
 

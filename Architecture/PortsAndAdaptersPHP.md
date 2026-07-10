@@ -6,7 +6,7 @@ status: draft
 # Ports & Adapters em PHP (Symfony)
 
 ## Por que isso importa
-Docplanner usa Ports & Adapters (hexagonal). Você já está implementando isso no tray-go em Go. Aqui é a versão PHP/Symfony — mesma filosofia, syntax diferente.
+Ports & Adapters (hexagonal) em PHP/Symfony. Mesma filosofia do projeto TrayGo em Go — domínio isolado, adapters nas bordas.
 
 ## Estrutura de Pastas (Symfony + DDD)
 

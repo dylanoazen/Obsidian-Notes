@@ -4,17 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "35e448f5d70e63a4",
+        "id": "54e693aeb34d3367",
         "type": "tabs",
         "children": [
           {
-            "id": "18cd20509e034023",
+            "id": "6dcc0ff51fae43c0",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "PHP/PHP.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "Nova aba"
+              "title": "PHP"
             }
           }
         ]
@@ -49,7 +53,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "entrevi",
+                "query": "",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -215,34 +219,35 @@
   },
   "active": "284009537db8911d",
   "lastOpenFiles": [
-    "Security/QueryBypass.md",
-    "GO/EstruturaDeProjetoGo.md",
-    "Architecture/HexagonalArchitecture.md",
-    "Architecture",
-    "GO/Context_local_backup.md",
     "_Temas para Estudar.md",
-    "GO/TrayGo.md",
-    "GO/Database.md",
-    "GO/Interfaces.md",
-    "GO/Context.md",
-    "GO/Goroutines.md",
-    "DistributedSystems/Persistence.md",
-    "Finance/EntrevistaFelipe.md",
-    "PHP/ReactPHP-Entrevista.md",
-    "Finance/EntrevistaFintech.md",
-    "DistributedSystems/DataStructures.md",
-    "PHP/EBANX-Entrevista.md",
-    "Finance/Observabilidade.md",
-    "DistributedSystems/RaceCondition.md",
+    "PHP/Laravel.md",
+    "Docplanner/SymfonyVsLaravel.md",
+    "PHP/TestingEstrategia.md",
+    "PHP/TDD.md",
+    "PHP/SymfonyVsLaravel.md",
+    "PHP/SymfonyServiceContainer.md",
+    "PHP/SymfonyMessenger.md",
+    "PHP/SOLIDExemplos.md",
+    "PHP/DoctrineORM.md",
+    "PHP/APIPlatform.md",
+    "DistributedSystems/RedisPatterns.md",
+    "DistributedSystems/RabbitMQ.md",
+    "DistributedSystems/ElasticSearch.md",
+    "Architecture/PortsAndAdaptersPHP.md",
+    "Architecture/DomainEvents.md",
+    "Architecture/DesignPatterns.md",
+    "Architecture/DDD.md",
+    "Architecture/HexagonalArchitecture.md",
     "DistributedSystems/Idempotency.md",
-    "SoftwareEngineering/Testing.md",
-    "SoftwareEngineering/SOLID.md",
-    "SoftwareEngineering/REST.md",
-    "SoftwareEngineering/MoneyPattern.md",
+    "DistributedSystems/RaceCondition.md",
+    "DistributedSystems/Kubernetes.md",
+    "Docplanner/TestingEstrategia.md",
+    "Docplanner/TDDPHP.md",
+    "Docplanner/SymfonyServiceContainer.md",
+    "Docplanner/SymfonyMessenger.md",
+    "Docplanner",
+    "Architecture",
     "SoftwareEngineering",
-    "Finance/MeiosDePagamento.md",
-    "Finance/FinanceEng.md",
-    "Finance/Finance.md",
     "Finance",
     "PHP",
     "Security",
@@ -250,7 +255,6 @@
     "Linux",
     "study-inbox.html",
     "DevOps/Heroku",
-    "DevOps/Docker",
     "Sem título.canvas",
     "Pasted image 20260520113020.png"
   ]

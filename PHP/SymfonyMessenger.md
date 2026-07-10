@@ -6,7 +6,7 @@ status: draft
 # Symfony Messenger
 
 ## Por que isso importa
-Docplanner usa RabbitMQ pra processar coisas assíncronas (enviar emails, notificações, sincronizar dados). Symfony Messenger é a abstração que conecta a aplicação ao broker de mensagens. Entender como messages, handlers e transports se conectam é essencial.
+Symfony Messenger é a abstração que conecta a aplicação ao broker de mensagens. Conecta com RabbitMQ, SQS, Redis para processar coisas assíncronas — emails, notificações, sincronização de dados.
 
 ## Conceitos
 

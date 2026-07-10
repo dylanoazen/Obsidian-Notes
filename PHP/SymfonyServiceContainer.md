@@ -6,7 +6,7 @@ status: draft
 # Symfony Service Container
 
 ## Por que isso importa
-O service container é o coração do Symfony. Tudo é um service — controllers, repositórios, commands. Entender como ele resolve dependências é fundamental porque na Docplanner (DDD + hexagonal), a composição de objetos é o que cola as camadas.
+O service container é o coração do Symfony. Tudo é um service — controllers, repositórios, commands. Entender como ele resolve dependências é fundamental — em arquiteturas DDD e hexagonal, a composição de objetos é o que cola as camadas.
 
 ## Conceitos-chave
 

@@ -4,7 +4,7 @@ status: draft
 ---
 # TDD em PHP
 ## Por que isso importa
-Docplanner pratica TDD. Red-Green-Refactor não é opcional.
+Red-Green-Refactor: escreve o teste antes, vê falhar, faz passar, refatora.
 
 ## Red-Green-Refactor
 1. **RED** — escreve teste que FALHA (comportamento desejado)

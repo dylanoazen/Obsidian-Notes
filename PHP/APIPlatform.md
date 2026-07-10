@@ -6,7 +6,7 @@ status: draft
 # API Platform
 
 ## Por que isso importa
-Docplanner expõe APIs REST. API Platform gera CRUD automaticamente a partir das entities Doctrine, com documentação OpenAPI, pagination, filters e serialization — sem escrever controllers. Pra uma empresa de saúde com muitos recursos (doctors, patients, appointments, slots), isso escala muito.
+API Platform gera CRUD automaticamente a partir das entities Doctrine, com documentação OpenAPI, pagination, filters e serialization — sem escrever controllers. Ideal para sistemas com muitos recursos que precisam de API REST padronizada.
 
 ## O que é
 

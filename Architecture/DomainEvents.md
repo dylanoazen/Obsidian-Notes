@@ -6,7 +6,7 @@ status: draft
 # Domain Events na Prática
 
 ## Por que isso importa
-Na Docplanner, quando uma consulta é confirmada, vários side effects acontecem: enviar email, criar invoice, atualizar calendário. Domain Events desacoplam o "o que aconteceu" de "quem reage".
+Domain Events desacoplam o "o que aconteceu" de "quem reage". Quando uma operação conclui, vários side effects podem acontecer — email, invoice, notificação — sem o domínio conhecer quem vai reagir.
 
 ## O que é um Domain Event
 

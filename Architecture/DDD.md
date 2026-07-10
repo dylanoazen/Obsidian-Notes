@@ -6,7 +6,7 @@ status: draft
 # DDD — Domain-Driven Design
 
 ## Por que isso importa
-Docplanner usa DDD. No contexto deles (healthcare — doctors, patients, appointments, calendars), o domínio é complexo. DDD é a forma de organizar código em torno da linguagem e regras do negócio, não em torno do framework.
+DDD é a forma de organizar código em torno da linguagem e regras do negócio, não em torno do framework. Especialmente útil quando o domínio é complexo e as regras de negócio são o core do sistema.
 
 ## Bounded Context
 
