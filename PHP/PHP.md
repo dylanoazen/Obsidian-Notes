@@ -17,7 +17,7 @@ composer dump-autoload -o        # otimizar autoload
 
 - `composer.lock` → trava versões (sempre commitar)
 - PSR-4 autoloading → padrão de autoload moderno
-- Packagist.org → registry central
+- Packagist.org → registry centrale
 
 ## Frameworks
 
